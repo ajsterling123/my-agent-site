@@ -1,0 +1,9 @@
+# 操作系统杂物
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# 临时文件
+*.tmp
+
+# 说明：PRODUCT.md、DESIGN.md、.impeccable/ 是设计档案，纳入版本管理，不忽略。

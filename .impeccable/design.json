@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-07T21:05:00+08:00",
+  "title": "Design System: 张易孝 · 实验档案（The Living Dossier）",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "primary", "displayName": "墨蓝 Ink Navy", "canonical": "#1C2B3A", "tonalRamp": ["#101922", "#1C2B3A", "#2E4156", "#435972", "#5A7089", "#7D8FA3", "#A9B6C2", "#E3E8ED"] },
+      "red": { "role": "secondary", "displayName": "档案红 Archive Red", "canonical": "#B5322C", "tonalRamp": ["#571512", "#7C201A", "#B5322C", "#C65448", "#D7766B", "#E59A90", "#F0BFB8", "#F9E4E1"] },
+      "slate": { "role": "tertiary", "displayName": "蓝灰（基）Blue-Grey Slate", "canonical": "#6B7A89", "tonalRamp": ["#2B3440", "#45505D", "#6B7A89", "#8494A2", "#9DAEB9", "#B6C4CD", "#CFDAE0", "#E8EEF1"] },
+      "slate-ink": { "role": "tertiary", "displayName": "深蓝灰 Deep Slate（小字达标变体）", "canonical": "#5F6E7D", "tonalRamp": ["#2E3844", "#47525F", "#5F6E7D", "#7B8A97", "#98A6B1", "#B4C1CA", "#D1DBE1", "#E9EEF2"] },
+      "paper": { "role": "neutral", "displayName": "冷白纸 Cold Paper", "canonical": "#F5F6F4", "tonalRamp": ["#343735", "#4E524F", "#6A6E6B", "#878B88", "#A6A9A6", "#C5C8C5", "#E2E4E1", "#F5F6F4"] },
+      "hairline": { "role": "neutral", "displayName": "发丝线 Hairline", "canonical": "rgba(28, 43, 58, 0.24)", "tonalRamp": ["rgba(28,43,58,0.04)", "rgba(28,43,58,0.12)", "rgba(28,43,58,0.24)", "rgba(28,43,58,0.32)", "rgba(28,43,58,0.45)", "rgba(28,43,58,0.58)", "rgba(28,43,58,0.72)", "rgba(28,43,58,0.86)"] },
+      "hairline-strong": { "role": "neutral", "displayName": "浓发丝线 Strong Hairline", "canonical": "rgba(28, 43, 58, 0.45)", "tonalRamp": ["rgba(28,43,58,0.10)", "rgba(28,43,58,0.24)", "rgba(28,43,58,0.36)", "rgba(28,43,58,0.45)", "rgba(28,43,58,0.56)", "rgba(28,43,58,0.68)", "rgba(28,43,58,0.80)", "rgba(28,43,58,0.92)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "档案标题 宋体", "purpose": "巨幅姓名 h1 专用——宽字距宋体加粗，配「在册」红章。" },
+      "headline": { "displayName": "栏目题 宋体", "purpose": "栏目 h2，坐在 1px 墨蓝实线上，上方不允许眉题。" },
+      "title": { "displayName": "条目题 宋体", "purpose": "账本条目 h3，与状态 tag 同行基线对齐。" },
+      "body": { "displayName": "正文 系统黑体", "purpose": "全部叙述文字：16px/1.9 基调，自述 17px/2.05，条目描述 15px/1.95。" },
+      "label": { "displayName": "档案小签 宋体", "purpose": "公文头「个人实验档案」小签；登记 dt 与 tag 沿用同一宽字距语法但用黑体声部。" },
+      "mono": { "displayName": "机读数据 等宽", "purpose": "日期、邮箱、STEP 计数器——永远 tabular-nums，短数据 nowrap。" }
+    },
+    "shadows": [
+      { "name": "seal-double-ring", "value": "inset 0 0 0 2px #F5F6F4, inset 0 0 0 3px #B5322C", "purpose": "在 2px 红边框内画出印章内环——全系统唯一的 box-shadow，它画纹样，不抬升。" }
+    ],
+    "motion": [
+      { "name": "stamp-in", "value": "0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both", "purpose": "载入时红章从 scale(1.7)/opacity 0 落定——全系统唯一动效，包在 prefers-reduced-motion: no-preference 内；其余状态变化一律瞬时、无 transition。" }
+    ],
+    "breakpoints": [
+      { "name": "compact", "value": "480px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "公文头 Document Header Bar",
+      "kind": "custom",
+      "refersTo": "doc-meta",
+      "description": "全宽档案条：左宋体小签、右等宽日期，上 3px 双细线、下 1px 实线，flex 基线可换行。",
+      "html": "<div class='ds-doc-meta'><span class='ds-doc-label'>个人实验档案</span><time class='ds-doc-date' datetime='2026-10-07'>最后更新：2026-10-07</time></div>",
+      "css": ".ds-doc-meta{--ink:#1C2B3A;--song:'SimSun','Songti SC','STSong','NSimSun',serif;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;--mono:Consolas,'SF Mono',Menlo,'Liberation Mono','Courier New',monospace;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:12px 2px;border-top:3px double var(--ink);border-bottom:1px solid var(--ink);font-family:var(--hei)} .ds-doc-label{font-family:var(--song);font-weight:700;font-size:13px;letter-spacing:.35em} .ds-doc-date{font-family:var(--mono);font-size:12px;letter-spacing:.05em;font-variant-numeric:tabular-nums;white-space:nowrap}"
+    },
+    {
+      "name": "档案头与章 Dossier Title & Seal",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "巨幅宋体姓名 + 右上角旋转 -6° 的红框「在册」章，载入时盖章一次（reduced-motion 下静止常显）。",
+      "html": "<div class='ds-doc-title'><h1 class='ds-doc-name'>张易孝</h1><span class='ds-stamp'>在册</span></div>",
+      "css": ".ds-doc-title{--paper:#F5F6F4;--red:#B5322C;--song:'SimSun','Songti SC','STSong','NSimSun',serif;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;position:relative;padding:56px 0 44px;font-family:var(--hei)} .ds-doc-name{margin:0;font-family:var(--song);font-weight:700;font-size:clamp(2.75rem,9vw,3.75rem);line-height:1.15;letter-spacing:.14em} .ds-stamp{position:absolute;top:58px;right:2px;transform:rotate(-6deg);font-family:var(--song);font-weight:700;font-size:16px;line-height:1;letter-spacing:.3em;padding:8px 9px 8px 14px;color:var(--red);border:2px solid var(--red);border-radius:3px;box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 3px var(--red);opacity:.92} @media (prefers-reduced-motion:no-preference){.ds-stamp{animation:ds-stamp-in .5s cubic-bezier(.22,1,.36,1) .35s both}@keyframes ds-stamp-in{from{opacity:0;transform:rotate(-6deg) scale(1.7)}to{opacity:.92;transform:rotate(-6deg) scale(1)}}}"
+    },
+    {
+      "name": "身份登记 Registry Row",
+      "kind": "custom",
+      "refersTo": "reg-row",
+      "description": "dl 账本行：7em/1fr 网格、发丝线分行，邮箱为等宽 mailto 链接（页面唯一行动点，hover/focus 变红）。",
+      "html": "<dl class='ds-register'><div class='ds-reg-row'><dt>院校</dt><dd>江苏警官学院</dd></div><div class='ds-reg-row'><dt>邮箱</dt><dd><a class='ds-reg-mail' href='mailto:you@example.com'>you@example.com</a></dd></div></dl>",
+      "css": ".ds-register{--ink:#1C2B3A;--slate-ink:#5F6E7D;--red:#B5322C;--hairline:rgba(28,43,58,.24);--hairline-strong:rgba(28,43,58,.45);--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;--mono:Consolas,'SF Mono',Menlo,'Liberation Mono','Courier New',monospace;margin:0;font-family:var(--hei)} .ds-reg-row{display:grid;grid-template-columns:7em 1fr;align-items:baseline;padding:13px 2px;border-bottom:1px solid var(--hairline)} .ds-reg-row dt{font-size:12.5px;letter-spacing:.3em;color:var(--slate-ink)} .ds-reg-row dd{margin:0;font-size:16.5px} .ds-reg-mail{font-family:var(--mono);font-size:15.5px;color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--hairline-strong)} .ds-reg-mail:hover{color:var(--red);text-decoration-color:var(--red)} .ds-reg-mail:focus-visible{outline:2px solid var(--red);outline-offset:3px}"
+    },
+    {
+      "name": "栏目题 Section Heading",
+      "kind": "custom",
+      "refersTo": "headline",
+      "description": "宋体栏目题直接坐在 1px 墨蓝实线上，上方不允许任何眉题。",
+      "html": "<section class='ds-sec'><h2 class='ds-sec-h2'>研究方向</h2></section>",
+      "css": ".ds-sec{--ink:#1C2B3A;--song:'SimSun','Songti SC','STSong','NSimSun',serif;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;font-family:var(--hei)} .ds-sec-h2{margin:0 0 6px;padding:22px 0 4px;border-top:1px solid var(--ink);font-family:var(--song);font-weight:700;font-size:1.375rem;line-height:1.4;letter-spacing:.1em}"
+    },
+    {
+      "name": "条目账本 Ledger Entry",
+      "kind": "card",
+      "refersTo": "title",
+      "description": "发丝线分隔的研究方向条目：宋体 h3 + 行尾状态 tag + 深蓝灰描述，替代卡片阵列的档案语法。",
+      "html": "<ul class='ds-ledger'><li class='ds-dir'><div class='ds-dir-head'><h3 class='ds-dir-h3'>AI Agent</h3><span class='ds-tag ds-tag-live'>进行中</span></div><p class='ds-dir-p'>本站即这项实验本身：由 AI Agent 按课程步骤逐步交付、逐步更新。</p></li><li class='ds-dir'><div class='ds-dir-head'><h3 class='ds-dir-h3'>数据警务</h3><span class='ds-tag'>主修方向</span></div><p class='ds-dir-p'>把数据分析与可视化带进警务业务场景。</p></li></ul>",
+      "css": ".ds-ledger{--slate-ink:#5F6E7D;--red:#B5322C;--hairline:rgba(28,43,58,.24);--hairline-strong:rgba(28,43,58,.45);--song:'SimSun','Songti SC','STSong','NSimSun',serif;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;list-style:none;margin:10px 0 0;padding:0;font-family:var(--hei)} .ds-dir{padding:20px 2px} .ds-dir+.ds-dir{border-top:1px solid var(--hairline)} .ds-dir-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;row-gap:8px} .ds-dir-h3{margin:0;font-family:var(--song);font-weight:700;font-size:1.3125rem;line-height:1.4;letter-spacing:.08em} .ds-dir-head .ds-tag{margin-left:auto} .ds-dir-p{margin:6px 0 0;max-width:40em;font-size:15px;line-height:1.95;color:var(--slate-ink)} .ds-tag{flex:none;display:inline-block;font-size:12px;line-height:1;letter-spacing:.22em;padding:5px 8px 5px 12px;border:1px solid var(--hairline-strong);border-radius:2px;color:var(--slate-ink);white-space:nowrap} .ds-tag-live{color:var(--red);border-color:var(--red);font-weight:700}"
+    },
+    {
+      "name": "状态标 Status Tags",
+      "kind": "chip",
+      "refersTo": "tag-live",
+      "description": "窄边框状态标：普通档深蓝灰，live 档红字红边加粗——红色纪律的两处静止红之一。非交互，无 hover。",
+      "html": "<p class='ds-tag-demo'><span class='ds-tag'>主修方向</span><span class='ds-tag ds-tag-live'>进行中</span></p>",
+      "css": ".ds-tag-demo{--slate-ink:#5F6E7D;--red:#B5322C;--hairline-strong:rgba(28,43,58,.45);--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;display:flex;gap:12px;align-items:center;font-family:var(--hei)} .ds-tag{flex:none;display:inline-block;font-size:12px;line-height:1;letter-spacing:.22em;padding:5px 8px 5px 12px;border:1px solid var(--hairline-strong);border-radius:2px;color:var(--slate-ink);white-space:nowrap} .ds-tag-live{color:var(--red);border-color:var(--red);font-weight:700}"
+    },
+    {
+      "name": "公文尾 Document Footer Bar",
+      "kind": "custom",
+      "refersTo": "doc-foot",
+      "description": "3px 双细线收口的页脚条：左说明小字，右等宽 STEP 计数器。",
+      "html": "<footer class='ds-doc-foot'><p class='ds-foot-note'>本页是课程实验档案的首页，随实验进度持续更新。</p><p class='ds-foot-step'>STEP 1/12</p></footer>",
+      "css": ".ds-doc-foot{--ink:#1C2B3A;--slate-ink:#5F6E7D;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;--mono:Consolas,'SF Mono',Menlo,'Liberation Mono','Courier New',monospace;margin-top:64px;padding:16px 2px 0;border-top:3px double var(--ink);display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;font-family:var(--hei)} .ds-doc-foot p{margin:0;font-size:12.5px;letter-spacing:.04em;color:var(--slate-ink)} .ds-foot-step{font-family:var(--mono);letter-spacing:.08em;font-variant-numeric:tabular-nums}"
+    }
+  ],
+  "narrative": {
+    "northStar": "在册档案 · The Living Dossier",
+    "overview": "这个系统不是「个人主页」的视觉语言，而是一份正在持续更新的公文档案：冷白纸面上，墨蓝的字与线登记身份、罗列条目、盖章确认。层级不靠装饰，靠字号、字重、字距与三档粗细的线；页面唯一的「花活」是一枚旋转 -6° 的红章，以及它落下时的那一次动效。气质三词：克制、在册、随时可归档。没有渐变、没有卡片阴影、没有图标库、没有外部字体——三个系统字族（宋体 / 黑体 / 等宽）就是全部排版资源。红 #B5322C 是全页最稀缺的颜色，按纪律只出现在「当前/活跃」的标记上；它的稀有就是它的含义。未来所有 Step 都在同一份档案上续页，而不是另起炉灶。",
+    "keyCharacteristics": [
+      "页面即档案：信息用登记行（dl）、条目（ledger）、状态标记（tag）组织，拒绝卡片阵列与技能罗列。",
+      "三级线公文章法：3px 双细线框定页首/页尾，1px 实线开栏目，0.24 发丝线分行。",
+      "红色即活动：静止红全页仅两处（「在册」章、「进行中」标），其余只作 hover/focus 响应。",
+      "冷白纸面 × 墨蓝 × 蓝灰；零渐变、零阴影、零图标、零外部资源。",
+      "宋体标题 × 系统黑体正文 × Consolas 数据，全部系统自带，file:// 可开。",
+      "唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显。"
+    ],
+    "rules": [
+      { "name": "The Red Discipline Rule（红色纪律）", "body": "红是「活动」的语义色，不是装饰色。静止红只允许出现在「当前/活跃」标记上（现构建为「在册」章与「进行中」标两处）；hover 与 focus 可借用红作瞬时响应；禁止红底、红面、大面积红，禁止给非活跃元素上静止红。", "section": "colors" },
+      { "name": "The Two-Slate Rule（双蓝灰）", "body": "蓝灰一族两个音高：#6B7A89 只作装饰线与较大字号次级；任何小号（≲16px）次级文字必须用 #5F6E7D——它对 #F5F6F4 的对比度 ≥ 4.5:1，前者不达标。", "section": "colors" },
+      { "name": "The Three-Voice Rule（三声部）", "body": "一段文字只有一种声音：身份与结构（姓名、栏目题、条目题、章、档案小签）用宋体加粗；叙述用系统黑体；日期、邮箱、步数计数器等机读数据用 Consolas 并开 tabular-nums。不引入第四个字族。", "section": "typography" },
+      { "name": "The Wide-Tracking Rule（宽字距）", "body": "宋体的公文感来自放宽的字距：标题 0.08–0.14em，小签与章 0.22–0.35em；等宽 0.04–0.08em；黑体正文不额外加字距。480px 小屏下 h1 字距收至 0.1em 防溢出。", "section": "typography" },
+      { "name": "The Three-Weight Rule（三级线）", "body": "线分三档，各司其职：3px double 墨蓝双线只用于文档头尾（.doc-meta 上边、.doc-foot 上边）——它是档案的装订线；1px solid 墨蓝实线开栏目（.sec h2 上边）；rgba(28,43,58,.24) 发丝线分隔同级行；rgba(28,43,58,.45) 浓发丝线只作 tag 边框、链接下划线与滚动条拇指。不发明第四档线，也不把双线用到头尾之外。", "section": "layout" },
+      { "name": "The Flat Archive Rule（平面档案）", "body": "禁止投影。盒阴影在这个系统里只有一个合法形态：印章的内嵌双环，用来画纹样。任何用 shadow 表达「浮起」「卡片」「弹层」的写法都不属于这个世界。", "section": "elevation" }
+    ],
+    "dos": [
+      "Do 保住三件 finish review 确认的资产，未来 Step 在不改变它们的前提下扩展：全宽墨蓝公文双线（.doc-meta/.doc-foot 的 3px double）、登记 dl 账本（.register/.reg-row）、双处红色纪律（静止红仅「在册」章与「进行中」标）。",
+      "Do 新记录沿用档案语法：字段用 dl + .reg-row 账本行，并列条目用发丝线分隔的 ledger 条目，状态用 .tag / .tag-live。",
+      "Do 新页保持 800px 单栏 + clamp(20px, 5vw, 36px) 侧距 + 底部 56px，线全宽贯穿版心。",
+      "Do 小字次级用 #5F6E7D（≥4.5:1）；宋体标题带 0.08–0.14em 字距，小签 0.22–0.35em；等宽数据开 tabular-nums。",
+      "Do 正文行高保持 1.9（自述 2.05），行内文字离线 2px。",
+      "Do 状态变化保持瞬时（无 transition）；新增动效须包在 prefers-reduced-motion: no-preference 内，且不破坏「盖章是唯一动效」的格局。",
+      "Do 保持双文件原生 HTML/CSS、无外部资源、file:// 可开（PRODUCT.md 栈约束）。"
+    ],
+    "donts": [
+      "Don't 加渐变、投影、卡片阴影或图标库——层级只来自字号、字重、字距与线。",
+      "Don't 把红用于装饰、红底、大面积红，或给任何静止的非活跃元素上红。",
+      "Don't 用 #6B7A89 写小于约 16px 的文字——小字一律 #5F6E7D。",
+      "Don't 在栏目 h2 上方加眉题/kicker/eyebrow——栏目直接坐在 1px 实线上；宽字距小签只属于档案元数据位（公文头小签、登记 dt、状态 tag、章）。",
+      "Don't 给 hover/focus 加过渡缓动；除 stamp-in 外不引入第二处动画。",
+      "Don't 引入第四个字族或外部字体 CDN；不把版心放宽到 800px 以外。",
+      "Don't 引入照片、logo 墙、获奖徽章等证明性视觉装饰——本档案的证据就是登记行本身。"
+    ]
+  }
+}

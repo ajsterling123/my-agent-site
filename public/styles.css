@@ -1,0 +1,307 @@
+/* ============================================================
+   实验档案 · 张易孝
+   原生 CSS：无框架、无外部字体、无图标。
+   配色：冷白纸面 / 墨蓝文字与线 / 蓝灰次级 / 红仅作「当前·活跃」标记。
+   ============================================================ */
+
+:root {
+  --paper: #F5F6F4;
+  --ink: #1C2B3A;
+  --slate: #6B7A89;      /* 装饰线与较大字号次级 */
+  --slate-ink: #5F6E7D;  /* 小号次级文字：对纸面对比度 ≥ 4.5:1 */
+  --red: #B5322C;
+  --hairline: rgba(28, 43, 58, 0.24);
+  --hairline-strong: rgba(28, 43, 58, 0.45);
+  --mono: Consolas, "SF Mono", Menlo, "Liberation Mono", "Courier New", monospace;
+  --song: "SimSun", "Songti SC", "STSong", "NSimSun", serif;
+  --hei: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--hei);
+  font-size: 16px;
+  line-height: 1.9;
+  accent-color: var(--ink);
+}
+
+::selection { background: var(--ink); color: var(--paper); }
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--red); }
+
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--hairline-strong);
+  border: 3px solid var(--paper);
+  border-radius: 6px;
+}
+
+/* ---- 版心 ---- */
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 36px) 56px;
+}
+
+/* ---- 页首：一行等宽小字 + 档案头 ---- */
+
+.doc-meta {
+  margin: 0;
+  padding: 12px 2px;
+  border-top: 3px double var(--ink);
+  border-bottom: 1px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.doc-label {
+  font-family: var(--song);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.35em;
+}
+
+.doc-date {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.doc-title {
+  position: relative;
+  padding: 56px 0 44px;
+}
+
+.doc-title h1 {
+  margin: 0;
+  font-family: var(--song);
+  font-weight: 700;
+  font-size: clamp(2.75rem, 9vw, 3.75rem);
+  line-height: 1.15;
+  letter-spacing: 0.14em;
+}
+
+/* 唯一动效：载入时「盖章」一次；reduced-motion 下静止常显 */
+
+.stamp {
+  position: absolute;
+  top: 58px;
+  right: 2px;
+  transform: rotate(-6deg);
+  font-family: var(--song);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0.3em;
+  padding: 8px 9px 8px 14px;
+  color: var(--red);
+  border: 2px solid var(--red);
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 2px var(--paper), inset 0 0 0 3px var(--red);
+  opacity: 0.92;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stamp {
+    animation: stamp-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+  }
+
+  @keyframes stamp-in {
+    from { opacity: 0; transform: rotate(-6deg) scale(1.7); }
+    to   { opacity: 0.92; transform: rotate(-6deg) scale(1); }
+  }
+}
+
+/* ---- 栏目 ---- */
+
+.sec h2 {
+  margin: 0 0 6px;
+  padding: 22px 0 4px;
+  border-top: 1px solid var(--ink);
+  font-family: var(--song);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+}
+
+/* ---- 身份登记 ---- */
+
+.register { margin: 0; }
+
+.reg-row {
+  display: grid;
+  grid-template-columns: 7em 1fr;
+  align-items: baseline;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.reg-row dt {
+  font-size: 12.5px;
+  letter-spacing: 0.3em;
+  color: var(--slate-ink);
+}
+
+.reg-row dd {
+  margin: 0;
+  font-size: 16.5px;
+}
+
+address { font-style: normal; }
+
+.reg-row a {
+  font-family: var(--mono);
+  font-size: 15.5px;
+  text-decoration: underline;
+  text-decoration-color: var(--hairline-strong);
+}
+.reg-row a:hover {
+  color: var(--red);
+  text-decoration-color: var(--red);
+}
+
+/* ---- 档案自述 ---- */
+
+.intro {
+  margin: 14px 0 0;
+  max-width: 38em;
+  font-size: 17px;
+  line-height: 2.05;
+}
+
+/* ---- 研究方向 ---- */
+
+.ledger {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.dir { padding: 20px 2px; }
+.dir + .dir { border-top: 1px solid var(--hairline); }
+
+.dir-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.dir-head h3 {
+  margin: 0;
+  font-family: var(--song);
+  font-weight: 700;
+  font-size: 1.3125rem;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+}
+
+.dir-head .tag { margin-left: auto; }
+
+.dir p {
+  margin: 6px 0 0;
+  max-width: 40em;
+  font-size: 15px;
+  line-height: 1.95;
+  color: var(--slate-ink);
+}
+
+.tag {
+  flex: none;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  padding: 5px 8px 5px 12px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 2px;
+  color: var(--slate-ink);
+  white-space: nowrap;
+}
+
+/* 红色只用于「当前/活跃」标记 */
+
+.tag-live {
+  color: var(--red);
+  border-color: var(--red);
+  font-weight: 700;
+}
+
+/* ---- 页脚 ---- */
+
+.doc-foot {
+  margin-top: 64px;
+  padding: 16px 2px 0;
+  border-top: 3px double var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.doc-foot p {
+  margin: 0;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--slate-ink);
+}
+
+.doc-foot .foot-step {
+  font-family: var(--mono);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- 小屏 ---- */
+
+@media (max-width: 480px) {
+  body { font-size: 15.5px; }
+
+  .doc-title { padding: 44px 0 36px; }
+  .doc-title h1 { letter-spacing: 0.1em; }
+
+  .stamp {
+    top: 48px;
+    font-size: 14px;
+    padding: 6px 7px 6px 12px;
+  }
+
+  .reg-row { grid-template-columns: 5.5em 1fr; }
+  .reg-row dt { letter-spacing: 0.2em; }
+}
+
+/* ---- 打印：档案随时可归档 ---- */
+
+@media print {
+  body { background: #fff; }
+}
