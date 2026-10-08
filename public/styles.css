@@ -130,13 +130,15 @@ a:hover { color: var(--red); }
 
 .site-nav a:hover { text-decoration: underline; }
 
-/* ---- 副页标题：首页用档案头（巨幅姓名 + 在册章），子页用此档页名 ---- */
+/* ---- 副页标题：首页用档案头（巨幅姓名 + 在册章），子页与文章页用此档页名 ---- */
 
-.folio {
+.folio,
+.post-head {
   padding: 44px 0 30px;
 }
 
-.folio h1 {
+.folio h1,
+.post-head h1 {
   margin: 0;
   font-family: var(--song);
   font-weight: 700;
@@ -192,7 +194,8 @@ a:hover { color: var(--red); }
 
 /* ---- 栏目 ---- */
 
-.sec h2 {
+.sec h2,
+.post-body h2 {
   margin: 0 0 6px;
   padding: 22px 0 4px;
   border-top: 1px solid var(--ink);
@@ -306,6 +309,130 @@ address { font-style: normal; }
   font-weight: 700;
 }
 
+/* ---- 博客列表：日期与文章登记在同一张账本上 ---- */
+
+.post-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.post-row {
+  display: grid;
+  grid-template-columns: 7em 1fr;
+  align-items: baseline;
+  padding: 14px 2px;
+}
+
+.post-row + .post-row { border-top: 1px solid var(--hairline); }
+
+.post-date {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--slate-ink);
+  white-space: nowrap;
+}
+
+.post-item {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.post-item h3 {
+  margin: 0;
+  font-family: var(--song);
+  font-weight: 700;
+  font-size: 1.3125rem;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+}
+
+.post-item h3 a { text-decoration-color: var(--hairline-strong); }
+
+.post-item p {
+  margin: 6px 0 0;
+  max-width: 40em;
+  font-size: 15px;
+  line-height: 1.95;
+  color: var(--slate-ink);
+}
+
+/* ---- 文章页：页名档下压一行登记日期，正文按档案自述的行距走 ---- */
+
+.post-head .post-date {
+  display: block;
+  margin-top: 12px;
+}
+
+.post-body {
+  max-width: 38em;
+  overflow-wrap: break-word;
+}
+
+.post-body p {
+  margin: 0 0 22px;
+  font-size: 17px;
+  line-height: 2.05;
+}
+
+.post-body h3 {
+  margin: 26px 0 8px;
+  font-family: var(--song);
+  font-weight: 700;
+  font-size: 1.3125rem;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+}
+
+.post-body ul,
+.post-body ol {
+  margin: 0 0 22px;
+  padding-left: 1.5em;
+}
+
+.post-body li {
+  margin: 0 0 4px;
+  font-size: 17px;
+  line-height: 2;
+}
+
+/* 列表标记属于机读编号，用等宽与次级色，不进正文色 */
+
+.post-body li::marker {
+  font-family: var(--mono);
+  color: var(--slate-ink);
+}
+
+/* 强调只加字重，不换字族 */
+
+.post-body strong { font-weight: 700; }
+
+.post-body code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  padding: 1px 5px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 2px;
+}
+
+/* 引用：夹在两条发丝线之间的摘录，不做竖线也不做底色 */
+
+.post-body blockquote {
+  margin: 0 0 22px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--slate-ink);
+}
+
+.post-body blockquote p {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.95;
+}
+
 /* ---- 页脚 ---- */
 
 .doc-foot {
@@ -353,8 +480,17 @@ address { font-style: normal; }
   .site-nav ul { padding: 8px 2px; gap: 4px 14px; }
   .site-nav a { font-size: 14px; letter-spacing: 0.06em; }
 
-  .folio { padding: 34px 0 24px; }
-  .folio h1 { letter-spacing: 0.1em; }
+  .folio,
+  .post-head { padding: 34px 0 24px; }
+
+  .folio h1,
+  .post-head h1 { letter-spacing: 0.1em; }
+
+  /* 小屏把日期挪到标题上方：7em 的日期列在 320px 下会把标题挤窄 */
+  .post-row {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+  }
 }
 
 /* ---- 打印：档案随时可归档 ---- */

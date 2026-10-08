@@ -17,7 +17,7 @@ web
 
 ## Product Purpose
 
-AI Agent 课程 12 步迭代作业的第 3 步：在首页之外建起全站菜单栏与四个子页面（关于我 / 博客 / Research Papers / Wiki），整站仍是一份持续更新的档案。成功 = 五个页面双击与本地服务器均可打开、菜单从任意页面都能互相跳转且当前项高亮正确、390px 手机宽度不出现横向滚动、首页原有个人信息一字未改。
+AI Agent 课程 12 步迭代作业的第 4 步：把「博客」从诚实占位变成真的文章栏——文章写在 content/posts/*.md，由自写的构建脚本生成列表页与每篇文章页，整站仍是一份持续更新的档案。成功 = 列表按日期倒序列出全部文章、每篇有独立页面、生成页的报头带与导航块与手写页逐字节一致、重复构建产出字节一致（幂等，第二次运行 git status 干净）、python tools/check_site.py 通过、390px 与 320px 无横向滚动，且首页与关于我页原有内容一字未改。
 
 ## Positioning
 
@@ -28,7 +28,8 @@ AI Agent 课程 12 步迭代作业的第 3 步：在首页之外建起全站菜�
 - 工作目录 D:\作业（Windows，python 命令不带 3）。
 - 站点发布目录 `public/`，由 GitHub Actions 发布到 GitHub Pages 的项目子路径 `https://ajsterling123.github.io/my-agent-site/`——因此站内引用一律用相对路径，禁止以 `/` 开头的根绝对路径。
 - 页面结构（Step 3 起）：`public/index.html` 首页 + `public/{about,blog,papers,wiki}/index.html` 四个子页；每页都是「自己目录下的 index.html」，链接显式写全文件名（`about/index.html`），三种打开方式（本地 http / Pages 子路径 / file:// 双击）行为一致。
-- 博客、Research Papers、Wiki 三页当前为诚实占位：写明本页将在课程第几步被填充，不编造内容。
+- 博客（Step 4 起）：内容源 `content/posts/<slug>.md`（frontmatter：title / date / description，日期必须 YYYY-MM-DD，slug 用 ASCII 文件名），`scripts/build_blog.py` 生成 `public/blog/index.html` 列表页与 `public/posts/<slug>.html` 文章页；生成页的骨架从 `public/index.html` 改写而来，链接前缀按输出深度算，因此报头带、导航与页脚永远与手写页一致。文章页在 `public/posts/` 下，相对 public 的深度是 1，前缀为 `../`。
+- Research Papers、Wiki 两页当前仍为诚实占位：写明本页将在课程第几步被填充，不编造内容；博客页自 Step 4 起列出真实文章（只有真写出文章才登记）。
 - 后续 Step 将加入 Markdown 博客、RSS、arXiv 论文 Skill、Wiki、RAG、状态面板等；档案视觉语言与报头带导航继续沿用。
 - 课程评分依据各 Step 验收清单 + git 记录。
 
@@ -38,7 +39,7 @@ AI Agent 课程 12 步迭代作业的第 3 步：在首页之外建起全站菜�
 - 用户名与邮箱在首页与「关于我」页两处均可见（院校 / 专业 / 年级 / 邮箱四项在关于我页同页可见）。
 - 正文最大宽度 800px，单栏居中。
 - 视觉方向为简报钉死（见 Brand Commitments），不得改成通用模板。
-- 导航：五个菜单项顺序固定（首页 / 关于我 / 博客 / Research Papers / Wiki），五页共用同一份标记，当前项加 `aria-current="page"` 并用墨蓝加粗下划线指认（不用红）；`<nav>` 带可访问名称「主导航」。
+- 导航：五个菜单项顺序固定（首页 / 关于我 / 博客 / Research Papers / Wiki），全站共用同一份标记，当前项加 `aria-current="page"` 并用墨蓝加粗下划线指认（不用红）；`<nav>` 带可访问名称「主导航」。脚本生成的文章页不对应任何菜单项，因此一次 `aria-current` 都不设。
 - 邮箱一栏为真实地址 1095568137@qq.com（2026-10-08 由本人提供并指定公开在本站）。
 
 ## Brand Commitments

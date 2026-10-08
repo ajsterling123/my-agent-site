@@ -24,6 +24,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Build static pages
+        run: |
+          PY="$(command -v python3 || command -v python)"
+          "$PY" scripts/build_blog.py
+
+      - name: Check site
+        run: |
+          PY="$(command -v python3 || command -v python)"
+          "$PY" tools/check_site.py
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

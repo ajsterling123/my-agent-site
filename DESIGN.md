@@ -99,7 +99,7 @@ components:
 - 红色即活动：静止红全页仅两处（「在册」章、「进行中」标），其余只作 hover/focus 响应。
 - 冷白纸面 × 墨蓝 × 蓝灰；零渐变、零阴影、零图标、零外部资源。
 - 宋体标题 × 系统黑体正文 × Consolas 数据，全部系统自带，file:// 可开。
-- 五页共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在五个页面上完全同构，当前页用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
+- 全站共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在所有页面完全同构——五个手写页与脚本生成的文章页、博客列表页都从 `public/index.html` 的骨架改写而来，当前项用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
 - 唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显；子页没有章，也**不加任何入场动效**。
 
 ## Colors
@@ -138,7 +138,7 @@ components:
 - **Display**（700, clamp(2.75rem, 9vw, 3.75rem), 1.15, 字距 0.14em）：巨幅宋体姓名 h1，档案的封面字。
 - **Headline**（700, 1.375rem, 1.4, 字距 0.1em）：栏目 h2，坐在 1px 墨蓝实线上。
 - **Title**（700, 1.3125rem, 1.4, 字距 0.08em）：条目 h3，与状态 tag 同行基线对齐。
-- **Body**（400, 16px, 1.9）：全站正文基调；档案自述 17px / 2.05（≤38em）；条目描述 15px / 1.95（≤40em，深蓝灰）；登记值 16.5px。
+- **Body**（400, 16px, 1.9）：全站正文基调；档案自述与文章正文 17px / 2.05（≤38em）；条目描述与博客列表摘要 15px / 1.95（≤40em，深蓝灰）；登记值 16.5px。
 - **Label**（700, 13px, 字距 0.35em）：宋体档案小签「个人实验档案」；登记 dt 12.5px / 0.3em（黑体，小屏 0.2em）；tag 12px / 0.22em（黑体）。
 - **Mono**（400, 12px, 字距 0.05em, tabular-nums）：「最后更新」日期；登记邮箱链接 15.5px 带下划线；页脚 STEP n/12 字距 0.08em。
 
@@ -160,7 +160,7 @@ components:
 ### Named Rules
 **The Three-Weight Rule（三级线）.** 线分三档，各司其职：3px double 墨蓝双线只用于文档头尾（`.doc-meta` 上边、`.doc-foot` 上边）——它是档案的装订线；1px solid 墨蓝实线开栏目（`.sec h2` 上边），同一个 1px 实线档也负责给报头带收口——Step 3 起这条收口线挂在 `.site-nav` 下边（原来是 `.doc-meta` 下边，为给导航行让位而下移一行，线档与职责不变）；rgba(28,43,58,.24) 发丝线分隔同级行（登记行、条目之间）；rgba(28,43,58,.45) 浓发丝线只作 tag 边框、链接下划线与滚动条拇指。不发明第四档线，也不把双线用到头尾之外。
 
-**The Nav Band Rule（报头带与全站复用）.** 报头带是档案的装订头，五个页面完全同构：3px double → 元信息行 → 导航行 → 1px solid 收口。导航块（`<nav class="site-nav" aria-label="主导航">` + `ul` + 五个 `li`）在五页共用同一份标记，**除链接前缀（首页空串、子页 `../`）与 `aria-current="page"` 落在哪一项之外逐字节相同**——一致性靠这条规则，不靠复制粘贴的运气。页面结构同样复用：`.doc-head`（元信息 + 导航 + 标题区）与 `.doc-foot` 五页一致，只有页脚左侧说明句按页改写。子页标题用 `.folio` 档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，字距 0.14em，padding 44px 0 30px），首页保留巨幅姓名 `.doc-title` 与「在册」章——**章只在首页出现**。
+**The Nav Band Rule（报头带与全站复用）.** 报头带是档案的装订头，全站所有页面（五个手写页 + 脚本生成的文章页与博客列表页）完全同构：3px double → 元信息行 → 导航行 → 1px solid 收口。导航块（`<nav class="site-nav" aria-label="主导航">` + `ul` + 五个 `li`）在五页共用同一份标记，**除链接前缀（首页空串、子页 `../`）与 `aria-current="page"` 落在哪一项之外逐字节相同**——一致性靠这条规则，不靠复制粘贴的运气。页面结构同样复用：`.doc-head`（元信息 + 导航 + 标题区）与 `.doc-foot` 全站一致，只有页脚左侧说明句按页改写。子页标题用 `.folio` 档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，字距 0.14em，padding 44px 0 30px），首页保留巨幅姓名 `.doc-title` 与「在册」章——**章只在首页出现**。
 
 ## Elevation & Depth
 
@@ -189,6 +189,7 @@ components:
 ### 副页页名 Folio Title（.folio / .folio h1）
 - 子页的标题区，替代首页的 `.doc-title`：宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，行高 1.25，字距 0.14em（小屏 0.1em），padding 44px 0 30px（小屏 34px 0 24px）。
 - 只放页名，不放状态标、不放章、不放副题——子页没有「在册」章，页名下面直接接栏目题的 1px 实线。
+- 文章页的页名用 `.post-head`，与 `.folio` 同一字号档，只在页名下多一行等宽登记日期（见下文「文章页」）。
 
 ### 档案头与章 Dossier Title & Seal（.doc-title / h1 / .stamp）
 - 巨幅宋体姓名；右上角「在册」章：绝对定位 top 58px / right 2px，rotate(-6deg)，红字红 2px 边框 + 内嵌双环，radius 3px，padding 8px 9px 8px 14px，line-height 1，opacity 0.92。
@@ -214,6 +215,24 @@ components:
 - 12px / 0.22em / nowrap，padding 5px 8px 5px 12px，1px 浓发丝边框，radius 2px，深蓝灰；非交互组件，无 hover。
 - `.tag-live`「进行中」：红字红边加粗——红色纪律的两处静止红之一。
 
+### 博客列表 Post Index（.post-list / .post-row / .post-date / .post-item）
+- 由 `scripts/build_blog.py` 从 `content/posts/*.md` 生成，日期倒序；页面骨架（报头带、导航块、页脚）与手写页逐字节一致，只有链接前缀与 `aria-current` 落在「博客」项不同。
+- 栏目题「文章登记」压 1px 墨蓝实线（`.sec h2` 同档）；其下 `.post-list` 是一张账本：每行 `.post-row` 为 `grid-template-columns: 7em 1fr`、`align-items: baseline`、`padding: 14px 2px`，行间 1px 发丝线——与「身份登记」同栏宽、同节奏。
+- 左列 `.post-date`：Consolas 12.5px / 0.04em / tabular-nums / nowrap、深蓝灰；日期是机读数据，用等宽档。
+- 右列 `.post-item`：`h3` 宋体 700 1.3125rem / 0.08em，标题本身就是链接（1px 下划线走浓发丝色，hover 变红）；摘要 15px / 1.95 深蓝灰、≤40em（与条目描述同档）。
+- 没有文章时渲染一句 `.intro` 说明（文章写在 `content/posts/`，构建后自动登记），不留假条目。
+- 480px 下 `.post-row` 收成单列：日期移到标题上方，`row-gap: 4px`——7em 的日期列在 320px 会把标题挤窄。
+
+### 文章页 Article（.post-head / .post-body）
+- `.post-head` 占 `.folio` 的位置（报头带之下）：与 `.folio` 同一字号档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，行高 1.25，字距 0.14em，padding 44px 0 30px；小屏 34px 0 24px / 0.1em），`h1` 由 frontmatter 的 title 提供；页名下压一行 `.post-date`（`display: block` / `margin-top: 12px`）写「登记于 YYYY-MM-DD」。文章页没有「在册」章，也没有任何入场动效。
+- `.post-body` 是正文容器（`<article>`）：`max-width: 38em`、`overflow-wrap: break-word`（长串不撑破 320px）。
+- 段落 17px / 2.05、下间距 22px——与「档案自述」同档，档案里最松的行距；`h2` 与 `.sec h2` 同档（压在 1px 墨蓝实线上，padding 22px 0 4px、下间距 6px），`h3` 与条目题同档（宋体 700 1.3125rem / 0.08em，上间距 26px）。
+- 列表：`ul` 圆点、`ol` 数字，`padding-left: 1.5em`、行高 2、条目距 4px；`li::marker` 用 Consolas + 深蓝灰——标记属于机读编号，不进正文色。
+- 行内代码：Consolas 0.9em + 1px 浓发丝边框 + 2px 圆角 + 1px 5px 内距，复用 tag 的边框词汇；不加底色，本系统没有 tonal 层叠，也不设 `nowrap`（宁可在长串处折行，也不横向滚动）。
+- 引用：`blockquote` 上下各 1px 发丝线、左右各 22px 内距、正文换深蓝灰并收到 16.5px / 1.95——夹在两条线之间的摘录，不做竖线、不做底色（Shapes 一节禁竖分隔柱）。
+- 强调只加字重（`strong` 700），不换字族；链接沿用全局 1px 下划线 + hover 变红。
+- 正文语法限于构建脚本支持的那几类（见 README「如何新增一篇博客」）：段落、`##`/`###` 标题、无序与有序列表、粗体、行内代码、链接、引用。
+
 ### 公文尾 Document Footer（.doc-foot / .foot-step）
 - 上边 3px double 墨蓝（与公文头呼应，装订线收口），flex 基线，gap 16px，可换行。
 - 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 3/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，五页一致。
@@ -231,7 +250,7 @@ components:
 ### Do:
 - **Do** 保住三件 finish review 确认的资产，未来 Step 在不改变它们的前提下扩展：全宽墨蓝公文双线（.doc-meta/.doc-foot 的 3px double）、登记 dl 账本（.register/.reg-row）、双处红色纪律（静止红仅「在册」章与「进行中」标）。
 - **Do** 新记录沿用档案语法：字段用 dl + .reg-row 账本行，并列条目用发丝线分隔的 ledger 条目，状态用 .tag / .tag-live。
-- **Do** 新页沿用同一份报头带与导航块：`.doc-head`（元信息行 → 导航行 → 标题区）与 `.doc-foot` 五页同构，导航标记只允许差在链接前缀（子页 `../`）与 `aria-current="page"` 的位置；子页标题用 `.folio` 档，两处静止红（「在册」章、「进行中」标）仍然只在首页；站内引用一律相对路径并写全文件名（`index.html`），可被本地 http 与 file:// 双击同样打开。
+- **Do** 新页沿用同一份报头带与导航块：`.doc-head`（元信息行 → 导航行 → 标题区）与 `.doc-foot` 全站同构，导航标记只允许差在链接前缀（按输出深度取 `../`）与 `aria-current="page"` 的位置；博客列表页与文章页由 `scripts/build_blog.py` 从 `public/index.html` 的骨架生成，不手写；子页标题用 `.folio` 档，两处静止红（「在册」章、「进行中」标）仍然只在首页；站内引用一律相对路径并写全文件名（`index.html`），可被本地 http 与 file:// 双击同样打开。
 - **Do** 新页保持 800px 单栏 + clamp(20px, 5vw, 36px) 侧距 + 底部 56px，线全宽贯穿版心。
 - **Do** 小字次级用 #5F6E7D（≥4.5:1）；宋体标题带 0.08–0.14em 字距，小签 0.22–0.35em；等宽数据开 tabular-nums。
 - **Do** 正文行高保持 1.9（自述 2.05），行内文字离线 2px。

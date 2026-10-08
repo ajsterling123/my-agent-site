@@ -7,3 +7,7 @@ desktop.ini
 *.tmp
 
 # 说明：PRODUCT.md、DESIGN.md、.impeccable/ 是设计档案，纳入版本管理，不忽略。
+
+# Python 字节码缓存（导入 build_blog.py 做测试时会生成）
+__pycache__/
+*.pyc
