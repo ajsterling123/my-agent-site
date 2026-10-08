@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""把 content/posts/*.md 生成为两处页面：
+"""把 content/posts/*.md 生成为三处页面/文件：
 
-  public/blog/index.html        文章列表（日期倒序）
+  public/blog/index.html        文章列表（日期倒序）+ RSS 订阅入口
   public/posts/<slug>.html      每篇文章页（slug = md 文件名，ASCII）
 
 用法（仓库根运行）：python scripts/build_blog.py
@@ -14,6 +14,10 @@
 幂等：同一批 md 重复运行产出字节一致的输出，且只在内容变化时落盘；
 只清理自己生成的 public/posts/*.html，不碰 content/，也不碰任何手写页。
 
+slug 命名、frontmatter 解析、文章页路径与排序来自 scripts/site_data.py（与
+scripts/build_feed.py 共用一份实现，RSS 的链接因此与列表页的链接必然一致）。
+public/feed.xml 由 scripts/build_feed.py 生成，本脚本不碰它。
+
 正文支持的 Markdown：## / ### 标题、段落、无序与有序列表、**粗体**、
 `行内代码`、[链接](地址)、> 引用。正文开头的 # 一行若与 frontmatter 的 title
 相同则忽略（页面 h1 已由 title 提供），出现别的一级标题直接报错。
@@ -22,17 +26,12 @@
 import html
 import re
 import sys
-from datetime import date
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-PUBLIC = ROOT / "public"
-CONTENT = ROOT / "content" / "posts"
-POSTS_OUT = PUBLIC / "posts"
-BLOG_OUT = PUBLIC / "blog" / "index.html"
-SKELETON = PUBLIC / "index.html"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from site_data import (BLOG_OUT, POSTS_OUT, SKELETON, SITE_NAME, BuildError, fail, load_posts,
+                       post_rel, rel, write_if_changed)
 
-SITE_NAME = "张易孝实验档案"
 MARKER = "<!-- 由 scripts/build_blog.py 生成：改内容请改 content/posts/*.md -->"
 
 BLOG_TITLE = "博客 · %s" % SITE_NAME
@@ -40,25 +39,15 @@ BLOG_DESCRIPTION = "张易孝实验档案的博客栏：按日期倒序列出全
 BLOG_FOOT = "本页是课程实验档案的「博客」页，文章按日期倒序登记。"
 POST_FOOT = "本页是课程实验档案的一篇博客文章。"
 
-FRONTMATTER_KEYS = ("title", "date", "description")
-SLUG_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
-DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+# 点击浏览器地址栏右侧的订阅按钮、或阅读器贴 URL 时，靠这一行找到 feed；相对路径，
+# 与页面里其它站内引用同一套规则（禁止以 / 开头的根绝对路径）。
+FEED_LINK = ('\n  <link rel="alternate" type="application/rss+xml" '
+             'title="%s · 博客" href="../feed.xml">' % SITE_NAME)
+
 HEAD_RE = re.compile(r"^(#{1,6})\s+(.*)$")
 ITEM_RE = re.compile(r"^(\s*)([-*+]|\d+[.)])\s+(.*)$")
 QUOTE_RE = re.compile(r"^>\s?(.*)$")
 HREF_RE = re.compile(r"""\bhref\s*=\s*"([^"]*)\"""")
-
-
-class BuildError(Exception):
-    pass
-
-
-def fail(msg):
-    raise BuildError(msg)
-
-
-def rel(path):
-    return path.relative_to(ROOT).as_posix()
 
 
 def sub_once(pattern, repl, text, what):
@@ -181,53 +170,13 @@ def parse_blocks(lines, title):
 
 # ---------------------------------------------------------------- frontmatter
 
-def parse_post(path):
-    raw = path.read_text(encoding="utf-8-sig")
-    lines = raw.split("\n")
-    if not lines or lines[0].strip() != "---":
-        fail("%s：文件必须以 frontmatter（首行 ---）开头" % path.name)
-    end = None
-    for i, l in enumerate(lines[1:], 1):
-        if l.strip() == "---":
-            end = i
-            break
-    if end is None:
-        fail("%s：frontmatter 缺少收尾的 ---" % path.name)
-
-    meta = {}
-    for l in lines[1:end]:
-        if not l.strip():
-            continue
-        if ":" not in l:
-            fail("%s：frontmatter 行没有冒号：%r" % (path.name, l))
-        key, value = l.split(":", 1)
-        meta[key.strip()] = value.strip()
-
-    for key in FRONTMATTER_KEYS:
-        if not meta.get(key):
-            fail("%s：frontmatter 缺少 %s" % (path.name, key))
-    unknown = sorted(set(meta) - set(FRONTMATTER_KEYS))
-    if unknown:
-        fail("%s：frontmatter 有未支持的字段 %s（只支持 %s）"
-             % (path.name, "、".join(unknown), " / ".join(FRONTMATTER_KEYS)))
-    if not DATE_RE.match(meta["date"]):
-        fail("%s：date 必须写成 YYYY-MM-DD，现在是 %r" % (path.name, meta["date"]))
-    try:
-        date.fromisoformat(meta["date"])
-    except ValueError:
-        fail("%s：date 不是合法日期：%s" % (path.name, meta["date"]))
-
-    slug = path.stem
-    if not SLUG_RE.match(slug):
-        fail("%s：文件名必须用 ASCII 字母/数字与 . - _（slug 直接成为 URL，不用中文名）" % path.name)
-
-    return {
-        "slug": slug,
-        "title": meta["title"],
-        "date": meta["date"],
-        "description": meta["description"],
-        "blocks": parse_blocks(lines[end + 1:], meta["title"]),
-    }
+def load_post_pages():
+    """site_data 负责读内容源与排序（与 build_feed.py 同一份规则）；这里补 Markdown 正文块。"""
+    posts = load_posts()
+    for post in posts:
+        post["blocks"] = parse_blocks(post.pop("body"), post["title"])
+        post.pop("path", None)
+    return posts
 
 
 # ---------------------------------------------------------------- 页面组装
@@ -257,14 +206,16 @@ def nav_block(skel, prefix, current_rel):
     return re.sub(r"<a\b[^>]*>", fix, text)
 
 
-def render_page(skel, title, description, prefix, head_block, main_block, foot_note, current_rel):
+def render_page(skel, title, description, prefix, head_block, main_block, foot_note, current_rel,
+                extra_head=""):
     page = sub_once(r"<title>.*?</title>",
                     "<title>%s</title>" % html.escape(title, quote=False), skel, "<title>")
     page = sub_once(r'<meta name="description" content="[^"]*">',
                     '<meta name="description" content="%s">' % html.escape(description, quote=True),
                     page, "meta description")
     page = sub_once(r'<link rel="stylesheet" href="[^"]*">',
-                    '<link rel="stylesheet" href="%sstyles.css">' % prefix, page, "样式表引用")
+                    '<link rel="stylesheet" href="%sstyles.css">%s' % (prefix, extra_head),
+                    page, "样式表引用")
     page = sub_once(r'<div class="doc-title">.*?</div>', head_block, page, "首页标题块")
     page = sub_once(r'<nav class="site-nav".*?</nav>', nav_block(skel, prefix, current_rel),
                     page, "导航块")
@@ -299,8 +250,8 @@ def blog_main(posts, prefix):
             lines.append('    <li class="post-row">')
             lines.append('      <time class="post-date" datetime="%s">%s</time>' % (p["date"], p["date"]))
             lines.append('      <div class="post-item">')
-            lines.append('        <h3><a href="%sposts/%s.html">%s</a></h3>'
-                         % (prefix, p["slug"], html.escape(p["title"], quote=False)))
+            lines.append('        <h3><a href="%s%s">%s</a></h3>'
+                         % (prefix, post_rel(p["slug"]), html.escape(p["title"], quote=False)))
             lines.append('        <p>%s</p>' % html.escape(p["description"], quote=False))
             lines.append('      </div>')
             lines.append('    </li>')
@@ -308,6 +259,9 @@ def blog_main(posts, prefix):
     else:
         lines.append('  <p class="intro">本页还没有文章：文章写在 content/posts/ 的 .md 里，'
                      '构建后自动登记在此。</p>')
+    # 订阅入口：账本之外的一条附注，沿用 .intro 一句陈述，不新增卡片/图标/组件。
+    lines.append('  <p class="intro">订阅：<a href="%sfeed.xml">feed.xml</a>（RSS 2.0），'
+                 '新文章登记后同步进订阅源。</p>' % prefix)
     lines.append('</section>')
     return '\n'.join(indent(lines, 6))
 
@@ -320,27 +274,16 @@ def post_main(post):
     return '\n'.join(indent(lines, 6))
 
 
-def write_if_changed(path, text):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    data = text.encode("utf-8")
-    if path.is_file() and path.read_bytes() == data:
-        return False
-    path.write_bytes(data)
-    return True
-
-
 def main():
     if not SKELETON.is_file():
         fail("找不到骨架页面 public/index.html")
     skel = SKELETON.read_text(encoding="utf-8")
 
-    posts = [parse_post(p) for p in sorted(CONTENT.glob("*.md"))]
-    posts.sort(key=lambda p: p["slug"])
-    posts.sort(key=lambda p: p["date"], reverse=True)      # 日期倒序；同日按 slug 稳定
+    posts = load_post_pages()
 
     outputs = {BLOG_OUT: render_page(skel, BLOG_TITLE, BLOG_DESCRIPTION, "../",
                                      folio_head("博客"), blog_main(posts, "../"),
-                                     BLOG_FOOT, "../blog/index.html")}
+                                     BLOG_FOOT, "../blog/index.html", extra_head=FEED_LINK)}
     for p in posts:
         outputs[POSTS_OUT / ("%s.html" % p["slug"])] = render_page(
             skel, "%s · %s" % (p["title"], SITE_NAME), p["description"], "../",

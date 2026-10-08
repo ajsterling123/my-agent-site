@@ -28,11 +28,13 @@ jobs:
         run: |
           PY="$(command -v python3 || command -v python)"
           "$PY" scripts/build_blog.py
+          "$PY" scripts/build_feed.py
 
       - name: Check site
         run: |
           PY="$(command -v python3 || command -v python)"
           "$PY" tools/check_site.py
+          "$PY" tools/check_feed.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

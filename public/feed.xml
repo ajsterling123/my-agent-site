@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 由 scripts/build_feed.py 生成：改内容请改 content/posts/*.md -->
+<rss version="2.0">
+  <channel>
+    <title>张易孝实验档案 · 博客</title>
+    <link>https://ajsterling123.github.io/my-agent-site/</link>
+    <description>张易孝（江苏警官学院 · 数据警务技术）的课程实验档案：博客栏文章登记，按文章日期倒序。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 02 Sep 2026 00:00:00 +0800</lastBuildDate>
+    <item>
+      <title>我的第一次 Agent 实验</title>
+      <link>https://ajsterling123.github.io/my-agent-site/posts/hello-agent.html</link>
+      <guid isPermaLink="true">https://ajsterling123.github.io/my-agent-site/posts/hello-agent.html</guid>
+      <pubDate>Wed, 02 Sep 2026 00:00:00 +0800</pubDate>
+      <description>从一句模糊需求到一个可以验收的个人主页。</description>
+    </item>
+  </channel>
+</rss>

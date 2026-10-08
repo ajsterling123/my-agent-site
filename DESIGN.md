@@ -101,6 +101,7 @@ components:
 - 宋体标题 × 系统黑体正文 × Consolas 数据，全部系统自带，file:// 可开。
 - 全站共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在所有页面完全同构——五个手写页与脚本生成的文章页、博客列表页都从 `public/index.html` 的骨架改写而来，当前项用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
 - 唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显；子页没有章，也**不加任何入场动效**。
+- 唯一的机器出口：`public/feed.xml`（RSS 2.0），与博客列表页同源同序；站内只留一行 `.intro` 订阅链接，不为它发明任何视觉组件。
 
 ## Colors
 
@@ -222,6 +223,13 @@ components:
 - 右列 `.post-item`：`h3` 宋体 700 1.3125rem / 0.08em，标题本身就是链接（1px 下划线走浓发丝色，hover 变红）；摘要 15px / 1.95 深蓝灰、≤40em（与条目描述同档）。
 - 没有文章时渲染一句 `.intro` 说明（文章写在 `content/posts/`，构建后自动登记），不留假条目。
 - 480px 下 `.post-row` 收成单列：日期移到标题上方，`row-gap: 4px`——7em 的日期列在 320px 会把标题挤窄。
+- 列表末尾挂一行订阅入口：`<p class="intro">订阅：<a href="../feed.xml">feed.xml</a>（RSS 2.0）…</p>`——**复用既有的 `.intro` 与全局链接样式，不新增组件、不加卡片、不加图标**。站内订阅不是「活动」，因此不碰红色；它是列表的附属说明，所以也不用 `.sec h2` 另开栏目。`.intro` 是全站最松的陈述行高，用它收尾正合适。
+- 页面 `<head>` 里加一行 `<link rel="alternate" type="application/rss+xml" title="张易孝实验档案 · 博客" href="../feed.xml">`：给浏览器与阅读器指认订阅地址。这一行由 `scripts/build_blog.py` 生成（列表页是产物，不手改输出）。
+
+### 订阅源 Feed（public/feed.xml）
+- 由 `scripts/build_feed.py` 从 `content/posts/*.md` 的 frontmatter 生成，与列表页同源同序（日期倒序，同日按 slug 升序稳定排列）。它不是「页面」，没有 HTML 骨架、不参与报头带与导航的一致性检查——它是同一份档案的机读出口。
+- 站内没有任何指向它的视觉入口新样式：唯一的展示面就是列表页末尾那一行 `.intro` 订阅句（见上）。
+- 字段与硬性约定见 README；设计侧只有一条纪律：**feed 里的中文字与 `& < >` 原样保留/转义，不用 CDATA**，这样读者看到的标题与列表页逐字一致。
 
 ### 文章页 Article（.post-head / .post-body）
 - `.post-head` 占 `.folio` 的位置（报头带之下）：与 `.folio` 同一字号档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，行高 1.25，字距 0.14em，padding 44px 0 30px；小屏 34px 0 24px / 0.1em），`h1` 由 frontmatter 的 title 提供；页名下压一行 `.post-date`（`display: block` / `margin-top: 12px`）写「登记于 YYYY-MM-DD」。文章页没有「在册」章，也没有任何入场动效。
@@ -235,7 +243,7 @@ components:
 
 ### 公文尾 Document Footer（.doc-foot / .foot-step）
 - 上边 3px double 墨蓝（与公文头呼应，装订线收口），flex 基线，gap 16px，可换行。
-- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 3/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，五页一致。
+- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 5/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，五页一致。
 - 打印时 `.site-nav` 隐藏（`@media print`）：纸质归档件不需要浏览器导航。
 
 ### 全局镀铬 Global Chrome

@@ -9,17 +9,21 @@ my-agent-site/
 ├── public/                  # 站点唯一发布目录（GitHub Pages 只部署它）
 │   ├── index.html           # 首页
 │   ├── about/index.html     # 关于我
-│   ├── blog/index.html      # 博客列表（生成物：日期倒序，Step 5 再加 RSS）
+│   ├── blog/index.html      # 博客列表（生成物：日期倒序 + 订阅入口）
 │   ├── posts/<slug>.html    # 文章页（生成物，slug = content/posts/ 里的文件名）
+│   ├── feed.xml             # RSS 2.0 订阅源（生成物，Step 5）
 │   ├── papers/index.html    # Research Papers（诚实占位，Step 7 填充）
 │   ├── wiki/index.html      # Wiki（诚实占位，Step 8 填充）
 │   └── styles.css           # 全站共用的样式（原生 CSS，无框架、无外部字体）
 ├── content/
 │   └── posts/*.md           # 文章源文件（frontmatter：title / date / description）
 ├── scripts/
-│   └── build_blog.py        # 构建脚本：Markdown → 博客列表页 + 文章页（幂等）
+│   ├── site_data.py         # slug / 文章页路径 / 站点绝对地址 / 排序的唯一来源（两个构建脚本共用）
+│   ├── build_blog.py        # 构建脚本：Markdown → 博客列表页 + 文章页（幂等）
+│   └── build_feed.py        # 构建脚本：Markdown frontmatter → public/feed.xml（幂等）
 ├── tools/
-│   └── check_site.py        # 机械校验：页面骨架一致性 / 导航 / aria-current / 相对路径 / 链接可达
+│   ├── check_site.py        # 机械校验：页面骨架一致性 / 导航 / aria-current / 相对路径 / 链接可达
+│   └── check_feed.py        # 机械校验：feed.xml 的 schema / 绝对地址 / RFC 822 日期 / 排序 / 转义
 ├── .github/workflows/
 │   └── deploy.yml           # GitHub Actions 自动部署工作流（构建 → 校验 → 部署）
 ├── .impeccable/             # 设计档案（设计系统 sidecar、surface brief、评审截图）
@@ -85,26 +89,47 @@ python -m http.server 8080 --directory public
 
    ```bash
    python scripts/build_blog.py
+   python scripts/build_feed.py
    python tools/check_site.py
+   python tools/check_feed.py
    ```
 
-   构建会把列表页与所有文章页写好，并清掉源文件已删除的文章页。它只碰 `public/blog/index.html` 与
-   `public/posts/*.html`，不动 `content/`，也不动手写页面。
+   构建会把列表页、所有文章页与 `public/feed.xml` 写好，并清掉源文件已删除的文章页。它只碰
+   `public/blog/index.html`、`public/posts/*.html` 与 `public/feed.xml`，不动 `content/`，也不动手写页面。
+   新增一篇文章就是「列表页多一行 + feed 多一个 `<item>`」，不需要改脚本或手写任何页面。
 5. 提交前重复跑一次构建：第二次应当报告「未变化」，`git status` 保持干净——这是幂等的证据。
 
 文章里不要写站外链接（`http://` / `https://`）：本站零外部资源，校验脚本会把外部引用判为失败。
+
+## RSS 订阅源（feed.xml）
+
+- 生成物在 `public/feed.xml`，部署后订阅地址是 <https://ajsterling123.github.io/my-agent-site/feed.xml>；站内入口是博客列表页页尾那一行「订阅：feed.xml」，以及列表页 `<head>` 里的 `rel="alternate"`。
+- 内容源与博客页完全相同：`content/posts/*.md` 的 frontmatter（`title` / `date` / `description`）。加一篇文章 → 列表页多一行、feed 多一个 `<item>`，日期顺序按 `date` 倒序、同一天按 slug 升序（稳定，重复构建字节一致）。
+- `lastBuildDate` 取**最新一篇文章的日期**，不取「此刻」——否则每次构建都会产生 diff。没有文章时退回 `1970-01-01`。
+- 日期用 `email.utils.format_datetime` 写成 RFC 822 的 `+0800`（东八区固定），**不用 `strftime('%a')`**：中文 locale 下它会输出「周三」，阅读器解析不了。中文正文原样保留，`&`、`<`、`>` 用 XML 实体转义（不用 CDATA）。
+- 所有 URL（站点根、文章页、feed 自身）都从 `scripts/site_data.py` 的 `SITE_BASE_URL` 一个常量派生，slug 与文章页路径的规则也只写在那一个文件里——改站址只改一处。
 
 ## 校验
 
 ```bash
 python tools/check_site.py
+python tools/check_feed.py
 ```
 
-扫描 `public/` 下的**全部**页面（手写五页 + 生成的文章页与列表页），检查：报头带的元信息行与页脚步数是否全站
-逐字节一致、导航块除链接前缀与 `aria-current` 外是否与 `public/index.html` 一致、每页是否恰好一个 `h1`、
-`aria-current` 是否恰好落在该页（文章页应当一次都没有）、有无根绝对路径或外部资源引用、
+`check_site.py` 扫描 `public/` 下的**全部**页面（手写五页 + 生成的文章页与列表页），检查：报头带的元信息行与
+页脚步数是否全站逐字节一致、导航块除链接前缀与 `aria-current` 外是否与 `public/index.html` 一致、每页是否
+恰好一个 `h1`、`aria-current` 是否恰好落在该页（文章页应当一次都没有）、有无根绝对路径或外部资源引用、
 每个链接目标文件是否真实存在。链接前缀按页面相对 `public/` 的深度计算，所以手写页与生成页用同一套判据。
-退出码 0 为通过。
+
+`check_feed.py` 真的用 `xml.etree.ElementTree` 解析 `public/feed.xml`：根必须是 `rss` 且 `version="2.0"`、
+文件无 BOM、无 CDATA、channel 五个字段齐全且 `language` 为 `zh-CN`、`link` 是站点首页绝对地址；item 数与
+`content/posts/` 篇数相等，每个 item 五字段齐全、`link`/`guid` 是 `https://` 绝对地址且与生成的文章页一致、
+`guid` 指向文章自身页面、页面对应的 `.html` 真实存在、标题与摘要能无损还原；`pubDate` 用
+`email.utils.parsedate_to_datetime` 解析并核对时区为 `+0800`；条目顺序真的是日期倒序、同日期下稳定。
+最后做一次**负向测试**：临时写一篇标题含 `& < >` 的文章，重新构建后 feed 仍能被解析（证明转义有效），
+随后删掉临时文件并重建，确认 feed 字节与测试前完全一致——临时文件不会留在仓库里。
+
+两个脚本退出码 0 为通过。
 
 ## 部署方式
 

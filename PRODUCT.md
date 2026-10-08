@@ -17,7 +17,9 @@ web
 
 ## Product Purpose
 
-AI Agent 课程 12 步迭代作业的第 4 步：把「博客」从诚实占位变成真的文章栏——文章写在 content/posts/*.md，由自写的构建脚本生成列表页与每篇文章页，整站仍是一份持续更新的档案。成功 = 列表按日期倒序列出全部文章、每篇有独立页面、生成页的报头带与导航块与手写页逐字节一致、重复构建产出字节一致（幂等，第二次运行 git status 干净）、python tools/check_site.py 通过、390px 与 320px 无横向滚动，且首页与关于我页原有内容一字未改。
+AI Agent 课程 12 步迭代作业的第 5 步：在 Step 4 的博客之上发布 RSS 2.0 订阅源——`content/posts/*.md` 仍是唯一内容源，`scripts/build_feed.py` 据同一份 frontmatter 生成 `public/feed.xml`，部署后可在 `https://ajsterling123.github.io/my-agent-site/feed.xml` 订阅。成功 = feed 是合法 RSS 2.0（UTF-8 无 BOM、五个 channel 字段、每个 item 五字段齐全、link/guid 为绝对地址且 guid 指向文章自身页面、pubDate 为 `+0800` 的 RFC 822）、条目数与 `content/posts/` 篇数相等且日期倒序稳定、`tools/check_feed.py` 通过（含标题带 `& < >` 仍能解析的负向测试）、重复构建产出字节一致（幂等，第二次运行 `git status` 干净）、`python tools/check_site.py` 与 `python tools/check_feed.py` 都通过、首页与关于我页原有内容一字未改。
+
+（Step 4 的成果仍成立：博客列表按日期倒序列出全部文章、每篇有独立页面、生成页与手写页的报头带逐字节一致。）
 
 ## Positioning
 
@@ -30,7 +32,8 @@ AI Agent 课程 12 步迭代作业的第 4 步：把「博客」从诚实占位�
 - 页面结构（Step 3 起）：`public/index.html` 首页 + `public/{about,blog,papers,wiki}/index.html` 四个子页；每页都是「自己目录下的 index.html」，链接显式写全文件名（`about/index.html`），三种打开方式（本地 http / Pages 子路径 / file:// 双击）行为一致。
 - 博客（Step 4 起）：内容源 `content/posts/<slug>.md`（frontmatter：title / date / description，日期必须 YYYY-MM-DD，slug 用 ASCII 文件名），`scripts/build_blog.py` 生成 `public/blog/index.html` 列表页与 `public/posts/<slug>.html` 文章页；生成页的骨架从 `public/index.html` 改写而来，链接前缀按输出深度算，因此报头带、导航与页脚永远与手写页一致。文章页在 `public/posts/` 下，相对 public 的深度是 1，前缀为 `../`。
 - Research Papers、Wiki 两页当前仍为诚实占位：写明本页将在课程第几步被填充，不编造内容；博客页自 Step 4 起列出真实文章（只有真写出文章才登记）。
-- 后续 Step 将加入 Markdown 博客、RSS、arXiv 论文 Skill、Wiki、RAG、状态面板等；档案视觉语言与报头带导航继续沿用。
+- 订阅源（Step 5 起）：`content/posts/*.md` → `scripts/build_feed.py` → `public/feed.xml`（RSS 2.0）。slug / 文章页路径 / 站点绝对地址 / 排序规则只在 `scripts/site_data.py` 里写一份，`build_blog.py` 与 `build_feed.py` 共用（同一篇文章在列表页与 feed 里的标题、摘要、日期、链接必然一致）。`lastBuildDate` 取最新文章的日期而非「此刻」，因此重复构建不产生 diff。博客列表页 `<head>` 用 `rel="alternate"` 指认 feed，页尾留一行订阅链接。
+- 后续 Step 将加入 arXiv 论文 Skill、Wiki、RAG、状态面板等；档案视觉语言与报头带导航继续沿用。
 - 课程评分依据各 Step 验收清单 + git 记录。
 
 ## Capabilities and Constraints
@@ -41,6 +44,7 @@ AI Agent 课程 12 步迭代作业的第 4 步：把「博客」从诚实占位�
 - 视觉方向为简报钉死（见 Brand Commitments），不得改成通用模板。
 - 导航：五个菜单项顺序固定（首页 / 关于我 / 博客 / Research Papers / Wiki），全站共用同一份标记，当前项加 `aria-current="page"` 并用墨蓝加粗下划线指认（不用红）；`<nav>` 带可访问名称「主导航」。脚本生成的文章页不对应任何菜单项，因此一次 `aria-current` 都不设。
 - 邮箱一栏为真实地址 1095568137@qq.com（2026-10-08 由本人提供并指定公开在本站）。
+- 订阅地址为 `https://ajsterling123.github.io/my-agent-site/feed.xml`（绝对地址，阅读器需要）；站内引用仍是相对路径 `../feed.xml`。feed 里中文原样保留，`& < >` 用实体转义（不用 CDATA）。
 
 ## Brand Commitments
 
