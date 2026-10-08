@@ -35,6 +35,7 @@ jobs:
           PY="$(command -v python3 || command -v python)"
           "$PY" tools/check_site.py
           "$PY" tools/check_feed.py
+          "$PY" tools/check_feeds.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
