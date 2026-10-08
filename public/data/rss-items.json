@@ -196,6 +196,15 @@
       "xml_url": "https://sspai.com/feed",
       "items": [
         {
+          "id": "https://sspai.com/post/115282",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "iPhone Duo：苹果，终究还是对强迫症下手了",
+          "link": "https://sspai.com/post/115282",
+          "summary": "Matrix首页推荐Matrix是少数派的写作社区，我们主张分享真实的产品体验，有实用价值的经验与思考。我们会不定期挑选Matrix最优质的文章，展示来自用户的最真实的体验和观点。文章代表作者个人观点 ... 查看全文",
+          "published": "2026-10-08T17:28:11+08:00"
+        },
+        {
           "id": "https://sspai.com/post/113843",
           "source_id": "sspai",
           "source_title": "少数派",
@@ -275,15 +284,6 @@
           "link": "https://sspai.com/post/114922",
           "summary": "不知道以后 CMF 的设计还会不会像现在一样出彩。 查看全文",
           "published": "2026-10-03T15:00:00+08:00"
-        },
-        {
-          "id": "https://sspai.com/post/115211",
-          "source_id": "sspai",
-          "source_title": "少数派",
-          "title": "本周看什么 | 最近值得一看的 8 部作品",
-          "link": "https://sspai.com/post/115211",
-          "summary": "📅本周新预告《泥面人》终极预告9月24日，DC新片《泥面人》发布了终极预告，将于10月23日在北美上映。詹姆斯·瓦特金斯执导，汤姆·里斯·哈里斯主演，隆重介绍哥谭市的新面孔，一位意外毁容的演员在注射了 ... 查看全文",
-          "published": "2026-10-02T17:30:00+08:00"
         }
       ]
     },
@@ -293,6 +293,24 @@
       "html_url": "https://www.solidot.org/",
       "xml_url": "https://www.solidot.org/index.rss",
       "items": [
+        {
+          "id": "https://www.solidot.org/story?sid=85549",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "Google 多个国家顶级域名被劫持",
+          "link": "https://www.solidot.org/story?sid=85549",
+          "summary": "Google 安全博客警告，黑客劫持了它的多个国家顶级域名，修改了权威 DNS 记录，获取了未经授权的 HTTPS 证书。受影响的域名包括了它的 .gh（加纳）、.sl（塞拉利昂）和 .as（美属萨摩亚）国家顶级域名。Google 表示攻击未危及其自身的系统，而且 Chrome 浏览器迅速屏蔽了受影响域名的相关证书。…",
+          "published": "2026-10-08T18:31:14+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85548",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "美国计划限制留学生毕业后在美就业",
+          "link": "https://www.solidot.org/story?sid=85548",
+          "summary": "美国国土安全部发布拟议规则，以保护美国公民就业岗位的名义限制留学生毕业后在美就业。留学生的学生签证可申请实习工作许可 F1-OPT，通常费用为几百美元，一般可工作 1 年，STEM 专业的学生可延长两年。现在美国政府将 F1-OPT 的许可费提高到 7 万美元，延期则收取 3 万美元。这意味着留学生在毕业后不再可能获…",
+          "published": "2026-10-08T17:52:57+08:00"
+        },
         {
           "id": "https://www.solidot.org/story?sid=85547",
           "source_id": "solidot",
