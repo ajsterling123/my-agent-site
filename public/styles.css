@@ -365,6 +365,92 @@ address { font-style: normal; }
 
 .rss-reader .post-date span { display: block; }
 
+/* ---- RSS订阅：目录 / 出处 / 筛选 —— 目录是这本登记册的索引（放在页首），出处是每栏的来源引注，
+       筛选是索引之上的一条填空线。三条新规则只用既有词汇：等宽小字是机读数据、蓝灰是次级说明、
+       1px 浓发丝线是填空线；不新增颜色、字体、圆角与阴影，静止态不出现红色。 ---- */
+
+/* 索引行比内容行紧一档：读者一眼能分出「这是索引，不是条目」 */
+.rss-toc .post-row { padding: 11px 2px; }
+
+/* 条数推到索引行的行尾，像目录里页码都停在同一道右边界上 */
+.rss-toc .post-item {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rss-toc .rss-toc-count {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--slate-ink);
+  white-space: nowrap;
+}
+
+/* 锚点落点：栏目题上边那条 1px 实线别贴着视口顶边 */
+.rss-reader .sec,
+.rss-toc h2 { scroll-margin-top: 14px; }
+
+/* 出处：栏目题下的一行源站地址，与日期列同一副等宽字（地址是机读数据） */
+.rss-source {
+  margin: 2px 0 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--slate-ink);
+}
+
+.rss-source a {
+  color: var(--slate-ink);
+  text-decoration-color: var(--hairline-strong);
+}
+
+/* 筛选：公文表格的填空线，不是卡片也不是按钮；标签走登记 dt 那一档小字 */
+.rss-filter {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 18px 0 0;
+  padding: 0 2px;
+}
+
+.rss-filter label {
+  font-size: 12.5px;
+  letter-spacing: 0.3em;
+  color: var(--slate-ink);
+  white-space: nowrap;
+}
+
+.rss-filter input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2px 2px 4px;
+  border: 0;
+  border-bottom: 1px solid var(--hairline-strong);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: normal;
+  appearance: none;
+}
+
+.rss-filter input::placeholder { color: var(--slate-ink); }
+
+/* 匹配说明与「回到目录」用页脚说明句那一档小字：次级、不抢内容 */
+.rss-note,
+.rss-back {
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--slate-ink);
+}
+
+.rss-note { margin: 8px 0 0; }
+.rss-note[hidden] { display: none; }
+.rss-back { margin: 10px 0 0; }
+
 /* ---- 文章页：页名档下压一行登记日期，正文按档案自述的行距走 ---- */
 
 .post-head .post-date {

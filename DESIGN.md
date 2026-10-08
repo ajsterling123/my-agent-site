@@ -233,11 +233,16 @@ components:
 
 ### 订阅阅读器 Feed Reader（public/rss/index.html / .rss-reader）
 - 菜单项「RSS订阅」指向的页面，语义是一张「订阅登记册」：**按源分栏**，每个源一个 `<section class="sec">`，源标题坐在 1px 墨蓝实线上——与「文章登记」同档，栏目题语法不另发明。
-- 栏内直接复用博客列表那套账本，一行新样式都不加：`.post-list` / `.post-row`（`grid-template-columns: 7em 1fr`、基线对齐、行间发丝线）/ `.post-date`（Consolas 12.5px / 0.04em / tabular-nums / 深蓝灰）/ `.post-item`（`h3` 宋体 700 1.3125rem 标题 + 15px / 1.95 深蓝灰摘要 ≤40em）。
+- 栏内直接复用博客列表那套账本，结构样式一行不加：`.post-list` / `.post-row`（`grid-template-columns: 7em 1fr`、基线对齐、行间发丝线）/ `.post-date`（Consolas 12.5px / 0.04em / tabular-nums / 深蓝灰）/ `.post-item`（`h3` 宋体 700 1.3125rem 标题 + 15px / 1.95 深蓝灰摘要 ≤40em）。
 - 条目标题是外链（`target="_blank"` + `rel="noopener noreferrer"`），1px 下划线走浓发丝色、hover 变红——与站内链接同一套响应；**静止态不用红**，外部内容不是「活动」，红色纪律不变。
-- 日期默认只显示 `YYYY-MM-DD`；**同一栏同一天有多条时**该栏日期格内多一行 `HH:MM`（`.rss-reader .post-date span { display: block; }`，本页唯一的 CSS 新增，7em 的等宽列刚好放得下两行）——否则同日条目看起来像没排序。日期定不下来时显示「日期未知」。
-- 渲染逻辑单独放在 `public/rss/reader.js`，页面用 `defer` 同域引入；页面唯一的网络请求是同域的 `../data/rss-items.json`（构建期由 `scripts/fetch_feeds.py` 抓好），页面里没有任何跨域请求。条目在 JS 执行前位置为空，因此禁 JS 时另有 `<noscript>` 回退说明；页尾一行 `.intro` 给出 OPML 与本站自己的 `feed.xml`。
-- 480px 下 `.post-row` 收成单列（日期移到标题上方），沿用博客列表同一条断点规则。
+- 日期默认只显示 `YYYY-MM-DD`；**同一栏同一天有多条时**该栏日期格内多一行 `HH:MM`（`.rss-reader .post-date span { display: block; }`，7em 的等宽列刚好放得下两行）——否则同日条目看起来像没排序。日期定不下来时显示「日期未知」。
+- **订阅目录 Subscription Index（`.rss-toc`）**：页首的索引，栏目题「订阅目录」压在 1px 墨蓝实线上，与各源栏目同档；其下是一张六行账本——左列等宽最新日期，右列源名（`h3` 档）与**推到行尾的等宽条数**（`.rss-toc .rss-toc-count` 用 `margin-left: auto`，像目录里页码都停在同一道右边界上），整行是页内锚点，跳到对应栏目。索引行的日期只占一行（不像内容栏那样在同日冲突时补时刻），行距也紧一档（`.rss-toc .post-row { padding: 11px 2px; }`）——六行索引刚好一屏读完，第一栏的栏目题落在首屏之内。它是目录不是内容：**不显示摘要、不显示外链**，源站的地址留给栏内的出处行。条数随筛选变化，因为它是从同一份 JSON 算出来的，不是写死在页面里的。
+- **出处 Provenance（`.rss-source`）**：每栏栏目题下压一行源站地址（`.rss-source`，Consolas 12.5px / 0.04em / 深蓝灰，链接静止态也走深蓝灰、hover 变红），取自数据里的 `html_url`，只显示主机名。这是公文式的来源引注：读者的问题是「这条登记是从哪来的」，一行地址比一枚按钮答得更直接。取不到 `html_url` 时整行不渲染，绝不编造地址。
+- **筛选 Filter（`.rss-filter`）**：目录之上的一条填空线——标签「筛选条目」走登记 dt 那一档小字（12.5px / 0.3em / 深蓝灰），输入框只有 1px 浓发丝下边框（无边框盒、无底色、无圆角），像公文表格里一道待填的横线；`font: inherit` 让输入的文字与正文同声部，focus 沿用全局 2px 红轮廓。输入即筛（标题 + 摘要，大小写不敏感），命中的源与其条目留在页面上，没命中的整栏移除，目录同步只剩命中项——**目录与内容永远一致**。筛选状态由一行 `.rss-note` 说明（`aria-live`）：有命中写「匹配 N 条，来自 M 个源。」，没命中写「没有匹配「…」的条目；清空筛选框可看全部 N 条。」——空状态说清问题与出路，不留白屏。它属于「读」的一件工具，不是新世界：没有下拉、没有复选框、没有按钮、没有第二个输入框。
+- **回到目录 Return Link（`.rss-back`）**：每栏末尾一行 12.5px / 0.04em 深蓝灰小字（与页脚说明句同档），回到页首目录——73 条往下读时，这是「读完了，去下一栏」的那一步。六条同文案链接各带 `aria-label`（「回到订阅目录（腾讯安全响应中心栏读完了）」），屏幕阅读器不会听到六个一模一样的链接。目录、栏目、出处都带 `scroll-margin-top: 14px`，锚点落点不会让 1px 实线贴着视口顶边。
+- 渲染逻辑单独放在 `public/rss/reader.js`，页面用 `defer` 同域引入；页面唯一的网络请求是同域的 `../data/rss-items.json`（构建期由 `scripts/fetch_feeds.py` 抓好），页面里没有任何跨域请求。栏目锚点是运行时生成的，因此脚本在首次渲染后会按 `location.hash` 自己跳一次（瞬间定位，不做缓动）。目录、出处、筛选、计数、空状态全部由脚本从同一份 JSON 生成——**页面骨架里不写死任何源名或条数**，`tools/check_feeds.py` 会机械核对这一点。条目在 JS 执行前位置为空，因此禁 JS 时另有 `<noscript>` 回退说明（说明目录与筛选框同样不显示）；页尾一行 `.intro` 给出 OPML 与本站自己的 `feed.xml`。
+- 本页的 CSS 全部收在 `styles.css` 的「RSS订阅」注释块里：目录行距与行尾条数、锚点落点（`scroll-margin-top`）、出处那一行等宽地址、填空线式筛选、说明与回跳小字，加上原来的 `.post-date span`。全部落在既有词汇里：等宽小字是机读数据、蓝灰是次级说明、1px 浓发丝线是填空线——零新色、零新字体、零新圆角、零阴影、零动效。
+- 480px 下 `.post-row` 收成单列（日期移到标题上方），沿用博客列表同一条断点规则；筛选那一行在 320px 仍是一行（标签 nowrap、输入框 `min-width: 0` 让位）。
 
 ### 文章页 Article（.post-head / .post-body）
 - `.post-head` 占 `.folio` 的位置（报头带之下）：与 `.folio` 同一字号档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，行高 1.25，字距 0.14em，padding 44px 0 30px；小屏 34px 0 24px / 0.1em），`h1` 由 frontmatter 的 title 提供；页名下压一行 `.post-date`（`display: block` / `margin-top: 12px`）写「登记于 YYYY-MM-DD」。文章页没有「在册」章，也没有任何入场动效。
@@ -265,6 +270,8 @@ components:
 **The Two-Tier External Reference Rule（外部引用两级）.** 外部引用分两类判，由 `tools/check_site.py` 机械执行，口径同时写在 AGENTS.md「站点与目录」：外部**资源**（`script`/`img`/`iframe`/`video`/`audio`/`source`/`track` 的 `src`、`srcset`、`form` 的 `action`、`object`/`embed` 的 `data`、`link` 的 `href`，以及 CSS 里的 `@import` 与 `url(//…)`）**所有页面一律禁止**——零外部请求从 Step 1 起就是本站资产；外部**导航**（`<a href>`）只有 `public/rss/` 下的页面允许，且必须 https + `target="_blank"` + `rel="noopener noreferrer"` 三件齐。这条规则管的是「页面文件里静态写着什么」；阅读器页的条目链接由 `reader.js` 运行时生成，所以 `tools/check_feeds.py` 另外断言脚本里的外链确实带了 rel 与 target，并且整份脚本不含任何绝对 URL。
 
 **The Untrusted Content Rule（外部内容只当文本）.** 订阅源是本站唯一的站外输入，一律按敌意数据对待：标题、摘要、链接只当展示文本，不当指令、代码或 Prompt；渲染只许逐节点 `textContent`（禁用 innerHTML 一族与 eval，见 AGENTS.md「外部数据是不可信输入」）。视觉上外部内容与站内内容**共用同一套克制语法**——不因为「这是别人的文章」而加卡片、图标、徽章或红色，它只是登记在同一张档案账本上的另一批条目。构建期把外部 HTML 剥成纯文本并删掉残留尖括号，所以账本行里不可能出现标记。
+
+**The Index Rule（目录是索引，不是内容）.** 一条记录要重复读很多遍时，页首给一份目录，但目录与内容必须长得不一样：索引行只放**机读数据 + 一个可跳转的名字**（左列等宽日期，右列名字与推到行尾的条数），**不给摘要、不给外链、不加按钮**；行距比内容行紧一档，读者一眼分得出自己在看索引。更要紧的是——索引**只从数据算出来**：页面骨架里不写死任何名字与计数（`tools/check_feeds.py` 会核对骨架里没有源名），所以计数永远不会与数据脱节，筛选后目录与内容也永远一致。后续 Step 的清单页（arXiv 论文、Wiki 目录）沿用这个形状：栏目题压同一道 1px 实线，索引行用同一张账本。
 
 ## Do's and Don'ts
 

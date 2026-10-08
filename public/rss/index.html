@@ -42,11 +42,13 @@
       <!-- 本页唯一的数据来源：同域 rss-items.json。外部标题与摘要一律当纯文本渲染
            （reader.js 只用 createElement/textContent，不用 innerHTML 一类的 API）。
            条目标题是站外链接，但外链只是「导航」——浏览器不会因为一个 <a href> 去请求第三方资源，
-           本页对外的网络请求只有同域这一份 JSON。 -->
+           本页对外的网络请求只有同域这一份 JSON。
+           页首的订阅目录（含每源最新日期与条数）、筛选框、出处行同样由 reader.js 生成，
+           骨架里因此不写死任何源名或条数——计数永远跟着 JSON 走。 -->
       <div id="rss-reader" class="rss-reader"></div>
 
       <noscript>
-        <p class="intro">本页的条目由 JavaScript 读取同域数据文件后逐条渲染；当前浏览器禁用了 JavaScript，因此这里不显示条目。订阅清单本身不受影响，见下面的 subscriptions.opml。</p>
+        <p class="intro">本页的条目、页首的订阅目录与筛选框都由 JavaScript 读取同域数据文件后渲染；当前浏览器禁用了 JavaScript，因此这些都不显示。订阅清单本身不受影响，见下面的 subscriptions.opml。</p>
       </noscript>
 
       <p class="intro">订阅清单：<a href="../subscriptions.opml">subscriptions.opml</a>（OPML 2.0，可直接导入阅读器）。本站自己的博客源是 <a href="../feed.xml">feed.xml</a>。</p>
