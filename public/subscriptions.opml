@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>张易孝实验档案 · 订阅源</title>
+  </head>
+  <body>
+    <outline type="rss" text="腾讯安全响应中心" title="腾讯安全响应中心" xmlUrl="https://security.tencent.com/index.php/feed/blog/0" htmlUrl="https://security.tencent.com/"/>
+    <outline type="rss" text="少数派" title="少数派" xmlUrl="https://sspai.com/feed" htmlUrl="https://sspai.com/"/>
+    <outline type="rss" text="Solidot" title="Solidot" xmlUrl="https://www.solidot.org/index.rss" htmlUrl="https://www.solidot.org/"/>
+    <outline type="rss" text="云风的 BLOG" title="云风的 BLOG" xmlUrl="https://blog.codingnow.com/atom.xml" htmlUrl="https://blog.codingnow.com/"/>
+    <outline type="rss" text="阮一峰的网络日志" title="阮一峰的网络日志" xmlUrl="https://www.ruanyifeng.com/blog/atom.xml" htmlUrl="https://www.ruanyifeng.com/blog/"/>
+    <outline type="rss" text="美团技术团队" title="美团技术团队" xmlUrl="https://tech.meituan.com/feed/" htmlUrl="https://tech.meituan.com/"/>
+  </body>
+</opml>

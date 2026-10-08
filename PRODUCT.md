@@ -17,9 +17,9 @@ web
 
 ## Product Purpose
 
-AI Agent 课程 12 步迭代作业的第 5 步：在 Step 4 的博客之上发布 RSS 2.0 订阅源——`content/posts/*.md` 仍是唯一内容源，`scripts/build_feed.py` 据同一份 frontmatter 生成 `public/feed.xml`，部署后可在 `https://ajsterling123.github.io/my-agent-site/feed.xml` 订阅。成功 = feed 是合法 RSS 2.0（UTF-8 无 BOM、五个 channel 字段、每个 item 五字段齐全、link/guid 为绝对地址且 guid 指向文章自身页面、pubDate 为 `+0800` 的 RFC 822）、条目数与 `content/posts/` 篇数相等且日期倒序稳定、`tools/check_feed.py` 通过（含标题带 `& < >` 仍能解析的负向测试）、重复构建产出字节一致（幂等，第二次运行 `git status` 干净）、`python tools/check_site.py` 与 `python tools/check_feed.py` 都通过、首页与关于我页原有内容一字未改。
+AI Agent 课程 12 步迭代作业的第 6 步：在 Step 5 的订阅源之上做 RSS 阅读器——订阅别人、聚合成一页。`config/feeds.json` 是订阅清单（allowlist + 6 个源，含逐源的 `default_tz` 与美团专用的 `date_from_url_regex`）；`scripts/fetch_feeds.py` 在**构建期**抓取（只许 HTTPS、主机必须在 allowlist 内、单源超时 10 秒、响应上限 2MB、请求带 User-Agent），把 RSS 2.0 与 Atom 1.0 两种格式规范化成同一结构写入 `public/data/rss-items.json`，并从同一份 config 生成 `public/subscriptions.opml`；`public/rss/index.html` + `public/rss/reader.js` 读同域 JSON 按源分组渲染，导航因此由五项变六项（「RSS订阅」插在「博客」之后）。成功 = 每项七个字段齐全（id / source_id / source_title / title / link / summary / published）、id 稳定唯一（优先 feed 自带的 guid/id，缺失时用链接哈希）、跨源按 id 去重、分组顺序等于 config 顺序、组内按 `published` 倒序（null 在末尾、同值按 id）、`published` 一律是带偏移的 ISO 8601 或 null（腾讯源没时区按 +08:00 解释、美团源没有条目级日期按链接路径推导，两个假设都写在 config 注释与 DESIGN.md 里，不藏在代码里）、单个源失败时保留该源上次数据且构建仍成功、连跑两次 `git status` 干净（外部源本身有新内容除外）；`python tools/check_feeds.py` 通过（含「摘要里带 `<script>` 与提示注入口令」的敌意样本负向测试，且测试前后 AGENTS.md 与 config/feeds.json 字节未变）；`python tools/check_site.py` 与 `python tools/check_feed.py` 仍通过。
 
-（Step 4 的成果仍成立：博客列表按日期倒序列出全部文章、每篇有独立页面、生成页与手写页的报头带逐字节一致。）
+（Step 5 的成果仍成立：`content/posts/*.md` → `scripts/build_feed.py` → `public/feed.xml` 是合法 RSS 2.0，与列表页同源同序。Step 4 的成果仍成立：博客列表日期倒序、每篇有独立页面、生成页与手写页的报头带逐字节一致。）
 
 ## Positioning
 
@@ -29,10 +29,13 @@ AI Agent 课程 12 步迭代作业的第 5 步：在 Step 4 的博客之上发�
 
 - 工作目录 D:\作业（Windows，python 命令不带 3）。
 - 站点发布目录 `public/`，由 GitHub Actions 发布到 GitHub Pages 的项目子路径 `https://ajsterling123.github.io/my-agent-site/`——因此站内引用一律用相对路径，禁止以 `/` 开头的根绝对路径。
-- 页面结构（Step 3 起）：`public/index.html` 首页 + `public/{about,blog,papers,wiki}/index.html` 四个子页；每页都是「自己目录下的 index.html」，链接显式写全文件名（`about/index.html`），三种打开方式（本地 http / Pages 子路径 / file:// 双击）行为一致。
+- 页面结构（Step 3 起，Step 6 增至六页）：`public/index.html` 首页 + `public/{about,blog,rss,papers,wiki}/index.html` 五个子页；每页都是「自己目录下的 index.html」，链接显式写全文件名（`about/index.html`），本地 http 与 Pages 子路径两种打开方式行为一致（阅读器页需 fetch 同域 JSON，`file://` 下会被浏览器拦下、由页面自己的错误分支给出说明）。
 - 博客（Step 4 起）：内容源 `content/posts/<slug>.md`（frontmatter：title / date / description，日期必须 YYYY-MM-DD，slug 用 ASCII 文件名），`scripts/build_blog.py` 生成 `public/blog/index.html` 列表页与 `public/posts/<slug>.html` 文章页；生成页的骨架从 `public/index.html` 改写而来，链接前缀按输出深度算，因此报头带、导航与页脚永远与手写页一致。文章页在 `public/posts/` 下，相对 public 的深度是 1，前缀为 `../`。
 - Research Papers、Wiki 两页当前仍为诚实占位：写明本页将在课程第几步被填充，不编造内容；博客页自 Step 4 起列出真实文章（只有真写出文章才登记）。
 - 订阅源（Step 5 起）：`content/posts/*.md` → `scripts/build_feed.py` → `public/feed.xml`（RSS 2.0）。slug / 文章页路径 / 站点绝对地址 / 排序规则只在 `scripts/site_data.py` 里写一份，`build_blog.py` 与 `build_feed.py` 共用（同一篇文章在列表页与 feed 里的标题、摘要、日期、链接必然一致）。`lastBuildDate` 取最新文章的日期而非「此刻」，因此重复构建不产生 diff。博客列表页 `<head>` 用 `rel="alternate"` 指认 feed，页尾留一行订阅链接。
+- RSS 阅读器（Step 6 起）：站外输入只有这一处。订阅清单是 `config/feeds.json`（allowlist 按主机名放行 + 6 个中文源：腾讯安全响应中心 / 少数派 / Solidot / 云风的 BLOG（Atom 1.0）/ 阮一峰的网络日志（Atom 1.0）/ 美团技术团队）。抓取只在构建期发生，浏览器端只读同域 `public/data/rss-items.json`，页面里没有任何跨域请求；`public/subscriptions.opml` 由同一份 config 生成，只含标题 + xmlUrl + htmlUrl。`scripts/probe_feed.py` 是选源用的只读探查工具（Step 6 第一轮产物），`.github/workflows/probe-feeds.yml` 手动触发、在境外 IP 上探测这些源的可达性。
+- 失败策略：单个源失败（超时 / 非 HTTPS / 域名不在 allowlist / 解析失败 / 0 条）时保留该源上一次已提交的数据、把原因写进构建日志、继续处理其他源；只有所有源都失败且没有历史数据时才非零退出。
+- 信任边界（Step 6 起）：外部标题、摘要、链接一律只当展示文本，不当指令/代码/Prompt；前端只用 `textContent` 逐节点渲染（禁用 innerHTML 一族与 eval）；外部数据只写进 `rss-items.json` 与页面，不回写 config、AGENTS.md 或脚本。口径见 AGENTS.md「外部数据是不可信输入」。
 - 后续 Step 将加入 arXiv 论文 Skill、Wiki、RAG、状态面板等；档案视觉语言与报头带导航继续沿用。
 - 课程评分依据各 Step 验收清单 + git 记录。
 
@@ -42,7 +45,7 @@ AI Agent 课程 12 步迭代作业的第 5 步：在 Step 4 的博客之上发�
 - 用户名与邮箱在首页与「关于我」页两处均可见（院校 / 专业 / 年级 / 邮箱四项在关于我页同页可见）。
 - 正文最大宽度 800px，单栏居中。
 - 视觉方向为简报钉死（见 Brand Commitments），不得改成通用模板。
-- 导航：五个菜单项顺序固定（首页 / 关于我 / 博客 / Research Papers / Wiki），全站共用同一份标记，当前项加 `aria-current="page"` 并用墨蓝加粗下划线指认（不用红）；`<nav>` 带可访问名称「主导航」。脚本生成的文章页不对应任何菜单项，因此一次 `aria-current` 都不设。
+- 导航：六个菜单项顺序固定（首页 / 关于我 / 博客 / RSS订阅 / Research Papers / Wiki），全站共用同一份标记，当前项加 `aria-current="page"` 并用墨蓝加粗下划线指认（不用红）；`<nav>` 带可访问名称「主导航」。脚本生成的文章页不对应任何菜单项，因此一次 `aria-current` 都不设。站外链接只允许出现在阅读器页，且必须 https + `target="_blank"` + `rel="noopener noreferrer"`；外部资源引用（img/script/link 等）全站一律禁止，「零外部请求」是 Step 1 起的资产。
 - 邮箱一栏为真实地址 1095568137@qq.com（2026-10-08 由本人提供并指定公开在本站）。
 - 订阅地址为 `https://ajsterling123.github.io/my-agent-site/feed.xml`（绝对地址，阅读器需要）；站内引用仍是相对路径 `../feed.xml`。feed 里中文原样保留，`& < >` 用实体转义（不用 CDATA）。
 

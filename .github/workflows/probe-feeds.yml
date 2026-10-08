@@ -1,0 +1,31 @@
+name: Probe external feeds
+
+# 手动触发（Actions 页面 → Run workflow）。只探测 config/feeds.json 里的订阅源
+# 在 GitHub Actions 境外 IP 上的可达性与耗时，不构建、不部署任何东西。
+# 主部署工作流 deploy.yml 完全不受影响。
+#
+# 退出码非零 = 至少一个源在境外跑不通或超过 10 秒 —— 这本身就是本次要拿到的证据
+# （课程里「来源限制」那一条），所以这里不吞掉退出码。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Probe feeds listed in config/feeds.json
+        run: |
+          PY="$(command -v python3 || command -v python)"
+          URLS="$("$PY" -c "import json;print(' '.join(s['xml_url'] for s in json.load(open('config/feeds.json', encoding='utf-8'))['sources']))")"
+          echo "== 待探测的订阅源（来自 config/feeds.json）=="
+          for u in $URLS; do echo "  $u"; done
+          echo
+          echo "== 运行期环境（境外 IP）=="
+          echo "runner: $RUNNER_OS / $RUNNER_ARCH"
+          "$PY" scripts/probe_feed.py --samples 1 $URLS

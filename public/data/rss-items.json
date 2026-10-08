@@ -1,0 +1,710 @@
+{
+  "schema": 1,
+  "sources": [
+    {
+      "id": "tencent-security",
+      "title": "腾讯安全响应中心",
+      "html_url": "https://security.tencent.com/",
+      "xml_url": "https://security.tencent.com/index.php/feed/blog/0",
+      "items": [
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/226",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "TencentOS 科维斯AI：SCTPhantom 潜伏18年的Linux内核提权与容器逃逸漏洞",
+          "link": "https://security.tencent.com/index.php/blog/msg/226",
+          "summary": "2026年7月23日，Linux内核主线合入了一份很短的补丁。",
+          "published": "2026-08-06T15:34:26+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/225",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "AI Agent 的记忆，为什么会成为攻击者的数据金矿？｜朱雀实验室",
+          "link": "https://security.tencent.com/index.php/blog/msg/225",
+          "summary": "本文介绍了 Memory Heist 攻击的完整链路，并通过 AI-Infra-Guard（A.I.G）的 Agent 安全扫描模块（agent-scan）实现了对该攻击的自动化检测",
+          "published": "2026-08-04T14:25:31+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/224",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "我们扫描了五万个 Skill，发现危险仍然存在 ｜ 朱雀实验室",
+          "link": "https://security.tencent.com/index.php/blog/msg/224",
+          "summary": "真正的问题不是扫出了什么，是：这个生态还有没有，有效的免疫系统？ 腾讯安全平台部负责人 Coolc腾讯安全平台部负责人 Coolc",
+          "published": "2026-04-26T15:51:04+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/222",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "从发现 33 个 0day 漏洞，看安全攻防的下半场 ｜ 朱雀实验室",
+          "link": "https://security.tencent.com/index.php/blog/msg/222",
+          "summary": "2026 年 4 月 7 日，Anthropic 联合 Apple、Google、Microsoft 等 45 家机构发布 Project Glasswing 计划，并宣布其尚未公开发行的前沿模型 Claude Mythos Preview 在所有主要操作系统和浏览器中发现了数千个…",
+          "published": "2026-04-10T17:45:09+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/214",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "从4.8亿下载量的 LiteLLM投毒事件，看 AI 基础设施安全攻与防 | 朱雀实验室",
+          "link": "https://security.tencent.com/index.php/blog/msg/214",
+          "summary": "近日，知名大模型网关工具 LiteLLM 遭遇供应链投毒，其 1.82.7和1.82.8 版本被植入恶意代码。由于该项目月下载量极高(近1亿月下载量)，且被 DSPy 等众多主流…",
+          "published": "2026-03-31T17:03:16+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/215",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "当AI学会背刺：深度剖析Agent Skills的安全陷阱 ｜ 朱雀实验室",
+          "link": "https://security.tencent.com/index.php/blog/msg/215",
+          "summary": "你是否想过，当你让 AI 帮你写代码时，它可能正在你背后悄悄地干着其它事——比如，加密你的所有文件，然后弹出一个勒索提示？这不是吓唬你，而是我们研究后发现在各种…",
+          "published": "2026-01-23T17:18:24+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/216",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "当 AI 成为代码贡献者，软件安全正在发生怎样的变化？",
+          "link": "https://security.tencent.com/index.php/blog/msg/216",
+          "summary": "随着 AI 技术加速融入软件研发流程，AI 已经成为新时代的“代码贡献者”。在显著提升研发效率的同时，AI 生成代码也对软件安全、漏洞治理和工程责任边界提出了新的挑战。",
+          "published": "2026-01-05T17:37:14+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/217",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "A.S.E 2.0 正式发布 | 开放生态 · 动静协同 · 让 AI 编程安全可量化",
+          "link": "https://security.tencent.com/index.php/blog/msg/217",
+          "summary": "A.S.E (AI Code Generation Security Evaluation) - 你的 AI 鉴赏官，为你提供大模型安全实践工具，让你一眼就能选出最靠谱的 AI 队友。",
+          "published": "2025-11-07T11:05:37+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/218",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "00后黑客落网！曾运营大型僵尸网络，频繁攻击腾讯游戏、DeepSeek、X平台",
+          "link": "https://security.tencent.com/index.php/blog/msg/218",
+          "summary": "据美国司法部通报，活跃多年的高危DDoS僵尸网络“RapperBot”（历史频繁攻击腾讯游戏、DeepSeek、X平台的幕后黑手）现已被成功取缔。该僵尸网络主谋、22岁的美国俄勒冈州男子Ethan…",
+          "published": "2025-09-26T17:32:19+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/219",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "DeepSeek本地化部署有风险！快来看看你中招了吗？｜ 朱雀实验室",
+          "link": "https://security.tencent.com/index.php/blog/msg/219",
+          "summary": "2025年伊始，AI领域迎来一个重要变革 - DeepSeek R1开源发布，凭借着低成本、性能出众的优势，这个模型在短短几周内就获得空前关注。由于官网服务经常繁忙，大家开始选择使用Ollama+OpenWebUI、LM…",
+          "published": "2025-02-18T16:04:12+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/213",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "AI 帮你高效构建代码安全策略【大模型应用实践系列四】",
+          "link": "https://security.tencent.com/index.php/blog/msg/213",
+          "summary": "腾讯啄木鸟代码安全团队，依托混元大模型的超强代码理解和安全分析能力，在SQL注入威胁检测场景验证中，新增识别上百个漏洞检测策略，相比传统方法人效比提升3.8倍，在Github高star项目上斩获10+0day漏洞。",
+          "published": "2025-01-08T10:26:57+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/212",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "AI猎手：我们用大模型挖到了0day漏洞！【大模型应用实践系列三】",
+          "link": "https://security.tencent.com/index.php/blog/msg/212",
+          "summary": "AI版“赏金猎人”登场，基于混元大模型能力打造的自动漏洞挖掘工具，7*24小时自动感知、追踪、挖橱0day。 AI猎人VS黑客的角逐战正式开始。",
+          "published": "2025-01-03T10:23:17+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/211",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "AI助力！明文密码泄漏无处遁形【大模型应用实践系列二】",
+          "link": "https://security.tencent.com/index.php/blog/msg/211",
+          "summary": "本文聚焦于密钥硬编码的问题，分析了传统检测策略的缺陷，并详细介绍了大模型在该场景下的优势、检测实施方案和效果。我们将继续推出更多关于大模型在研发安全、网络安全、威胁情报等领域的应用探索与总结",
+          "published": "2024-12-05T17:14:13+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/210",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "大模型应用实践（一）：AI助力Code Review安全漏洞发现",
+          "link": "https://security.tencent.com/index.php/blog/msg/210",
+          "summary": "借助混元大模型，腾讯啄木鸟代码安全团队在代码评审（Code Review，下文简称CR）场景下的安全漏洞检出能力取得显著提升，日均发现和阻断300+个代码安全风险，极大提升了公司核心数据资产安全性。",
+          "published": "2024-11-27T10:39:46+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/202",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "红蓝对抗之隐蔽通信应用及防御",
+          "link": "https://security.tencent.com/index.php/blog/msg/202",
+          "summary": "腾讯蓝军和红军十多年案例经验、总结沉淀",
+          "published": "2021-09-27T16:40:43+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/197",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "攻防启示：Chromium组件风险剖析与收敛",
+          "link": "https://security.tencent.com/index.php/blog/msg/197",
+          "summary": "Chromium内核的安全问题，早已悄无声息地牵动着互联网生活方方面面。基于对实战经历的复盘，本文将从Chromium架构及安全机制概况入手，剖析Chromium组件在多场景下给企业带来的安全风险并一探收敛方案。",
+          "published": "2021-07-15T10:30:58+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/183",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "红蓝对抗中的云原生漏洞挖掘及利用实录",
+          "link": "https://security.tencent.com/index.php/blog/msg/183",
+          "summary": "分享攻防场景中的云原生相关漏洞挖掘及漏洞利用实例。",
+          "published": "2021-03-02T09:00:26+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/157",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "腾讯蓝军安全通告：WebLogic远程代码执行漏洞(CVE-2020-14645)",
+          "link": "https://security.tencent.com/index.php/blog/msg/157",
+          "summary": "Oracle官方发布WebLogic安全更新，修复严重漏洞。",
+          "published": "2020-07-15T16:16:05+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/154",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "红蓝对抗之Windows内网渗透",
+          "link": "https://security.tencent.com/index.php/blog/msg/154",
+          "summary": "无论是渗透测试，还是红蓝对抗，目的都是暴露风险，促进提升安全水平。企业往往在外网布置重兵把守，而内网防护相对来说千疮百孔，所以渗透高手往往通过攻击员工电脑、外网服务、职场WiFi等方式进入内网，然后发起内网渗透。而国内外红蓝对抗服务和开源攻击工具大多数以攻击Windows域为主，主要原因是域控拥有上帝能力，可以控制域…",
+          "published": "2020-06-30T19:02:37+08:00"
+        },
+        {
+          "id": "https://security.tencent.com/index.php/blog/msg/146",
+          "source_id": "tencent-security",
+          "source_title": "腾讯安全响应中心",
+          "title": "现网发现新型DVR UDP反射攻击手法记实",
+          "link": "https://security.tencent.com/index.php/blog/msg/146",
+          "summary": "近日，游戏行业某云客户遭受到大流量DDoS攻击，宙斯盾团队跟进溯源。在对抓取的攻击样本进行深入分析之后，我们发现这是一种新的UDP反射放大攻击手法，相关情况也分享同步与业界同行。",
+          "published": "2020-03-31T21:28:26+08:00"
+        }
+      ]
+    },
+    {
+      "id": "sspai",
+      "title": "少数派",
+      "html_url": "https://sspai.com/",
+      "xml_url": "https://sspai.com/feed",
+      "items": [
+        {
+          "id": "https://sspai.com/post/113843",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "从开源清理工具到付费 Mac 应用，用户教会了我如何做产品：Mole",
+          "link": "https://sspai.com/post/113843",
+          "summary": "最近我写了不少关于独立开发的思考，想着要汇总一下，就把Mole从开源CLI做到Mac付费软件这一路聊一聊：我当时是怎么想的，哪些事情做下来真的有用，也许能给正在做自己作品的朋友一些输入。去年国庆我在三 ... 查看全文",
+          "published": "2026-10-08T16:10:51+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/115209",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "扔掉的是杂念，掌控的是生活：我的断舍离实践经验",
+          "link": "https://sspai.com/post/115209",
+          "summary": "断舍离从来不是为了追求极致的空旷，而是为了在混乱的生活里，重新夺回对空间的掌控权。 查看全文",
+          "published": "2026-10-08T14:42:14+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/115462",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "App Store 生态规模五年翻倍，助力中国开发者走向全球",
+          "link": "https://sspai.com/post/115462",
+          "summary": "10月8日，Apple发布《中国AppStore生态系统——2025年开发者与用户价值研究》。这份由Apple提供支持、上海财经大学商学院副教授居恒与安诺析思国际咨询公司经济学家MarkusvonWa ... 查看全文",
+          "published": "2026-10-08T09:47:59+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/115455",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "派早报：微软发布 Windows 相关新品、Google AI 新闻两则等",
+          "link": "https://sspai.com/post/115455",
+          "summary": "Anthropic 推出 Claude for Google Workspace、Reflection 发布首个开放权重模型 Beam 等。 查看全文",
+          "published": "2026-10-08T08:16:57+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/114845",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "罗马：永恒之城，永恒于世",
+          "link": "https://sspai.com/post/114845",
+          "summary": "Matrix首页推荐Matrix是少数派的写作社区，我们主张分享真实的产品体验，有实用价值的经验与思考。我们会不定期挑选Matrix最优质的文章，展示来自用户的最真实的体验和观点。文章代表作者个人观点 ... 查看全文",
+          "published": "2026-10-07T11:00:00+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/115416",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "基于 Vaultwarden 和 Keyguard 的自托管密码管理实践",
+          "link": "https://sspai.com/post/115416",
+          "summary": "密码管理服务的数据，当然要掌握在自己手里。 查看全文",
+          "published": "2026-10-06T18:00:00+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/114536",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "十个案例助你轻松上手 iOS 27 通知自动化",
+          "link": "https://sspai.com/post/114536",
+          "summary": "iOS 27 通知自动化改变了通知的处理方式，快捷指令也迎来了不少的新玩法。 查看全文",
+          "published": "2026-10-05T10:59:24+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/115308",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "方方面面都熟悉，方方面面都更好：iPhone 18 Pro 体验",
+          "link": "https://sspai.com/post/115308",
+          "summary": "iPhone 18 Pro 也许不会让你感觉焕然一新，却在许多地方都变得更加完整了。 查看全文",
+          "published": "2026-10-04T15:58:39+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/114922",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "TDS REVIEW | CMF Clip Pro 耳夹式无线耳机体验",
+          "link": "https://sspai.com/post/114922",
+          "summary": "不知道以后 CMF 的设计还会不会像现在一样出彩。 查看全文",
+          "published": "2026-10-03T15:00:00+08:00"
+        },
+        {
+          "id": "https://sspai.com/post/115211",
+          "source_id": "sspai",
+          "source_title": "少数派",
+          "title": "本周看什么 | 最近值得一看的 8 部作品",
+          "link": "https://sspai.com/post/115211",
+          "summary": "📅本周新预告《泥面人》终极预告9月24日，DC新片《泥面人》发布了终极预告，将于10月23日在北美上映。詹姆斯·瓦特金斯执导，汤姆·里斯·哈里斯主演，隆重介绍哥谭市的新面孔，一位意外毁容的演员在注射了 ... 查看全文",
+          "published": "2026-10-02T17:30:00+08:00"
+        }
+      ]
+    },
+    {
+      "id": "solidot",
+      "title": "Solidot",
+      "html_url": "https://www.solidot.org/",
+      "xml_url": "https://www.solidot.org/index.rss",
+      "items": [
+        {
+          "id": "https://www.solidot.org/story?sid=85547",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "世界各地的民调认为社交媒体伤害民主",
+          "link": "https://www.solidot.org/story?sid=85547",
+          "summary": "皮尤研究中心对 37 国民众展开的调查显示，世界各地民众认为社交媒体伤害民主的比例过去几年在上升。其中美国民众对社媒的看法尤其负面，64% 的成年人认为它对民主有害。其它国家在认识到社交媒弊端方面正赶上美国。美国等富裕国家的民众倾向于认为社媒在伤害民主。在受访国家中，认为社媒对民主产生负面影响的人数比例达到或超过半数…",
+          "published": "2026-10-08T16:31:44+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85546",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "黑客利用 AI 攻击韩国银行",
+          "link": "https://www.solidot.org/story?sid=85546",
+          "summary": "韩国新韩银行、KB国民银行、韩亚银行等 7家 金融企业遭遇黑客攻击，多处发现同一攻击者利用了开源渗透测试工具“ARTEX-自主渗透测试控制台”实施攻击的迹象。CrowdStrike 公布分析报告显示，嫌疑人可能为居住在广东的 26 岁人员。但这只是‌根据目前情况‌作出的推测，嫌疑人身份尚未确定。攻击者使用生成式 AI…",
+          "published": "2026-10-08T15:51:18+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85545",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "陶哲轩认为数学 2.0 时代应降低解决难题的核心地位",
+          "link": "https://www.solidot.org/story?sid=85545",
+          "summary": "OpenAI 公布了一份报告，称其一款尚未发布的前沿模型解决了数百个数学难题，其中之一是四维挂谷猜想，今年的菲尔茨奖得主王虹就是因为证明三维挂谷猜想而得奖。UCLA 数学家陶哲轩对此评论说，在传统数学的 1.0 时代，知名难题的证明通常会引发一系列后续的活动，证明作者会受邀参加演讲，与该领域的专家展开讨论，相关研讨会…",
+          "published": "2026-10-08T15:35:13+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85544",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "OpenAI 针对欧洲用户在 ChatGPT 和 Codex 嵌入水印",
+          "link": "https://www.solidot.org/story?sid=85544",
+          "summary": "OpenAI 正在 ChatGPT 和 Codex 中嵌入机器可读的水印技术 textGrain，该水印最初将主要针对欧盟地区的用户。OpenAI 称其水印技术不逊色甚至优于其它水印方案如 Google DeepMind 的 SynthID，OpenAI 竞争对手 Anthropic 已在 8 月宣布了基于 Synt…",
+          "published": "2026-10-08T14:54:49+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85543",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "2026 年诺贝尔化学奖授予了日法科学家",
+          "link": "https://www.solidot.org/story?sid=85543",
+          "summary": "2026 年诺贝尔化学奖授予了法国科学家 Henri Kagan 和日本科学家硖合宪三，以表彰他们“在不对称有机合成中发现非线性效应和自催化现象”上的贡献。生命中的化学结构被称为“手性”，就像手一样，所有氨基酸都存在两种镜像形式，但在细胞内的蛋白质中只有一种存在，而另一种在自然界中极为罕见。长期以来，化学家一直困惑于…",
+          "published": "2026-10-07T19:22:52+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85542",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "Anthropic 举报了与 Claude 聊天中发出威胁的佛罗里达女子",
+          "link": "https://www.solidot.org/story?sid=85542",
+          "summary": "Anthropic 举报了一名佛罗里达女子，原因是这名女子在与 Claude 聊天中威胁要枪击 Lee 县警长办公室，并在后续聊天中提及自己正在搞一把新枪。该女子在家中被捕，法庭记录显示她于 9 月 30 日受到了一项重罪指控。逮捕报告显示，Anthropic 会监控聊天内容，查找可能被视为有威胁性的关键词句，根据威…",
+          "published": "2026-10-06T22:11:47+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85541",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "2026 年诺贝尔物理奖授予了冰立方中微子天文台提出者 Francis Halzen",
+          "link": "https://www.solidot.org/story?sid=85541",
+          "summary": "2026 年诺贝尔物理奖授予了美国科学家 Francis Halzen，以表彰其“对冰立方中微子天文台的决定性贡献以及发现具有天体物理起源的高能中微子”。中微子无处不在，它们径直穿过地球，穿过人体，而我们毫无察觉。极少数情况下，一个中微子会与一个原子核发生相互作用，这使得拥有合适设备的人有可能发现它们。Francis…",
+          "published": "2026-10-06T21:52:24+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85540",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "俄罗斯女研究员因感染肺鼠疫死亡",
+          "link": "https://www.solidot.org/story?sid=85540",
+          "summary": "在引发广泛关注之后，俄罗斯证实一名女研究员因感染肺鼠疫死亡，否认有其他人感染。俄罗斯称，在西伯利亚和远东地区抗鼠疫科学研究所工作的 28 岁女死者希皮洛娃（Darya Shipilova），是因为意外打破试管而被流出的肺鼠疫（pneumonic plague）感染。曾跟她接触的人接受检验，发现两人感染冠病，两人感染鼻…",
+          "published": "2026-10-06T21:36:41+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85539",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "科学家识别出三种叫声最响亮的鸟",
+          "link": "https://www.solidot.org/story?sid=85539",
+          "summary": "生物学家在巴西识别出三种叫声最响亮的鸟。至于这些鸟如何演化出最响亮的叫声则仍然是个迷。白钟雀（white bellbird）叫声能达到 125 分贝，裸喉钟雀（bare-throated bellbird）和红腿叫鹤（red-legged seriema）叫声都超过 120 分贝。三种鸟类有着共同的生理特征：即宽大的…",
+          "published": "2026-10-05T22:45:39+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85538",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "因涌入大量 AI 报告 Google 冻结其 Bug 悬赏计划",
+          "link": "https://www.solidot.org/story?sid=85538",
+          "summary": "因涌入大量无效的 AI bug 报告，Google 宣布冻结其 Bug 悬赏计划 Open Source Software Vulnerability Reward Program (OSS VRP)，该决定于 10 月 1 日生效。Google 承诺将于 2027 年第一季度提供相关更新，期间将对该项目进行调整。G…",
+          "published": "2026-10-05T22:27:52+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85537",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "2026 年诺贝尔生理学或医学奖授予了三位研究光遗传学的科学家",
+          "link": "https://www.solidot.org/story?sid=85537",
+          "summary": "2026 年诺贝尔生理学或医学奖授予了美国斯坦福-霍华德·休斯医学研究所的 Karl Deisseroth、德国柏林洪堡大学的 Peter Hegemann 和维尔茨堡大学的 Georg Nagel，以表彰他们在光门控离子通道和光遗传学方面的发现。大脑如何掌管情感、行为和身体功能，长期以来一直是个谜。20世纪，研究人…",
+          "published": "2026-10-05T21:37:48+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85536",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "Riot Games 否认根据 CPU 封禁玩家",
+          "link": "https://www.solidot.org/story?sid=85536",
+          "summary": "一位玩家声称在购买了一块二手 CPU Ryzen 7 5800X3D 之后，因前拥有者有作弊行为这块 CPU 被列入了封禁黑名单，导致 Riot Games 旗下的所有游戏都无法启动。Riot Games 工作室负责反作弊的高管 Phillip Koskinas 通过社交媒体否认了这一说法， 他称没有找到相关记录，该…",
+          "published": "2026-10-05T21:27:46+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85535",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "太阳系可能没有以前认为的能存在千亿年",
+          "link": "https://www.solidot.org/story?sid=85535",
+          "summary": "太阳已有 46 亿年历史，大约 50 亿年后，随着氢燃料的耗尽，太阳外层将会膨胀转变为红巨星，它会吞噬水星和金星，甚至可能包括地球。太阳系外围的气体巨行星预计会幸免，随着太阳光芒的熄灭，太阳系的残余行星预计还能存在一千亿年。然而发表在《The Astrophysical Journal Letters》期刊上的一项研…",
+          "published": "2026-10-05T01:14:32+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85534",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "AI 聊天机器人会成为意识形态回音室",
+          "link": "https://www.solidot.org/story?sid=85534",
+          "summary": "巴西国立坎皮纳斯州立大学（UNICAMP）的研究人员发现，当你给聊天机器人输入不同政治观点时，机器人会改变其回答。研究人员警告称，用户可能会将这种迎合性的附和，误认为是中立的客观评估，从而可能加剧社会极化。研究人员测试了若干模型，让它们针对112项陈述进行“同意\"或者“不同意”的判断。测试内容共涉及巴西政治七大领域（…",
+          "published": "2026-10-05T00:10:02+08:00"
+        },
+        {
+          "id": "https://www.solidot.org/story?sid=85533",
+          "source_id": "solidot",
+          "source_title": "Solidot",
+          "title": "新冠康复者或疫苗接种者能对类似冠状病毒产生免疫力",
+          "link": "https://www.solidot.org/story?sid=85533",
+          "summary": "新冠康复者或疫苗接种者能对类似冠状病毒产生免疫力。研究人员分析了 15 种有代表性的蝙蝠冠状病毒刺突蛋白与 34 个物种的 ACE2 受体库结合的可能性。新冠病毒的刺突蛋白就是通过与 ACE2 受体进入人体。研究结果显示，能与多种 ACE2 受体结合实现跨物种传播的蝙蝠冠状病毒都是与新冠病毒 SARS-CoV-2 有…",
+          "published": "2026-10-05T00:03:07+08:00"
+        }
+      ]
+    },
+    {
+      "id": "codingnow",
+      "title": "云风的 BLOG",
+      "html_url": "https://blog.codingnow.com/",
+      "xml_url": "https://blog.codingnow.com/atom.xml",
+      "items": [
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1341",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "Caves of Qud 初体验",
+          "link": "https://blog.codingnow.com/2026/09/caves_of_qud.html",
+          "summary": "关注 Caves of Qud（卡德洞窟）很久了，之前一直没下决心玩。最近发现它更新了多语言支持分支，在 steam 创意工坊里有了一个初步的中文 mod ，便试了试，果真很有趣。 我玩传统 Roguelike 很久了。最早是在 GBA 上用干电池玩特鲁尼克大冒险（以及后来风来的西林系列）。在 2008 年的时候就试…",
+          "published": "2026-09-18T07:28:47+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1340",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "暑假的英语补习",
+          "link": "https://blog.codingnow.com/2026/09/summer.html",
+          "summary": "对云豆来说，这个暑假特别长。 他小学毕业了，6 月中就已放暑假，9 月 1 日方开学进入初中。自然没有学校布置的暑假作业。我不想他整个假期都沉迷在短视频和蛋仔派对中，所以每天给他安排了英语学习。 7 月初，我记录过对孩子之前的英文辅导。先前，我用的《英语在用：剑桥初级英语语法》给他补习基础语法。学习的效果还可以，原本…",
+          "published": "2026-09-09T06:53:21+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1339",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "银河竞逐的乐趣和策略",
+          "link": "https://blog.codingnow.com/2026/08/rftg_strategy.html",
+          "summary": "银河竞逐是我最喜欢的桌游之一。我曾经为它写过两篇 blog ：银河竞逐的设计 及 如何教人玩银河竞逐 。 最近我教会了小孩玩这个游戏，我自己也在电脑上玩了 200 多盘。主要是在 BGA 上和人对战，以及在官方授权的电子版 中挑战最高难度的 AI 。和过去喜欢多人混战不同，这段时间我主要玩双人规则。虽然在线下，我玩这…",
+          "published": "2026-08-20T12:01:10+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1338",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "用地标改进 A star 寻路的启发函数",
+          "link": "https://blog.codingnow.com/2026/08/improved_a_star_heuristics.html",
+          "summary": "今天读到 redblobgames 写的关于如何改进寻路算法中启发式函数的文章 ，感觉很棒。我们可以用很简单的方法改进 A star 算法中的传统计算欧氏距离的方式实现启发函数的方法。 这意味着，可以直接利用之前写好的寻路模块 改变一下启发函数，就可以大幅提升性能。...",
+          "published": "2026-08-09T01:17:32+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1337",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "对抗系统的桌游",
+          "link": "https://blog.codingnow.com/2026/07/deckers.html",
+          "summary": "最近比较难找到人一起开桌游，所以我玩了不少人对抗系统规则的游戏。 桌游中人和人对抗的比较常见，设计一套规则、让玩家在这套规则下博弈；但需要找到（足够水平的）人一起玩。虽然很多桌游也会设计 solo 模式，但大多是设计一个自动机来模拟对手。这会损失相当的博弈性，要么变成了可预测的系统行为，要么沦为半随机事件。而游戏规则…",
+          "published": "2026-07-24T14:03:34+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1336",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "高尿酸血症确诊",
+          "link": "https://blog.codingnow.com/2026/07/hyperuricemia.html",
+          "summary": "我在 2024 年底左脚大拇指根部曾肿痛一周 ，结合多年体检高尿酸结果，怀疑是痛风。但后来没有什么症状，身体也一直很好，就没去医院看。 最近一年多一直通过跑步降低体重 ，减少了 9~10kg 体重。攀岩保持在一周两到三次。自己在家查血尿酸，一直在 500~600 之间，偶尔在 480 左右。虽然戒掉了含糖饮料，也无饮…",
+          "published": "2026-07-10T03:16:55+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1335",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "小孩的英语辅导",
+          "link": "https://blog.codingnow.com/2026/07/learning_english.html",
+          "summary": "今年花了很多时间给云豆补习英语。 他今年小学毕业了，我意识到他在英语学习方面遇到了障碍需要额外介入，是在今年过年期间。云豆在很小的时候，直到三岁还不太会说话。长点的句子都说不下来，但是英文字母认得却很快，似乎对英文有点兴趣，就给他报了个英语兴趣班，一周上两小时的课。但很快就遇到了疫情，几乎都在上无效网课，也就停了。从…",
+          "published": "2026-07-09T08:32:46+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1334",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "从猎户座之王到群星",
+          "link": "https://blog.codingnow.com/2026/06/from_moo_to_stellaris.html",
+          "summary": "每个经典电子游戏的游戏设计都多少有一些之前作品的痕迹。我认为原因有二：成功的玩法必须有大量玩家实际游戏体验的打磨证明其有效，在经典玩法上培养出来的玩家习惯可以极大的减少游戏的学习门槛，一个新玩法如果门槛过高就无法吸引足够的玩家去玩，也就得不到打磨。 我一直想搞清楚一款吸引我的游戏的核心规则部分到底是怎么设计出来的。为…",
+          "published": "2026-06-25T13:23:09+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1333",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "对基本有序的序列排序算法",
+          "link": "https://blog.codingnow.com/2026/06/powersort.html",
+          "summary": "quicksort 是基于比较的排序中表现最好的算法，它在大多数情况下都能接近时间复杂度 O(n log n) ，所以 qsort() 也是 C 标准库中排序的默认实现。但是，quicksort 是非稳定排序，即当原始序列中出现相同的元素时，经过 qsort ，这些相同元素的次序可能被调整。即两个 key 相同的元素…",
+          "published": "2026-06-11T09:46:49+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1332",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "缺氧和异星工厂的比较",
+          "link": "https://blog.codingnow.com/2026/05/oni_factorio.html",
+          "summary": "缺氧（Oxygen Not Included, ONI）和异星工厂（Factorio）都是自动化领域的神作，它们在 Steam 上都有自动化、基地建设、资源管理的标签，可见游戏体验上有相当多的相似之处。玩家群体也高度重合。但是什么造就了它们的独特性？而不会像 Satisfactory 或戴森球计划之于异星工厂那样，有…",
+          "published": "2026-05-23T07:04:32+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1331",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "一个简单的缺氧地热模块",
+          "link": "https://blog.codingnow.com/2026/05/oni_geotherm.html",
+          "summary": "又玩了半个月的缺氧，目前累积游戏时间已达 645 小时，感觉对这个游戏有了更多理解。 我重新开了一盘，尝试用纯仿生人开局，依旧是保持 3 个初始小人开荒。仿生人不用吃食物，三个周期集中做一次呼吸，只要解决了能源问题，玩起来还是很舒服的。但仿生人需要定期上油，基本的方案是用排泄的残渣油做成润滑膏自循环。但我在查配方表的…",
+          "published": "2026-05-16T15:57:29+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1330",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "我对《缺氧》的游戏理解",
+          "link": "https://blog.codingnow.com/2026/04/oxygen_not_included.html",
+          "summary": "最近一个月，我一直在玩《缺氧》(Oxygen Not Included) 。前几年玩过 100 多小时，算是比较熟悉了。但这个月又高强度的玩了 300 多小时，目前总游戏时长为 485 小时，感觉对这款游戏有了一些新的理解。 最初喜欢上这个游戏，是想找一个类似《异星工厂》的以自动化为核心玩法的基地建设类游戏。Fact…",
+          "published": "2026-04-28T13:06:28+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1329",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "除法的意义",
+          "link": "https://blog.codingnow.com/2026/04/division.html",
+          "summary": "可可已经在三年级下学期了，数学似乎还是有点问题。这个阶段考试成绩其实都不会太差，但一旦作业或考卷上的错题并非粗心大意就值得警惕。乘除法是二年级学的，三年级已经在学两位数除一位数的除法。但会计算并不难，计算只是一项机械性技能，难的是理解乘除法的意义。理解乘除比理解加减法困难的多。 我翻出几个月前的一篇 blog，发现过…",
+          "published": "2026-04-12T12:52:17+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1328",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "soluna 外挂 C 模块",
+          "link": "https://blog.codingnow.com/2026/03/soluna_external_lib.html",
+          "summary": "soluna 集成了 lua 虚拟机，但默认构建方式是将 lua 库静态链接到唯一的执行文件中。这将导致无法以动态库的形式外挂 Lua 的 C 扩展。 这是因为，如果独立编译 Lua 的 C 扩展库，通常需要链接 Lua 的 C API 。标准的方法是动态链接 lua 实现，如果静态链接 liblua.a ，会导致进…",
+          "published": "2026-03-11T06:49:58+00:00"
+        },
+        {
+          "id": "tag:blog.codingnow.com,2026://1.1327",
+          "source_id": "codingnow",
+          "source_title": "云风的 BLOG",
+          "title": "Star Trek : Captain's Chair 初体验",
+          "link": "https://blog.codingnow.com/2026/03/star_trek_captains_chair.html",
+          "summary": "今年过年，我沉迷于 Star Trek : Captain's Chair 这款 2025 年的桌游。暂时还没有中文版，如果直译的话，名为《星际迷航：船长之椅》。这是一款以卡牌构筑为核心玩法的桌游，在游戏过程中，不断完善自己的牌堆，构筑一个高效的得分引擎。如果能比对手获得更多的 VP 就可以获得游戏胜利，但也要避免突…",
+          "published": "2026-03-01T11:24:54+00:00"
+        }
+      ]
+    },
+    {
+      "id": "ruanyifeng",
+      "title": "阮一峰的网络日志",
+      "html_url": "https://www.ruanyifeng.com/blog/",
+      "xml_url": "https://www.ruanyifeng.com/blog/atom.xml",
+      "items": [
+        {
+          "id": "tag:www.ruanyifeng.com,2026:/blog//1.2557",
+          "source_id": "ruanyifeng",
+          "source_title": "阮一峰的网络日志",
+          "title": "科技爱好者周刊（第 413 期）：再见了，React Native",
+          "link": "https://www.ruanyifeng.com/blog/2026/09/weekly-issue-413.html",
+          "summary": "这里记录每周值得分享的科技内容，周五发布。（[通知] 下周五开始的中秋和十一假期，周刊休息。）...",
+          "published": "2026-09-18T00:03:02+00:00"
+        },
+        {
+          "id": "tag:www.ruanyifeng.com,2026:/blog//1.2556",
+          "source_id": "ruanyifeng",
+          "source_title": "阮一峰的网络日志",
+          "title": "科技爱好者周刊（第 412 期）：禁止 issue，只用 PR",
+          "link": "https://www.ruanyifeng.com/blog/2026/09/weekly-issue-412.html",
+          "summary": "这里记录每周值得分享的科技内容，周五发布。...",
+          "published": "2026-09-11T00:11:50+00:00"
+        },
+        {
+          "id": "tag:www.ruanyifeng.com,2026:/blog//1.2555",
+          "source_id": "ruanyifeng",
+          "source_title": "阮一峰的网络日志",
+          "title": "科技爱好者周刊（第 411 期）：OpenClaw 2.0 是一个缩影",
+          "link": "https://www.ruanyifeng.com/blog/2026/09/weekly-issue-411.html",
+          "summary": "这里记录每周值得分享的科技内容，周五发布。...",
+          "published": "2026-09-03T23:59:05+00:00"
+        }
+      ]
+    },
+    {
+      "id": "meituan-tech",
+      "title": "美团技术团队",
+      "html_url": "https://tech.meituan.com/",
+      "xml_url": "https://tech.meituan.com/feed/",
+      "items": [
+        {
+          "id": "https://tech.meituan.com/2026/09/22/Meituan-Foundation-Model-for-Recommendation.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "MTFM：美团统一推荐基座大模型在外卖多业务场景的落地实践",
+          "link": "https://tech.meituan.com/2026/09/22/Meituan-Foundation-Model-for-Recommendation.html",
+          "summary": "美团在 MTGR 基础上提出统一推荐基座大模型 MTFM，首次实现外卖多个主要业务的统一精排模型。",
+          "published": "2026-09-22T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/09/10/Agent-Evaluation-White-Paper-01.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "《Agent 评测白皮书》系列01：Agent 评测全览",
+          "link": "https://tech.meituan.com/2026/09/10/Agent-Evaluation-White-Paper-01.html",
+          "summary": "我们推出了《Agent评测白皮书》系列博客，体系化地为大家讲解评测的落地指南，分为《评测全览》、《冷启动篇》、《扩量篇》、《自进化篇》等共4篇，本文为系列的第一篇。",
+          "published": "2026-09-10T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/09/03/meituan-Digital-Human-practice.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "美团智播——数字人直播技术创新与实践",
+          "link": "https://tech.meituan.com/2026/09/03/meituan-Digital-Human-practice.html",
+          "summary": "美团智播围绕 AI 主播「长得真→动得准→演得活→卖得好」构建了完整技术闭环：真人 1:1 复刻、换装换背景身份不跑偏；动作自然流畅，告别「木偶戏」；边说边动、音画一致；背后还有推理加速技术支撑万路并发开播，让普惠落地成为可能。",
+          "published": "2026-09-03T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/08/27/ACL-Outstanding-Paper-GeoRA.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "GeoRA: 为RLVR设计的LoRA——ACL 2026杰出论文解析",
+          "link": "https://tech.meituan.com/2026/08/27/ACL-Outstanding-Paper-GeoRA.html",
+          "summary": "ACL 2026杰出论文奖（Outstanding Paper）揭晓，全球共 18 篇入选，其中包含美团履约技术团队的1篇论文。本文介绍了一种专为 RLVR 设计的低秩训练方法，以及它在业务 Agentic RL 中的落地经验。",
+          "published": "2026-08-27T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/08/20/01-meituan-Query-3.0.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "美团搜索3.0：LLM 语义表征在排序模型的探索与应用",
+          "link": "https://tech.meituan.com/2026/08/20/01-meituan-Query-3.0.html",
+          "summary": "美团搜索团队正依托团垂融合新架构与生成式大模型新技术，全面重构本地生活搜索底座。本系列技术博客将持续介绍美团搜索 3.0 的技术探索，本文聚焦 LLM 语义表征在服务零售排序场景上的三期实践——从单点特征验证到系统性表征体系构建，再到跨场景迁移复用，探索语义匹配信号在搜索排序中的应用路径。",
+          "published": "2026-08-20T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/08/13/KDD-2026-meituan-papers.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "KDD'26美团学术论文精选及KDD Cup'26 DataAgents赛道冠军思路解读",
+          "link": "https://tech.meituan.com/2026/08/13/KDD-2026-meituan-papers.html",
+          "summary": "本文精选了美团技术团队被 KDD 2026 收录的 8 篇论文进行分享，这些论文覆盖了推荐大模型、生成与奖励建模框架、智能体搜索、Transformer 框架、元泛化框架等技术领域。",
+          "published": "2026-08-13T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/08/07/Agent-Evaluation.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "Agent评测漫谈 —— 由浅入深讲解Agent评测",
+          "link": "https://tech.meituan.com/2026/08/07/Agent-Evaluation.html",
+          "summary": "本篇博客是一篇科普文章，由浅入深的介绍Agent评测。其中前两章系统介绍了评测是什么，以及如何建立评测体系；其中第二章是美团图灵Agent评测团队深入美团各业务团队BP总结出的实践经验，是我们在两年实践过程中逐步打磨出来的认知。",
+          "published": "2026-08-07T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/07/28/CatPaw-LongCat.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "美团正式发布 CatPaw：全场景 AI Agent，从个人提效到企业智能化",
+          "link": "https://tech.meituan.com/2026/07/28/CatPaw-LongCat.html",
+          "summary": "搭载美团 LongCat 2.0 的全场景 AI Agent 平台 CatPaw 正式上线，我们将模型能力从“跑得动”推向“用得好”。CatPaw 提供开箱即用的 AI 智能工作台与企业级 Agent 开发托管能力。",
+          "published": "2026-07-28T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/07/24/LongCat-LoHoSearch.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "下一代搜索智能体评测基准！美团开源LoHoSearch，用知识图谱校准AI能力认知",
+          "link": "https://tech.meituan.com/2026/07/24/LongCat-LoHoSearch.html",
+          "summary": "过去一年，我们见证了 Search Agent 能力的显著演进。在 BrowseComp 等评测上，顶尖模型准确率从最初的 30% 区间迅速攀升至 90% 以上。然而，当基准迅速饱和，其区分模型能力的价值也随之递减。",
+          "published": "2026-07-24T00:00:00+08:00"
+        },
+        {
+          "id": "https://tech.meituan.com/2026/07/24/LongCat-MineExplorer.html",
+          "source_id": "meituan-tech",
+          "source_title": "美团技术团队",
+          "title": "让AI离开温室，走向动态世界：MineExplorer揭示顶级多模态大模型被忽视的能力断层",
+          "link": "https://tech.meituan.com/2026/07/24/LongCat-MineExplorer.html",
+          "summary": "美团 LongCat 团队构建了 MineExplorer —— 首个在开放世界中做到分钟级长程任务的评测基准，系统性地评测多模态大模型在需要长程规划、并包含隐藏前置条件的任务中的真实能力。",
+          "published": "2026-07-24T00:00:00+08:00"
+        }
+      ]
+    }
+  ]
+}

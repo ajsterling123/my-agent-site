@@ -359,6 +359,12 @@ address { font-style: normal; }
   color: var(--slate-ink);
 }
 
+/* ---- RSS订阅：条目账本沿用博客列表那一套（.post-list / .post-row / .post-date / .post-item）；
+       唯一的新规则是「同一栏同一天有多条」时日期列多一行时刻，免得看起来像没排序。
+       条目本身是外部内容，不加卡片、不加图标、不用红色。 ---- */
+
+.rss-reader .post-date span { display: block; }
+
 /* ---- 文章页：页名档下压一行登记日期，正文按档案自述的行距走 ---- */
 
 .post-head .post-date {

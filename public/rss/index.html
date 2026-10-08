@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="张易孝实验档案的 RSS订阅页：按订阅源分组登记外部源最近的文章标题、日期与一句话摘要。">
+  <title>RSS订阅 · 张易孝实验档案</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231C2B3A'/%3E%3Ctext x='16' y='23' font-size='17' text-anchor='middle' fill='%23F5F6F4' font-family='SimSun,serif'%3E%E6%A1%A3%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- 全站唯一的脚本，同域引入、defer 执行；渲染逻辑全在 reader.js 里。
+       它只读同域的 ../data/rss-items.json（构建期由 scripts/fetch_feeds.py 抓好），
+       不在这里抓任何第三方源——页面因此没有一个跨域请求，也不受 CORS 限制。 -->
+  <script src="reader.js" defer></script>
+</head>
+<body>
+  <div class="page">
+
+    <header class="doc-head">
+      <p class="doc-meta">
+        <span class="doc-label">个人实验档案</span>
+        <time class="doc-date" datetime="2026-10-08">最后更新：2026-10-08</time>
+      </p>
+      <nav class="site-nav" aria-label="主导航">
+        <ul>
+          <li><a href="../index.html">首页</a></li>
+          <li><a href="../about/index.html">关于我</a></li>
+          <li><a href="../blog/index.html">博客</a></li>
+          <li><a href="../rss/index.html" aria-current="page">RSS订阅</a></li>
+          <li><a href="../papers/index.html">Research Papers</a></li>
+          <li><a href="../wiki/index.html">Wiki</a></li>
+        </ul>
+      </nav>
+      <div class="folio">
+        <h1>RSS订阅</h1>
+      </div>
+    </header>
+
+    <main>
+      <p class="intro">本页把订阅的外部源按源分栏登记：每个源一栏，栏内按发布时间倒序，只留标题、日期与一句话摘要，标题指回源站原文。抓取发生在构建期，条目落在同域的 data/rss-items.json 里，页面只读这份数据。</p>
+
+      <!-- 本页唯一的数据来源：同域 rss-items.json。外部标题与摘要一律当纯文本渲染
+           （reader.js 只用 createElement/textContent，不用 innerHTML 一类的 API）。
+           条目标题是站外链接，但外链只是「导航」——浏览器不会因为一个 <a href> 去请求第三方资源，
+           本页对外的网络请求只有同域这一份 JSON。 -->
+      <div id="rss-reader" class="rss-reader"></div>
+
+      <noscript>
+        <p class="intro">本页的条目由 JavaScript 读取同域数据文件后逐条渲染；当前浏览器禁用了 JavaScript，因此这里不显示条目。订阅清单本身不受影响，见下面的 subscriptions.opml。</p>
+      </noscript>
+
+      <p class="intro">订阅清单：<a href="../subscriptions.opml">subscriptions.opml</a>（OPML 2.0，可直接导入阅读器）。本站自己的博客源是 <a href="../feed.xml">feed.xml</a>。</p>
+    </main>
+
+    <footer class="doc-foot">
+      <p>本页是课程实验档案的「RSS订阅」页，外部条目按订阅源分组登记。</p>
+      <p class="foot-step">STEP 6/12</p>
+    </footer>
+
+  </div>
+</body>
+</html>

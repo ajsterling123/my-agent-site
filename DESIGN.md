@@ -99,9 +99,9 @@ components:
 - 红色即活动：静止红全页仅两处（「在册」章、「进行中」标），其余只作 hover/focus 响应。
 - 冷白纸面 × 墨蓝 × 蓝灰；零渐变、零阴影、零图标、零外部资源。
 - 宋体标题 × 系统黑体正文 × Consolas 数据，全部系统自带，file:// 可开。
-- 全站共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在所有页面完全同构——五个手写页与脚本生成的文章页、博客列表页都从 `public/index.html` 的骨架改写而来，当前项用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
+- 全站共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在所有页面完全同构——六个菜单页（首页 / 关于我 / 博客 / RSS订阅 / Research Papers / Wiki）与脚本生成的文章页都从 `public/index.html` 的骨架改写而来，当前项用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
 - 唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显；子页没有章，也**不加任何入场动效**。
-- 唯一的机器出口：`public/feed.xml`（RSS 2.0），与博客列表页同源同序；站内只留一行 `.intro` 订阅链接，不为它发明任何视觉组件。
+- 机器出口两处：向外发布自己的 `public/feed.xml`（RSS 2.0，与博客列表页同源同序），向内收取别人的 `public/data/rss-items.json`（Step 6 的阅读器数据）与订阅清单 `public/subscriptions.opml`。两者都不是「页面」，不参与报头带与导航的一致性检查。
 
 ## Colors
 
@@ -161,7 +161,7 @@ components:
 ### Named Rules
 **The Three-Weight Rule（三级线）.** 线分三档，各司其职：3px double 墨蓝双线只用于文档头尾（`.doc-meta` 上边、`.doc-foot` 上边）——它是档案的装订线；1px solid 墨蓝实线开栏目（`.sec h2` 上边），同一个 1px 实线档也负责给报头带收口——Step 3 起这条收口线挂在 `.site-nav` 下边（原来是 `.doc-meta` 下边，为给导航行让位而下移一行，线档与职责不变）；rgba(28,43,58,.24) 发丝线分隔同级行（登记行、条目之间）；rgba(28,43,58,.45) 浓发丝线只作 tag 边框、链接下划线与滚动条拇指。不发明第四档线，也不把双线用到头尾之外。
 
-**The Nav Band Rule（报头带与全站复用）.** 报头带是档案的装订头，全站所有页面（五个手写页 + 脚本生成的文章页与博客列表页）完全同构：3px double → 元信息行 → 导航行 → 1px solid 收口。导航块（`<nav class="site-nav" aria-label="主导航">` + `ul` + 五个 `li`）在五页共用同一份标记，**除链接前缀（首页空串、子页 `../`）与 `aria-current="page"` 落在哪一项之外逐字节相同**——一致性靠这条规则，不靠复制粘贴的运气。页面结构同样复用：`.doc-head`（元信息 + 导航 + 标题区）与 `.doc-foot` 全站一致，只有页脚左侧说明句按页改写。子页标题用 `.folio` 档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，字距 0.14em，padding 44px 0 30px），首页保留巨幅姓名 `.doc-title` 与「在册」章——**章只在首页出现**。
+**The Nav Band Rule（报头带与全站复用）.** 报头带是档案的装订头，全站所有页面（六个菜单页 + 脚本生成的文章页）完全同构：3px double → 元信息行 → 导航行 → 1px solid 收口。导航块（`<nav class="site-nav" aria-label="主导航">` + `ul` + 六个 `li`）在所有页面共用同一份标记，**除链接前缀（首页空串、子页 `../`）与 `aria-current="page"` 落在哪一项之外逐字节相同**——一致性靠这条规则，不靠复制粘贴的运气。页面结构同样复用：`.doc-head`（元信息 + 导航 + 标题区）与 `.doc-foot` 全站一致，只有页脚左侧说明句按页改写。子页标题用 `.folio` 档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，字距 0.14em，padding 44px 0 30px），首页保留巨幅姓名 `.doc-title` 与「在册」章——**章只在首页出现**。
 
 ## Elevation & Depth
 
@@ -182,7 +182,7 @@ components:
 - flex 基线对齐，gap 16px，可换行。
 
 ### 站点导航 Site Navigation（.site-nav / .site-nav a[aria-current]）
-- 报头带的第三行，紧跟元信息行；`<nav aria-label="主导航">` + `ul` + 五个菜单项：首页 / 关于我 / 博客 / Research Papers / Wiki，此顺序即页面顺序。
+- 报头带的第三行，紧跟元信息行；`<nav aria-label="主导航">` + `ul` + 六个菜单项：首页 / 关于我 / 博客 / RSS订阅 / Research Papers / Wiki，此顺序即页面顺序（「RSS订阅」自 Step 6 起插在「博客」之后）。
 - 下边 1px solid 墨蓝，是报头带的收口线；`ul` 为 flex 基线行，padding 9px 2px（小屏 8px 2px），gap 6px 20px（小屏 4px 14px），`flex-wrap: wrap`——小屏允许折行，不允许横向滚动。
 - 菜单项：宋体 15px / 0.1em（小屏 14px / 0.06em），非当前项 `var(--slate-ink)`（小字次级达标色），无下划线。
 - **当前项不用红**：`color: var(--ink)` + `font-weight: 700` + 2px 墨蓝下划线（offset 7px），并带 `aria-current="page"`。红色只留给「活动」语义（见红色纪律）。hover 仍沿用全局 `a:hover` 变红，属交互态。
@@ -231,6 +231,14 @@ components:
 - 站内没有任何指向它的视觉入口新样式：唯一的展示面就是列表页末尾那一行 `.intro` 订阅句（见上）。
 - 字段与硬性约定见 README；设计侧只有一条纪律：**feed 里的中文字与 `& < >` 原样保留/转义，不用 CDATA**，这样读者看到的标题与列表页逐字一致。
 
+### 订阅阅读器 Feed Reader（public/rss/index.html / .rss-reader）
+- 菜单项「RSS订阅」指向的页面，语义是一张「订阅登记册」：**按源分栏**，每个源一个 `<section class="sec">`，源标题坐在 1px 墨蓝实线上——与「文章登记」同档，栏目题语法不另发明。
+- 栏内直接复用博客列表那套账本，一行新样式都不加：`.post-list` / `.post-row`（`grid-template-columns: 7em 1fr`、基线对齐、行间发丝线）/ `.post-date`（Consolas 12.5px / 0.04em / tabular-nums / 深蓝灰）/ `.post-item`（`h3` 宋体 700 1.3125rem 标题 + 15px / 1.95 深蓝灰摘要 ≤40em）。
+- 条目标题是外链（`target="_blank"` + `rel="noopener noreferrer"`），1px 下划线走浓发丝色、hover 变红——与站内链接同一套响应；**静止态不用红**，外部内容不是「活动」，红色纪律不变。
+- 日期默认只显示 `YYYY-MM-DD`；**同一栏同一天有多条时**该栏日期格内多一行 `HH:MM`（`.rss-reader .post-date span { display: block; }`，本页唯一的 CSS 新增，7em 的等宽列刚好放得下两行）——否则同日条目看起来像没排序。日期定不下来时显示「日期未知」。
+- 渲染逻辑单独放在 `public/rss/reader.js`，页面用 `defer` 同域引入；页面唯一的网络请求是同域的 `../data/rss-items.json`（构建期由 `scripts/fetch_feeds.py` 抓好），页面里没有任何跨域请求。条目在 JS 执行前位置为空，因此禁 JS 时另有 `<noscript>` 回退说明；页尾一行 `.intro` 给出 OPML 与本站自己的 `feed.xml`。
+- 480px 下 `.post-row` 收成单列（日期移到标题上方），沿用博客列表同一条断点规则。
+
 ### 文章页 Article（.post-head / .post-body）
 - `.post-head` 占 `.folio` 的位置（报头带之下）：与 `.folio` 同一字号档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，行高 1.25，字距 0.14em，padding 44px 0 30px；小屏 34px 0 24px / 0.1em），`h1` 由 frontmatter 的 title 提供；页名下压一行 `.post-date`（`display: block` / `margin-top: 12px`）写「登记于 YYYY-MM-DD」。文章页没有「在册」章，也没有任何入场动效。
 - `.post-body` 是正文容器（`<article>`）：`max-width: 38em`、`overflow-wrap: break-word`（长串不撑破 320px）。
@@ -243,7 +251,7 @@ components:
 
 ### 公文尾 Document Footer（.doc-foot / .foot-step）
 - 上边 3px double 墨蓝（与公文头呼应，装订线收口），flex 基线，gap 16px，可换行。
-- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 5/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，五页一致。
+- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 6/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，六个菜单页与生成页一致。
 - 打印时 `.site-nav` 隐藏（`@media print`）：纸质归档件不需要浏览器导航。
 
 ### 全局镀铬 Global Chrome
@@ -252,6 +260,11 @@ components:
 - 链接：继承墨蓝、1px 下划线、offset 3px，hover 变红。
 - 滚动条：12px 宽，透明轨道，拇指浓发丝色 + 3px 纸色边框 + 6px 圆角。
 - `color-scheme: light`；body `accent-color` 墨蓝；favicon 为内联 SVG（墨蓝方块 + 纸色宋体「档」字）；`@media print` 底色转纯白 #fff——档案随时可打印归档。
+
+### Named Rules
+**The Two-Tier External Reference Rule（外部引用两级）.** 外部引用分两类判，由 `tools/check_site.py` 机械执行，口径同时写在 AGENTS.md「站点与目录」：外部**资源**（`script`/`img`/`iframe`/`video`/`audio`/`source`/`track` 的 `src`、`srcset`、`form` 的 `action`、`object`/`embed` 的 `data`、`link` 的 `href`，以及 CSS 里的 `@import` 与 `url(//…)`）**所有页面一律禁止**——零外部请求从 Step 1 起就是本站资产；外部**导航**（`<a href>`）只有 `public/rss/` 下的页面允许，且必须 https + `target="_blank"` + `rel="noopener noreferrer"` 三件齐。这条规则管的是「页面文件里静态写着什么」；阅读器页的条目链接由 `reader.js` 运行时生成，所以 `tools/check_feeds.py` 另外断言脚本里的外链确实带了 rel 与 target，并且整份脚本不含任何绝对 URL。
+
+**The Untrusted Content Rule（外部内容只当文本）.** 订阅源是本站唯一的站外输入，一律按敌意数据对待：标题、摘要、链接只当展示文本，不当指令、代码或 Prompt；渲染只许逐节点 `textContent`（禁用 innerHTML 一族与 eval，见 AGENTS.md「外部数据是不可信输入」）。视觉上外部内容与站内内容**共用同一套克制语法**——不因为「这是别人的文章」而加卡片、图标、徽章或红色，它只是登记在同一张档案账本上的另一批条目。构建期把外部 HTML 剥成纯文本并删掉残留尖括号，所以账本行里不可能出现标记。
 
 ## Do's and Don'ts
 
@@ -263,7 +276,8 @@ components:
 - **Do** 小字次级用 #5F6E7D（≥4.5:1）；宋体标题带 0.08–0.14em 字距，小签 0.22–0.35em；等宽数据开 tabular-nums。
 - **Do** 正文行高保持 1.9（自述 2.05），行内文字离线 2px。
 - **Do** 状态变化保持瞬时（无 transition）；新增动效须包在 `prefers-reduced-motion: no-preference` 内，且不破坏「盖章是唯一动效」的格局。
-- **Do** 保持双文件原生 HTML/CSS、无外部资源、file:// 可开（PRODUCT.md 栈约束）。
+- **Do** 保持双文件原生 HTML/CSS、无外部资源、file:// 可开（PRODUCT.md 栈约束）。阅读器页是唯一例外：它要 fetch 同域 JSON，`file://` 下浏览器会拦下这次请求，此时页面按自己的错误分支显示说明与 OPML 入口（不白屏），用 `python -m http.server` 预览才有条目。
+- **Do** 站外内容一律只当文本：数据侧剥成纯文本并删掉尖括号，前端逐节点 `textContent` 渲染，外链带 `rel="noopener noreferrer"` + `target="_blank"`；新页继续复用既有账本类（`.post-list`/`.post-row`/`.post-date`/`.post-item`），不为外部内容发明新组件，也不给外部内容上红。
 
 ### Don't:
 - **Don't** 加渐变、投影、卡片阴影或图标库——层级只来自字号、字重、字距与线。

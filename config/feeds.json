@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "notes": [
+    "allowlist 按主机名放行（不含路径）：美团 /feed/ 会 302 到同主机 /rss.xml，仍算在白名单内。",
+    "default_tz：源只写本地时刻、不带时区时（腾讯源就是 2026-08-06 15:34:26 这种），按该源这一栏解释。",
+    "  腾讯源是中文站、时间戳是本地时间，所以取 +08:00；这个假设是显式配置，不藏在代码里。",
+    "date_from_url_regex：源条目完全没有日期字段时（美团 10/10 条都没有 pubDate），",
+    "  用这条正则从条目链接路径里提取 YYYY/MM/DD 再按 default_tz 解释；只从源自身数据推导，不编造。",
+    "  提取到的只有日期没有时刻，时刻记 00:00:00。",
+    "记录里不得出现「抓取时间」这类每次都变的字段：抓取脚本只写内容，不写时间戳。",
+    "只订阅 https 源；订阅地址本身就是公开的技术博客 feed，OPML 里的标题与地址可公开。",
+    "条目里的 enclosure 图片（美团 p0/p1.meituan.net）不入白名单、不下载、不渲染——本站零外部资源。"
+  ],
+  "user_agent": "my-agent-site-feed-reader/1.0 (+https://ajsterling123.github.io/my-agent-site/)",
+  "timeout_seconds": 10,
+  "max_bytes": 2097152,
+  "summary_max_chars": 160,
+  "allowlist": [
+    "security.tencent.com",
+    "sspai.com",
+    "www.solidot.org",
+    "blog.codingnow.com",
+    "www.ruanyifeng.com",
+    "tech.meituan.com"
+  ],
+  "sources": [
+    {
+      "id": "tencent-security",
+      "title": "腾讯安全响应中心",
+      "xml_url": "https://security.tencent.com/index.php/feed/blog/0",
+      "html_url": "https://security.tencent.com/",
+      "default_tz": "+08:00",
+      "opml_public": true
+    },
+    {
+      "id": "sspai",
+      "title": "少数派",
+      "xml_url": "https://sspai.com/feed",
+      "html_url": "https://sspai.com/",
+      "default_tz": "+08:00",
+      "opml_public": true
+    },
+    {
+      "id": "solidot",
+      "title": "Solidot",
+      "xml_url": "https://www.solidot.org/index.rss",
+      "html_url": "https://www.solidot.org/",
+      "default_tz": "+08:00",
+      "opml_public": true
+    },
+    {
+      "id": "codingnow",
+      "title": "云风的 BLOG",
+      "xml_url": "https://blog.codingnow.com/atom.xml",
+      "html_url": "https://blog.codingnow.com/",
+      "default_tz": "+08:00",
+      "opml_public": true
+    },
+    {
+      "id": "ruanyifeng",
+      "title": "阮一峰的网络日志",
+      "xml_url": "https://www.ruanyifeng.com/blog/atom.xml",
+      "html_url": "https://www.ruanyifeng.com/blog/",
+      "default_tz": "+08:00",
+      "opml_public": true
+    },
+    {
+      "id": "meituan-tech",
+      "title": "美团技术团队",
+      "xml_url": "https://tech.meituan.com/feed/",
+      "html_url": "https://tech.meituan.com/",
+      "default_tz": "+08:00",
+      "date_from_url_regex": "/(20\\d{2})/(\\d{2})/(\\d{2})/",
+      "opml_public": true
+    }
+  ]
+}
