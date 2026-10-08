@@ -45,4 +45,4 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 ## Unresolved decisions
 
 - 自我介绍与三条方向的描述文字为可替换草稿（身份四项已由用户确认）。
-- 邮箱现为占位文本「【填你的真实邮箱】」，待用户替换为真实邮箱。
+- 邮箱已填入真实地址 1095568137@qq.com（2026-10-08 本人提供，首页与关于我页两处一致）。
