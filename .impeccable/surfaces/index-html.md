@@ -2,21 +2,21 @@
 version: 1
 slug: "index-html"
 primary_target: "public/index.html"
-related_targets: []
+related_targets: ["public/about/index.html", "public/blog/index.html", "public/papers/index.html", "public/wiki/index.html"]
 ---
 
 # Surface brief: public/index.html —— 课程实验档案首页
 
 ## Scope & visitor mode
 
-单页静态首页（无 JS）。访客模式 Read：老师/同学要在几秒内读到「这是谁、在读什么、正在做什么实验」。
+整站五个页面中的首页（无 JS）。访客模式 Read：老师/同学要在几秒内读到「这是谁、在读什么、正在做什么实验」。
 
 ## Audience, job, action, proof, constraints
 
 - 受众：课程任课老师/助教（按验收清单核对）、同学、本人回访。
 - 任务：核对身份登记与研究方向；唯一行动点是 mailto 邮箱链接。
 - 证明：身份登记行（姓名/院校/专业/年级/邮箱）即核对面。
-- 约束：原生 HTML+CSS 双文件；800px 单栏；无外部资源；390px 不破版。
+- 约束：原生 HTML+CSS，五页共用一份 `styles.css`（无框架、无外部字体、无 JS）；800px 单栏；无外部资源；390px 不破版。
 
 ## Chosen direction & memorable moment
 
@@ -30,9 +30,9 @@ THESIS: 这不是个人主页，是一份正在更新的在册档案——用登
 
 OWN-WORLD: 冷白 #F5F6F4 纸面；墨蓝 #1C2B3A 文字与分隔线（页首/页尾 3px 双细线、栏目 1px 实线、条目间发丝线）；蓝灰 #6B7A89 次级（小字加深至达标变体 ≈#5F6E7D）；红 #B5322C 仅两处活跃标记。宋体系加粗做姓名与栏目题，系统黑体做正文，Consolas 等宽做日期与文件元数据。
 
-STORY: 访客先读到一行等宽的「最后更新」，随即看到在册的巨幅姓名与登记表，明白这是谁的档案；三行研究方向里，带红标的那条就是本学期正在进行的实验；页脚给出进度（STEP 1/12）。
+STORY: 访客先读到一行等宽的「最后更新」，其下是导航行（当前项「首页」墨蓝加粗下划线），随即看到在册的巨幅姓名与登记表，明白这是谁的档案；三行研究方向里，带红标的那条就是本学期正在进行的实验；页脚给出进度（STEP 3/12）。
 
-FIRST VIEWPORT: 顶部一行等宽小字，左「个人实验档案」右「最后更新：2026-10-07」，行外上下各一道墨蓝双细线/单细线；其下档案头：姓名「张易孝」宋体加粗 clamp(2.75rem,9vw,3.75rem)、字距放宽，右上角旋转 -6° 的红框「在册」章；姓名块之下「身份登记」栏目开始：h2 压 1px 墨蓝实线，登记表 dl 四行（院校/专业/年级/邮箱），行间发丝线，邮箱为 mailto 等宽链接（页面唯一行动点），在 1440×900 内完整可见。
+FIRST VIEWPORT: 顶部报头带四层——3px 墨蓝双线 → 元信息行（左「个人实验档案」右「最后更新：2026-10-08」）→ 导航行（首页 / 关于我 / 博客 / Research Papers / Wiki，当前项墨蓝加粗 + 2px 下划线）→ 1px 墨蓝实线收口；其下档案头：姓名「张易孝」宋体加粗 clamp(2.75rem,9vw,3.75rem)、字距放宽，右上角旋转 -6° 的红框「在册」章；姓名块之下「身份登记」栏目开始：h2 压 1px 墨蓝实线，登记表 dl 四行（院校/专业/年级/邮箱），行间发丝线，邮箱为 mailto 等宽链接（页面唯一行动点），在 1440×900 内完整可见。
 
 FORM: 方向由用户简报钉死（brief-pinned beats the roll），未运行 concept-seed，无 seed key；构建路径 code-first（本机无图像生成）。
 
@@ -45,4 +45,4 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 ## Unresolved decisions
 
 - 自我介绍与三条方向的描述文字为可替换草稿（身份四项已由用户确认）。
-- 邮箱 you@example.com 待用户替换为真实邮箱。
+- 邮箱现为占位文本「【填你的真实邮箱】」，待用户替换为真实邮箱。

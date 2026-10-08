@@ -72,7 +72,6 @@ a:hover { color: var(--red); }
   margin: 0;
   padding: 12px 2px;
   border-top: 3px double var(--ink);
-  border-bottom: 1px solid var(--ink);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -93,6 +92,57 @@ a:hover { color: var(--red); }
   letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+/* ---- 站点导航：报头带的第三行，承担原来挂在元信息行下的 1px 墨蓝实线 ---- */
+
+.site-nav {
+  border-bottom: 1px solid var(--ink);
+}
+
+.site-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 9px 2px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 20px;
+}
+
+.site-nav a {
+  font-family: var(--song);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  color: var(--slate-ink);
+  text-decoration: none;
+}
+
+/* 当前项：墨蓝加粗 + 墨蓝下划线。红只属于「在册」章与「进行中」标，不做导航高亮色 */
+
+.site-nav a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+}
+
+.site-nav a:hover { text-decoration: underline; }
+
+/* ---- 副页标题：首页用档案头（巨幅姓名 + 在册章），子页用此档页名 ---- */
+
+.folio {
+  padding: 44px 0 30px;
+}
+
+.folio h1 {
+  margin: 0;
+  font-family: var(--song);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 6vw, 2.5rem);
+  line-height: 1.25;
+  letter-spacing: 0.14em;
 }
 
 .doc-title {
@@ -298,10 +348,19 @@ address { font-style: normal; }
 
   .reg-row { grid-template-columns: 5.5em 1fr; }
   .reg-row dt { letter-spacing: 0.2em; }
+
+  /* 五个菜单项在 390px 内单行放得下；320px 折行，靠 flex-wrap 与 row-gap 兜底 */
+  .site-nav ul { padding: 8px 2px; gap: 4px 14px; }
+  .site-nav a { font-size: 14px; letter-spacing: 0.06em; }
+
+  .folio { padding: 34px 0 24px; }
+  .folio h1 { letter-spacing: 0.1em; }
 }
 
 /* ---- 打印：档案随时可归档 ---- */
 
 @media print {
   body { background: #fff; }
+  /* 纸质归档件不需要浏览器导航 */
+  .site-nav { display: none; }
 }

@@ -1,6 +1,6 @@
 ---
 name: 张易孝 · 实验档案
-description: 课程实验记录站首页——像一份在册公文档案：冷白纸面、墨蓝线、宋体标题，红只标「当前/活跃」。
+description: 课程实验记录站——像一份在册公文档案：冷白纸面、墨蓝线、宋体标题，红只标「当前/活跃」。
 colors:
   paper: "#F5F6F4"
   ink: "#1C2B3A"
@@ -61,6 +61,10 @@ spacing:
 components:
   doc-meta:
     padding: "12px 2px"
+  site-nav:
+    padding: "9px 2px"
+  folio:
+    padding: "44px 0 30px"
   doc-foot:
     padding: "16px 2px 0"
   reg-row:
@@ -95,7 +99,8 @@ components:
 - 红色即活动：静止红全页仅两处（「在册」章、「进行中」标），其余只作 hover/focus 响应。
 - 冷白纸面 × 墨蓝 × 蓝灰；零渐变、零阴影、零图标、零外部资源。
 - 宋体标题 × 系统黑体正文 × Consolas 数据，全部系统自带，file:// 可开。
-- 唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显。
+- 五页共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在五个页面上完全同构，当前页用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
+- 唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显；子页没有章，也**不加任何入场动效**。
 
 ## Colors
 
@@ -117,7 +122,7 @@ components:
 - **浓发丝线 Strong Hairline** (rgba(28, 43, 58, 0.45))：tag 边框、邮箱链接下划线、滚动条拇指。
 
 ### Named Rules
-**The Red Discipline Rule（红色纪律）.** 红是「活动」的语义色，不是装饰色。静止红只允许出现在「当前/活跃」标记上（现构建为「在册」章与「进行中」标两处）；hover 与 focus 可借用红作瞬时响应；禁止红底、红面、大面积红，禁止给非活跃元素上静止红。
+**The Red Discipline Rule（红色纪律）.** 红是「活动」的语义色，不是装饰色。静止红只允许出现在「当前/活跃」标记上（现构建为「在册」章与「进行中」标两处，且两者都只在首页）；hover 与 focus 可借用红作瞬时响应；禁止红底、红面、大面积红，禁止给非活跃元素上静止红。**导航当前项不用红**——它回答的是「你在哪一页」，不是「哪件事在活动」，两件事在语义上不同档；当前项用墨蓝加粗与 2px 墨蓝下划线指认，红色留给真正的「活动」。
 
 **The Two-Slate Rule（双蓝灰）.** 蓝灰一族两个音高：#6B7A89 只作装饰线与较大字号次级；任何小号（≲16px）次级文字必须用 #5F6E7D——它对 #F5F6F4 的对比度 ≥ 4.5:1，前者不达标。
 
@@ -146,14 +151,16 @@ components:
 
 单栏版心：`.page` max-width 800px，水平居中，左右 padding clamp(20px, 5vw, 36px)，底部 56px。所有结构线（双线、实线、发丝线）都是全宽贯穿这 800px 版心——线的宽度就是版心的宽度，这是「公文」而非「卡片」的关键。
 
-垂直节奏（styles.css 实测值；构建未使用间距变量，frontmatter 的 `spacing` 只是常用档位摘要，值以本节为准）：公文头 padding 12px 2px → 档案头 padding 56px 0 44px（小屏 44px 0 36px）→ 栏目题 padding 22px 0 4px + margin-bottom 6px → 登记行 padding 13px 2px → 自述 margin-top 14px → 条目 padding 20px 2px → 页脚 margin-top 64px、padding 16px 2px 0。行内文字统一从线上水平缩进 2px。
+垂直节奏（styles.css 实测值；构建未使用间距变量，frontmatter 的 `spacing` 只是常用档位摘要，值以本节为准）：公文头 padding 12px 2px → 导航行 padding 9px 2px（小屏 8px 2px）→ 档案头 padding 56px 0 44px（小屏 44px 0 36px；子页页名块 `.folio` 44px 0 30px，小屏 34px 0 24px）→ 栏目题 padding 22px 0 4px + margin-bottom 6px → 登记行 padding 13px 2px → 自述 margin-top 14px → 条目 padding 20px 2px → 页脚 margin-top 64px、padding 16px 2px 0。行内文字统一从线上水平缩进 2px。
 
 基线行：公文头、条目头、页脚都是 `display: flex; align-items: baseline` + `flex-wrap: wrap`，gap 16px（条目头 14px / row-gap 8px）；tag 靠 `margin-left: auto` 推到行尾。
 
 响应式：唯一断点 max-width 480px——正文降到 15.5px，档案头收紧，h1 字距收至 0.1em，章缩小（14px、top 48px、padding 6px 7px 6px 12px），登记列 7em → 5.5em，dt 字距收至 0.2em。390/320px 防溢出是组合拳：clamp() 字号、所有基线行可换行、`white-space: nowrap` 只用于原子短数据（日期、tag）——换行时它们作为整体下移，不在中间断开。
 
 ### Named Rules
-**The Three-Weight Rule（三级线）.** 线分三档，各司其职：3px double 墨蓝双线只用于文档头尾（`.doc-meta` 上边、`.doc-foot` 上边）——它是档案的装订线；1px solid 墨蓝实线开栏目（`.sec h2` 上边）；rgba(28,43,58,.24) 发丝线分隔同级行（登记行、条目之间）；rgba(28,43,58,.45) 浓发丝线只作 tag 边框、链接下划线与滚动条拇指。不发明第四档线，也不把双线用到头尾之外。
+**The Three-Weight Rule（三级线）.** 线分三档，各司其职：3px double 墨蓝双线只用于文档头尾（`.doc-meta` 上边、`.doc-foot` 上边）——它是档案的装订线；1px solid 墨蓝实线开栏目（`.sec h2` 上边），同一个 1px 实线档也负责给报头带收口——Step 3 起这条收口线挂在 `.site-nav` 下边（原来是 `.doc-meta` 下边，为给导航行让位而下移一行，线档与职责不变）；rgba(28,43,58,.24) 发丝线分隔同级行（登记行、条目之间）；rgba(28,43,58,.45) 浓发丝线只作 tag 边框、链接下划线与滚动条拇指。不发明第四档线，也不把双线用到头尾之外。
+
+**The Nav Band Rule（报头带与全站复用）.** 报头带是档案的装订头，五个页面完全同构：3px double → 元信息行 → 导航行 → 1px solid 收口。导航块（`<nav class="site-nav" aria-label="主导航">` + `ul` + 五个 `li`）在五页共用同一份标记，**除链接前缀（首页空串、子页 `../`）与 `aria-current="page"` 落在哪一项之外逐字节相同**——一致性靠这条规则，不靠复制粘贴的运气。页面结构同样复用：`.doc-head`（元信息 + 导航 + 标题区）与 `.doc-foot` 五页一致，只有页脚左侧说明句按页改写。子页标题用 `.folio` 档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，字距 0.14em，padding 44px 0 30px），首页保留巨幅姓名 `.doc-title` 与「在册」章——**章只在首页出现**。
 
 ## Elevation & Depth
 
@@ -169,8 +176,19 @@ components:
 ## Components
 
 ### 公文头 Document Header Bar（.doc-meta / .doc-label / .doc-date）
-- 全宽档案条：左「个人实验档案」宋体小签（13px / 0.35em），右「最后更新」等宽日期（12px / 0.05em / tabular-nums / nowrap）。
-- 上边 3px double 墨蓝（装订线），下边 1px solid 墨蓝；flex 基线对齐，gap 16px，可换行。
+- 全宽档案条：左「个人实验档案」宋体小签（13px / 0.35em），右「最后更新」等宽日期（12px / 0.05em / tabular-nums / nowrap）。五页文案与结构完全相同。
+- 上边 3px double 墨蓝（装订线）；下边不再画线——收口的那条 1px solid 墨蓝自 Step 3 起由 `.site-nav` 下边承担，报头带因此是「双线 → 元信息 → 导航 → 实线」四层。
+- flex 基线对齐，gap 16px，可换行。
+
+### 站点导航 Site Navigation（.site-nav / .site-nav a[aria-current]）
+- 报头带的第三行，紧跟元信息行；`<nav aria-label="主导航">` + `ul` + 五个菜单项：首页 / 关于我 / 博客 / Research Papers / Wiki，此顺序即页面顺序。
+- 下边 1px solid 墨蓝，是报头带的收口线；`ul` 为 flex 基线行，padding 9px 2px（小屏 8px 2px），gap 6px 20px（小屏 4px 14px），`flex-wrap: wrap`——小屏允许折行，不允许横向滚动。
+- 菜单项：宋体 15px / 0.1em（小屏 14px / 0.06em），非当前项 `var(--slate-ink)`（小字次级达标色），无下划线。
+- **当前项不用红**：`color: var(--ink)` + `font-weight: 700` + 2px 墨蓝下划线（offset 7px），并带 `aria-current="page"`。红色只留给「活动」语义（见红色纪律）。hover 仍沿用全局 `a:hover` 变红，属交互态。
+
+### 副页页名 Folio Title（.folio / .folio h1）
+- 子页的标题区，替代首页的 `.doc-title`：宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，行高 1.25，字距 0.14em（小屏 0.1em），padding 44px 0 30px（小屏 34px 0 24px）。
+- 只放页名，不放状态标、不放章、不放副题——子页没有「在册」章，页名下面直接接栏目题的 1px 实线。
 
 ### 档案头与章 Dossier Title & Seal（.doc-title / h1 / .stamp）
 - 巨幅宋体姓名；右上角「在册」章：绝对定位 top 58px / right 2px，rotate(-6deg)，红字红 2px 边框 + 内嵌双环，radius 3px，padding 8px 9px 8px 14px，line-height 1，opacity 0.92。
@@ -198,7 +216,8 @@ components:
 
 ### 公文尾 Document Footer（.doc-foot / .foot-step）
 - 上边 3px double 墨蓝（与公文头呼应，装订线收口），flex 基线，gap 16px，可换行。
-- 左说明 12.5px / 0.04em 深蓝灰；右「STEP 1/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记。
+- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 3/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，五页一致。
+- 打印时 `.site-nav` 隐藏（`@media print`）：纸质归档件不需要浏览器导航。
 
 ### 全局镀铬 Global Chrome
 - `::selection`：墨蓝底、纸白字。
@@ -212,6 +231,7 @@ components:
 ### Do:
 - **Do** 保住三件 finish review 确认的资产，未来 Step 在不改变它们的前提下扩展：全宽墨蓝公文双线（.doc-meta/.doc-foot 的 3px double）、登记 dl 账本（.register/.reg-row）、双处红色纪律（静止红仅「在册」章与「进行中」标）。
 - **Do** 新记录沿用档案语法：字段用 dl + .reg-row 账本行，并列条目用发丝线分隔的 ledger 条目，状态用 .tag / .tag-live。
+- **Do** 新页沿用同一份报头带与导航块：`.doc-head`（元信息行 → 导航行 → 标题区）与 `.doc-foot` 五页同构，导航标记只允许差在链接前缀（子页 `../`）与 `aria-current="page"` 的位置；子页标题用 `.folio` 档，两处静止红（「在册」章、「进行中」标）仍然只在首页；站内引用一律相对路径并写全文件名（`index.html`），可被本地 http 与 file:// 双击同样打开。
 - **Do** 新页保持 800px 单栏 + clamp(20px, 5vw, 36px) 侧距 + 底部 56px，线全宽贯穿版心。
 - **Do** 小字次级用 #5F6E7D（≥4.5:1）；宋体标题带 0.08–0.14em 字距，小签 0.22–0.35em；等宽数据开 tabular-nums。
 - **Do** 正文行高保持 1.9（自述 2.05），行内文字离线 2px。

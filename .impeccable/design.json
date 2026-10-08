@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-07T21:05:00+08:00",
+  "generatedAt": "2026-10-08T00:00:00+08:00",
   "title": "Design System: 张易孝 · 实验档案（The Living Dossier）",
   "extensions": {
     "colorMeta": {
@@ -35,9 +35,25 @@
       "name": "公文头 Document Header Bar",
       "kind": "custom",
       "refersTo": "doc-meta",
-      "description": "全宽档案条：左宋体小签、右等宽日期，上 3px 双细线、下 1px 实线，flex 基线可换行。",
+      "description": "全宽档案条：左宋体小签、右等宽日期；上边 3px 双细线是装订线，下边不再画线——收口线自 Step 3 起由站点导航行承担。",
       "html": "<div class='ds-doc-meta'><span class='ds-doc-label'>个人实验档案</span><time class='ds-doc-date' datetime='2026-10-07'>最后更新：2026-10-07</time></div>",
-      "css": ".ds-doc-meta{--ink:#1C2B3A;--song:'SimSun','Songti SC','STSong','NSimSun',serif;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;--mono:Consolas,'SF Mono',Menlo,'Liberation Mono','Courier New',monospace;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:12px 2px;border-top:3px double var(--ink);border-bottom:1px solid var(--ink);font-family:var(--hei)} .ds-doc-label{font-family:var(--song);font-weight:700;font-size:13px;letter-spacing:.35em} .ds-doc-date{font-family:var(--mono);font-size:12px;letter-spacing:.05em;font-variant-numeric:tabular-nums;white-space:nowrap}"
+      "css": ".ds-doc-meta{--ink:#1C2B3A;--song:'SimSun','Songti SC','STSong','NSimSun',serif;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;--mono:Consolas,'SF Mono',Menlo,'Liberation Mono','Courier New',monospace;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:12px 2px;border-top:3px double var(--ink);font-family:var(--hei)} .ds-doc-label{font-family:var(--song);font-weight:700;font-size:13px;letter-spacing:.35em} .ds-doc-date{font-family:var(--mono);font-size:12px;letter-spacing:.05em;font-variant-numeric:tabular-nums;white-space:nowrap}"
+    },
+    {
+      "name": "站点导航 Site Navigation",
+      "kind": "custom",
+      "refersTo": "site-nav",
+      "description": "报头带第三行：nav aria-label=主导航 + 五项菜单；下边 1px 墨蓝实线为报头带收口线。当前项墨蓝加粗 + 2px 墨蓝下划线，不用红。五页共用同一份标记，只差链接前缀与 aria-current 位置。",
+      "html": "<nav class='ds-site-nav' aria-label='主导航'><ul><li><a href='index.html' aria-current='page'>首页</a></li><li><a href='about/index.html'>关于我</a></li><li><a href='blog/index.html'>博客</a></li><li><a href='papers/index.html'>Research Papers</a></li><li><a href='wiki/index.html'>Wiki</a></li></ul></nav>",
+      "css": ".ds-site-nav{--ink:#1C2B3A;--slate-ink:#5F6E7D;--song:'SimSun','Songti SC','STSong','NSimSun',serif;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;border-bottom:1px solid var(--ink);font-family:var(--hei)} .ds-site-nav ul{list-style:none;margin:0;padding:9px 2px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 20px} .ds-site-nav a{font-family:var(--song);font-size:15px;letter-spacing:.1em;color:var(--slate-ink);text-decoration:none} .ds-site-nav a[aria-current='page']{color:var(--ink);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:7px} @media (max-width:480px){.ds-site-nav ul{padding:8px 2px;gap:4px 14px}.ds-site-nav a{font-size:14px;letter-spacing:.06em}}"
+    },
+    {
+      "name": "副页页名 Folio Title",
+      "kind": "custom",
+      "refersTo": "folio",
+      "description": "子页标题区，替代首页的巨幅姓名与「在册」章：只放页名，宋体 700，clamp(1.75rem,6vw,2.5rem)，字距 0.14em。子页没有任何红、没有任何动效。",
+      "html": "<div class='ds-folio'><h1>关于我</h1></div>",
+      "css": ".ds-folio{--song:'SimSun','Songti SC','STSong','NSimSun',serif;--hei:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;padding:44px 0 30px;font-family:var(--hei)} .ds-folio h1{margin:0;font-family:var(--song);font-weight:700;font-size:clamp(1.75rem,6vw,2.5rem);line-height:1.25;letter-spacing:.14em} @media (max-width:480px){.ds-folio{padding:34px 0 24px}.ds-folio h1{letter-spacing:.1em}}"
     },
     {
       "name": "档案头与章 Dossier Title & Seal",
@@ -93,6 +109,7 @@
     "overview": "这个系统不是「个人主页」的视觉语言，而是一份正在持续更新的公文档案：冷白纸面上，墨蓝的字与线登记身份、罗列条目、盖章确认。层级不靠装饰，靠字号、字重、字距与三档粗细的线；页面唯一的「花活」是一枚旋转 -6° 的红章，以及它落下时的那一次动效。气质三词：克制、在册、随时可归档。没有渐变、没有卡片阴影、没有图标库、没有外部字体——三个系统字族（宋体 / 黑体 / 等宽）就是全部排版资源。红 #B5322C 是全页最稀缺的颜色，按纪律只出现在「当前/活跃」的标记上；它的稀有就是它的含义。未来所有 Step 都在同一份档案上续页，而不是另起炉灶。",
     "keyCharacteristics": [
       "页面即档案：信息用登记行（dl）、条目（ledger）、状态标记（tag）组织，拒绝卡片阵列与技能罗列。",
+      "五页共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在五个页面上完全同构，当前页用墨蓝加粗下划线指认；红色仍只在首页的两处出现。",
       "三级线公文章法：3px 双细线框定页首/页尾，1px 实线开栏目，0.24 发丝线分行。",
       "红色即活动：静止红全页仅两处（「在册」章、「进行中」标），其余只作 hover/focus 响应。",
       "冷白纸面 × 墨蓝 × 蓝灰；零渐变、零阴影、零图标、零外部资源。",
@@ -100,16 +117,18 @@
       "唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显。"
     ],
     "rules": [
-      { "name": "The Red Discipline Rule（红色纪律）", "body": "红是「活动」的语义色，不是装饰色。静止红只允许出现在「当前/活跃」标记上（现构建为「在册」章与「进行中」标两处）；hover 与 focus 可借用红作瞬时响应；禁止红底、红面、大面积红，禁止给非活跃元素上静止红。", "section": "colors" },
+      { "name": "The Red Discipline Rule（红色纪律）", "body": "红是「活动」的语义色，不是装饰色。静止红只允许出现在「当前/活跃」标记上（现构建为「在册」章与「进行中」标两处，且两者都只在首页）；hover 与 focus 可借用红作瞬时响应；禁止红底、红面、大面积红，禁止给非活跃元素上静止红。导航当前项不用红——它回答「你在哪一页」，不是「哪件事在活动」；当前项用墨蓝加粗与 2px 墨蓝下划线指认。", "section": "colors" },
       { "name": "The Two-Slate Rule（双蓝灰）", "body": "蓝灰一族两个音高：#6B7A89 只作装饰线与较大字号次级；任何小号（≲16px）次级文字必须用 #5F6E7D——它对 #F5F6F4 的对比度 ≥ 4.5:1，前者不达标。", "section": "colors" },
       { "name": "The Three-Voice Rule（三声部）", "body": "一段文字只有一种声音：身份与结构（姓名、栏目题、条目题、章、档案小签）用宋体加粗；叙述用系统黑体；日期、邮箱、步数计数器等机读数据用 Consolas 并开 tabular-nums。不引入第四个字族。", "section": "typography" },
       { "name": "The Wide-Tracking Rule（宽字距）", "body": "宋体的公文感来自放宽的字距：标题 0.08–0.14em，小签与章 0.22–0.35em；等宽 0.04–0.08em；黑体正文不额外加字距。480px 小屏下 h1 字距收至 0.1em 防溢出。", "section": "typography" },
       { "name": "The Three-Weight Rule（三级线）", "body": "线分三档，各司其职：3px double 墨蓝双线只用于文档头尾（.doc-meta 上边、.doc-foot 上边）——它是档案的装订线；1px solid 墨蓝实线开栏目（.sec h2 上边）；rgba(28,43,58,.24) 发丝线分隔同级行；rgba(28,43,58,.45) 浓发丝线只作 tag 边框、链接下划线与滚动条拇指。不发明第四档线，也不把双线用到头尾之外。", "section": "layout" },
+      { "name": "The Nav Band Rule（报头带与全站复用）", "body": "报头带是档案的装订头，五个页面完全同构：3px double → 元信息行 → 导航行 → 1px solid 收口（那条收口线自 Step 3 起挂在 `.site-nav` 下边，原来是 `.doc-meta` 下边，线档与职责不变）。导航块（nav aria-label=主导航 + ul + 五个 li）在五页共用同一份标记，除链接前缀（首页空串、子页 ../）与 aria-current=page 落在哪一项之外逐字节相同；一致性靠这条规则，不靠复制粘贴的运气。子页标题用 `.folio` 档，首页保留巨幅姓名与「在册」章——章只在首页出现。站内引用一律相对路径并写全文件名（index.html），本地 http 与 file:// 双击行为一致。", "section": "layout" },
       { "name": "The Flat Archive Rule（平面档案）", "body": "禁止投影。盒阴影在这个系统里只有一个合法形态：印章的内嵌双环，用来画纹样。任何用 shadow 表达「浮起」「卡片」「弹层」的写法都不属于这个世界。", "section": "elevation" }
     ],
     "dos": [
       "Do 保住三件 finish review 确认的资产，未来 Step 在不改变它们的前提下扩展：全宽墨蓝公文双线（.doc-meta/.doc-foot 的 3px double）、登记 dl 账本（.register/.reg-row）、双处红色纪律（静止红仅「在册」章与「进行中」标）。",
       "Do 新记录沿用档案语法：字段用 dl + .reg-row 账本行，并列条目用发丝线分隔的 ledger 条目，状态用 .tag / .tag-live。",
+      "Do 新页沿用同一份报头带与导航块：.doc-head（元信息行 → 导航行 → 标题区）与 .doc-foot 五页同构，导航标记只允许差在链接前缀（子页 ../）与 aria-current 的位置；子页标题用 .folio 档，两处静止红仍然只在首页；站内引用一律相对路径并写全文件名（index.html）。",
       "Do 新页保持 800px 单栏 + clamp(20px, 5vw, 36px) 侧距 + 底部 56px，线全宽贯穿版心。",
       "Do 小字次级用 #5F6E7D（≥4.5:1）；宋体标题带 0.08–0.14em 字距，小签 0.22–0.35em；等宽数据开 tabular-nums。",
       "Do 正文行高保持 1.9（自述 2.05），行内文字离线 2px。",
