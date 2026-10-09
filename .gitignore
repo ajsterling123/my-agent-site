@@ -11,3 +11,6 @@ desktop.ini
 # Python 字节码缓存（导入 build_blog.py 做测试时会生成）
 __pycache__/
 *.pyc
+
+# arXiv 礼貌间隔时间戳（scripts/collect_papers.py 每次请求后写入，不提交）
+.arxiv-last-request

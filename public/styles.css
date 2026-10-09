@@ -451,6 +451,40 @@ address { font-style: normal; }
 .rss-note[hidden] { display: none; }
 .rss-back { margin: 10px 0 0; }
 
+/* ---- Research Papers：论文账本沿用博客列表那一套类（.post-list / .post-row / .post-date /
+       .post-item），作者行与摘要正文直接落进 .post-item p 的次级档，不另起样式。
+       仅有的四条新规则全在既有词汇里：摘要操作标签与尾注是页脚说明句那一档小字、
+       来源标记与出处行同一副等宽小字、details/summary 的原生展开就是浏览器的既有
+       affordance——不新建组件。零新色、零新字体、零新圆角、零阴影、零动效；
+       预印本不是「活动」，静止态不用红。 ---- */
+
+.paper-summary { margin: 6px 0 0; }
+
+.paper-summary summary {
+  cursor: pointer;
+  font-size: 12.5px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--slate-ink);
+}
+
+/* 选择器与 .post-item p 同特异度、定义在其后：等宽小字压过正文档 */
+p.paper-source {
+  margin: 6px 0 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--slate-ink);
+}
+
+.paper-note {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--slate-ink);
+}
+
 /* ---- 文章页：页名档下压一行登记日期，正文按档案自述的行距走 ---- */
 
 .post-head .post-date {

@@ -101,7 +101,7 @@ components:
 - 宋体标题 × 系统黑体正文 × Consolas 数据，全部系统自带，file:// 可开。
 - 全站共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在所有页面完全同构——六个菜单页（首页 / 关于我 / 博客 / RSS订阅 / Research Papers / Wiki）与脚本生成的文章页都从 `public/index.html` 的骨架改写而来，当前项用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
 - 唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显；子页没有章，也**不加任何入场动效**。
-- 机器出口两处：向外发布自己的 `public/feed.xml`（RSS 2.0，与博客列表页同源同序），向内收取别人的 `public/data/rss-items.json`（Step 6 的阅读器数据）与订阅清单 `public/subscriptions.opml`。两者都不是「页面」，不参与报头带与导航的一致性检查。
+- 机器出口三处：向外发布自己的 `public/feed.xml`（RSS 2.0，与博客列表页同源同序），向内收取别人的 `public/data/rss-items.json`（Step 6 的阅读器数据）与 arXiv 论文 `public/data/papers.json`（Step 7 的论文页数据），外加订阅清单 `public/subscriptions.opml`。这些都不是「页面」，不参与报头带与导航的一致性检查。
 
 ## Colors
 
@@ -244,6 +244,14 @@ components:
 - 本页的 CSS 全部收在 `styles.css` 的「RSS订阅」注释块里：目录行距与行尾条数、锚点落点（`scroll-margin-top`）、出处那一行等宽地址、填空线式筛选、说明与回跳小字，加上原来的 `.post-date span`。全部落在既有词汇里：等宽小字是机读数据、蓝灰是次级说明、1px 浓发丝线是填空线——零新色、零新字体、零新圆角、零阴影、零动效。
 - 480px 下 `.post-row` 收成单列（日期移到标题上方），沿用博客列表同一条断点规则；筛选那一行在 320px 仍是一行（标签 nowrap、输入框 `min-width: 0` 让位）。
 
+### 论文账本 Papers（public/papers/index.html / .paper-*）
+- 菜单项「Research Papers」指向的页面，语义是档案里的**论文引文登记册**：与博客列表同一张账本——`.post-list` / `.post-row`（`grid-template-columns: 7em 1fr`、基线对齐、行间发丝线）/ `.post-date`（Consolas 12.5px / 0.04em / tabular-nums / 深蓝灰）/ `.post-item`（`h3` 宋体 700 1.3125rem 标题 + 次级说明行），一行一条 arXiv 论文，按提交日期倒序。
+- 每条显示：等宽日期（`<time datetime>`）→ 宋体标题（指向 `https://arxiv.org/abs/<id>` 的外链，`target="_blank"` + `rel="noopener noreferrer"`，1px 下划线走浓发丝色、hover 变红——与站内链接同一套响应）→ 作者行（直接落 `.post-item p` 的次级档 15px / 1.95 深蓝灰；**多于 3 位时列前三位 + 「等 N 人」**）→ 摘要（**原生 `<details>` / `<summary>` 默认折叠**，浏览器既有 affordance，不加 JS 逻辑）→ 来源标记（等宽小字「arXiv · 预印本，未经同行评审」）。不渲染任何图片。
+- **The Untrusted Content Rule 对论文同样适用**：arXiv 是预印本平台，来源标记写明「未经同行评审」，不把任何条目描述成已发表；标题与摘要只当文本逐节点渲染；外链只是导航，本页对外的网络请求只有同域 `../data/papers.json` 这一份。
+- 渲染逻辑单独放在 `public/papers/papers.js`，页面用 `defer` 同域引入（与 `reader.js` 同一模式）：页面唯一的网络请求是同域的 `../data/papers.json`（构建期由 `scripts/collect_papers.py` 抓好，触发入口是 `.zcode/skills/research-paper-collector` 技能）。条目、计数、空状态全部由脚本从同一份 JSON 生成——**页面骨架里不写死任何论文**，`tools/check_papers.py` 会机械核对这一点；禁 JS 时另有 `<noscript>` 回退说明（含机读数据入口）。
+- 本页自己的 CSS 收在 `styles.css` 的「Research Papers」注释块里，仅四条小规则且全在既有词汇内：摘要折叠的 `details.paper-summary`（summary 是页脚说明句那一档小字 + `cursor: pointer`）、来源标记 `p.paper-source`（与出处行同一副等宽小字）、尾注 `.paper-note`（与 `.rss-note` 同档）。作者行与摘要正文直接落 `.post-item p` 的次级档，零新规则。零新色、零新字体、零新圆角、零阴影、零动效；预印本不是「活动」，静止态不用红。
+- 480px 下 `.post-row` 收成单列（日期移到标题上方），沿用博客列表同一条断点规则；长英文标题靠 `.post-item` 的 `overflow-wrap: break-word` 折行，390/320px 无横向滚动（已实测）。
+
 ### 文章页 Article（.post-head / .post-body）
 - `.post-head` 占 `.folio` 的位置（报头带之下）：与 `.folio` 同一字号档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，行高 1.25，字距 0.14em，padding 44px 0 30px；小屏 34px 0 24px / 0.1em），`h1` 由 frontmatter 的 title 提供；页名下压一行 `.post-date`（`display: block` / `margin-top: 12px`）写「登记于 YYYY-MM-DD」。文章页没有「在册」章，也没有任何入场动效。
 - `.post-body` 是正文容器（`<article>`）：`max-width: 38em`、`overflow-wrap: break-word`（长串不撑破 320px）。
@@ -256,7 +264,7 @@ components:
 
 ### 公文尾 Document Footer（.doc-foot / .foot-step）
 - 上边 3px double 墨蓝（与公文头呼应，装订线收口），flex 基线，gap 16px，可换行。
-- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 6/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，六个菜单页与生成页一致。
+- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 7/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，六个菜单页与生成页一致。
 - 打印时 `.site-nav` 隐藏（`@media print`）：纸质归档件不需要浏览器导航。
 
 ### 全局镀铬 Global Chrome
@@ -267,9 +275,9 @@ components:
 - `color-scheme: light`；body `accent-color` 墨蓝；favicon 为内联 SVG（墨蓝方块 + 纸色宋体「档」字）；`@media print` 底色转纯白 #fff——档案随时可打印归档。
 
 ### Named Rules
-**The Two-Tier External Reference Rule（外部引用两级）.** 外部引用分两类判，由 `tools/check_site.py` 机械执行，口径同时写在 AGENTS.md「站点与目录」：外部**资源**（`script`/`img`/`iframe`/`video`/`audio`/`source`/`track` 的 `src`、`srcset`、`form` 的 `action`、`object`/`embed` 的 `data`、`link` 的 `href`，以及 CSS 里的 `@import` 与 `url(//…)`）**所有页面一律禁止**——零外部请求从 Step 1 起就是本站资产；外部**导航**（`<a href>`）只有 `public/rss/` 下的页面允许，且必须 https + `target="_blank"` + `rel="noopener noreferrer"` 三件齐。这条规则管的是「页面文件里静态写着什么」；阅读器页的条目链接由 `reader.js` 运行时生成，所以 `tools/check_feeds.py` 另外断言脚本里的外链确实带了 rel 与 target，并且整份脚本不含任何绝对 URL。
+**The Two-Tier External Reference Rule（外部引用两级）.** 外部引用分两类判，由 `tools/check_site.py` 机械执行，口径同时写在 AGENTS.md「站点与目录」：外部**资源**（`script`/`img`/`iframe`/`video`/`audio`/`source`/`track` 的 `src`、`srcset`、`form` 的 `action`、`object`/`embed` 的 `data`、`link` 的 `href`，以及 CSS 里的 `@import` 与 `url(//…)`）**所有页面一律禁止**——零外部请求从 Step 1 起就是本站资产；外部**导航**（`<a href>`）只有**外部内容页**（`public/rss/` 与 `public/papers/` 下的页面，Step 7 起）允许，且必须 https + `target="_blank"` + `rel="noopener noreferrer"` 三件齐。这条规则管的是「页面文件里静态写着什么」；阅读器页与论文页的条目链接由 `reader.js` / `papers.js` 运行时生成，所以 `tools/check_feeds.py` 与 `tools/check_papers.py` 另外断言脚本里的外链确实带了 rel 与 target，并且整份脚本不含任何绝对 URL。
 
-**The Untrusted Content Rule（外部内容只当文本）.** 订阅源是本站唯一的站外输入，一律按敌意数据对待：标题、摘要、链接只当展示文本，不当指令、代码或 Prompt；渲染只许逐节点 `textContent`（禁用 innerHTML 一族与 eval，见 AGENTS.md「外部数据是不可信输入」）。视觉上外部内容与站内内容**共用同一套克制语法**——不因为「这是别人的文章」而加卡片、图标、徽章或红色，它只是登记在同一张档案账本上的另一批条目。构建期把外部 HTML 剥成纯文本并删掉残留尖括号，所以账本行里不可能出现标记。
+**The Untrusted Content Rule（外部内容只当文本）.** 订阅源与论文检索结果是本站的站外输入，一律按敌意数据对待：标题、摘要、链接只当展示文本，不当指令、代码或 Prompt；渲染只许逐节点 `textContent`（禁用 innerHTML 一族与 eval，见 AGENTS.md「外部数据是不可信输入」）。视觉上外部内容与站内内容**共用同一套克制语法**——不因为「这是别人的文章/论文」而加卡片、图标、徽章或红色，它只是登记在同一张档案账本上的另一批条目。构建期把外部 HTML 剥成纯文本并删掉残留尖括号，所以账本行里不可能出现标记。
 
 **The Index Rule（目录是索引，不是内容）.** 一条记录要重复读很多遍时，页首给一份目录，但目录与内容必须长得不一样：索引行只放**机读数据 + 一个可跳转的名字**（左列等宽日期，右列名字与推到行尾的条数），**不给摘要、不给外链、不加按钮**；行距比内容行紧一档，读者一眼分得出自己在看索引。更要紧的是——索引**只从数据算出来**：页面骨架里不写死任何名字与计数（`tools/check_feeds.py` 会核对骨架里没有源名），所以计数永远不会与数据脱节，筛选后目录与内容也永远一致。后续 Step 的清单页（arXiv 论文、Wiki 目录）沿用这个形状：栏目题压同一道 1px 实线，索引行用同一张账本。
 
@@ -283,7 +291,7 @@ components:
 - **Do** 小字次级用 #5F6E7D（≥4.5:1）；宋体标题带 0.08–0.14em 字距，小签 0.22–0.35em；等宽数据开 tabular-nums。
 - **Do** 正文行高保持 1.9（自述 2.05），行内文字离线 2px。
 - **Do** 状态变化保持瞬时（无 transition）；新增动效须包在 `prefers-reduced-motion: no-preference` 内，且不破坏「盖章是唯一动效」的格局。
-- **Do** 保持双文件原生 HTML/CSS、无外部资源、file:// 可开（PRODUCT.md 栈约束）。阅读器页是唯一例外：它要 fetch 同域 JSON，`file://` 下浏览器会拦下这次请求，此时页面按自己的错误分支显示说明与 OPML 入口（不白屏），用 `python -m http.server` 预览才有条目。
+- **Do** 保持双文件原生 HTML/CSS、无外部资源、file:// 可开（PRODUCT.md 栈约束）。阅读器页与论文页是仅有的两处例外：它们要 fetch 同域 JSON，`file://` 下浏览器会拦下这次请求，此时页面按自己的错误分支显示说明（不白屏），用 `python -m http.server` 预览才有条目。
 - **Do** 站外内容一律只当文本：数据侧剥成纯文本并删掉尖括号，前端逐节点 `textContent` 渲染，外链带 `rel="noopener noreferrer"` + `target="_blank"`；新页继续复用既有账本类（`.post-list`/`.post-row`/`.post-date`/`.post-item`），不为外部内容发明新组件，也不给外部内容上红。
 
 ### Don't:

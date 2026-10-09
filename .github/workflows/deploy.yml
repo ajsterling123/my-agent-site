@@ -36,6 +36,7 @@ jobs:
           "$PY" tools/check_site.py
           "$PY" tools/check_feed.py
           "$PY" tools/check_feeds.py
+          "$PY" tools/check_papers.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

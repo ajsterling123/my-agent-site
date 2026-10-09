@@ -11,15 +11,17 @@ scripts/build_blog.py 生成的文章页因此用同一套判据：除链接前�
 之外，导航块必须与 public/index.html 的导航块逐字节一致；报头带的元信息行与页脚步数
 在所有页面逐字节一致。
 
-外部引用分两级（Step 6 起，口径同时写在 AGENTS.md「站点与目录」与 DESIGN.md）：
+外部引用分两级（Step 6 起，Step 7 扩展，口径同时写在 AGENTS.md「站点与目录」与 DESIGN.md）：
 - 外部「资源」——script/img/iframe/video/audio/source/track 的 src、srcset、form 的 action、
   object/embed 的 data、link 的 href（样式表/字体/preconnect），以及 CSS 里的 @import 与 url(//…)：
   **所有页面一律禁止**。零外部请求是 Step 1 起的资产。
-- 外部「导航」——`<a href>`：只有 public/rss/ 下的页面允许，且必须是 https、必须带
-  rel="noopener noreferrer" 与 target="_blank"；其余页面出现任何站外引用仍然失败。
+- 外部「导航」——`<a href>`：只有**外部内容页**（public/rss/ 与 public/papers/ 下的页面）允许，
+  且必须是 https、必须带 rel="noopener noreferrer" 与 target="_blank"；其余页面出现任何
+  站外引用仍然失败。
 
-脚本：全站只有 public/rss/index.html 允许恰好一个同域 <script src="reader.js" defer></script>
-（无内联代码）；其余页面出现 <script> 一律失败。任何页面都不允许内联事件处理属性（on…=）。
+脚本：全站只有两处外部内容页各允许恰好一个同域 defer 脚本——public/rss/index.html 引
+reader.js、public/papers/index.html 引 papers.js（均无内联代码）；其余页面出现 <script>
+一律失败。任何页面都不允许内联事件处理属性（on…=）。
 
 页面清单不写死：public/ 下所有 .html 都在校验范围内，将来加页面自动纳入。
 """
@@ -56,10 +58,12 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 # 一律禁止外部引用的属性：资源就是资源，不分页面
 RESOURCE_ATTRS = ("src", "srcset", "action", "data")
-# 允许出现站外导航链接的页面前缀（只有它），以及唯一允许的脚本
-RSS_PREFIX = "rss/"
-READER_PAGE = "rss/index.html"
-READER_SCRIPT_SRC = "reader.js"
+# 允许出现站外导航链接的「外部内容页」前缀，以及它们各自唯一允许的脚本
+EXTERNAL_PREFIXES = ("rss/", "papers/")
+SCRIPT_PAGES = {
+    "rss/index.html": "reader.js",
+    "papers/index.html": "papers.js",
+}
 # 站外导航链接的三个硬性条件
 NAV_REL_TOKENS = ("noopener", "noreferrer")
 NAV_TARGET = "_blank"
@@ -148,10 +152,10 @@ def check_local_target(base, page, raw):
 
 
 def check_nav_link(page, element, attrs, raw):
-    """站外导航链接：只有 rss/ 下的页面允许，且必须 https + rel + target 三件齐。"""
-    if not page.startswith(RSS_PREFIX):
-        fail("public/%s 出现站外链接（只有 public/%s 允许外链，其余页面必须站内自洽）：%s"
-             % (page, RSS_PREFIX, raw))
+    """站外导航链接：只有外部内容页（rss/ 与 papers/）允许，且必须 https + rel + target 三件齐。"""
+    if not page.startswith(EXTERNAL_PREFIXES):
+        fail("public/%s 出现站外链接（只有外部内容页 public/%s 允许外链，其余页面必须站内自洽）：%s"
+             % (page, " 与 public/".join(EXTERNAL_PREFIXES), raw))
         return
     if not raw.lower().startswith("https://"):
         fail("public/%s 的站外链接必须是 https:// 开头：%s" % (page, raw))
@@ -212,26 +216,28 @@ def audit_references(page, html):
 
 
 def audit_scripts(page, html):
-    """全站唯一的脚本：public/rss/index.html 上那一个同域 reader.js（带 defer、无内联代码）。"""
+    """全站仅有的两处同域脚本：rss/index.html 引 reader.js、papers/index.html 引 papers.js
+    （各恰好一个，defer、无内联代码）；其余页面出现 <script> 一律失败。"""
     scripts = SCRIPT_RE.findall(html)
-    if page != READER_PAGE:
+    expected = SCRIPT_PAGES.get(page)
+    if expected is None:
         if scripts:
-            fail("public/%s 含 <script>；全站只有 public/%s 允许一个同域 %s"
-                 % (page, READER_PAGE, READER_SCRIPT_SRC))
+            fail("public/%s 含 <script>；全站只有外部内容页 %s 各允许一个同域脚本"
+                 % (page, " 与 ".join("public/%s" % p for p in sorted(SCRIPT_PAGES))))
         return
     if len(scripts) != 1:
         fail("public/%s 的 <script> 有 %d 个，应恰好 1 个（同域 %s、defer）"
-             % (page, len(scripts), READER_SCRIPT_SRC))
+             % (page, len(scripts), expected))
         return
     attrs, body = scripts[0]
     values = attrs_of(attrs)
-    if values.get("src") != READER_SCRIPT_SRC:
+    if values.get("src") != expected:
         fail('public/%s 的脚本必须写成 src="%s"（同域），实际 %r'
-             % (page, READER_SCRIPT_SRC, values.get("src")))
+             % (page, expected, values.get("src")))
     if "defer" not in attrs.lower():
-        fail("public/%s 的 %s 必须带 defer" % (page, READER_SCRIPT_SRC))
+        fail("public/%s 的 %s 必须带 defer" % (page, expected))
     if body.strip():
-        fail("public/%s 的 <script> 里有内联代码；脚本内容只能放在 reader.js 里" % page)
+        fail("public/%s 的 <script> 里有内联代码；脚本内容只能放在 %s 里" % (page, expected))
 
 
 def audit_styles():
@@ -308,8 +314,9 @@ def report(total, menu_count, post_count):
         return 1
     print("\n全部通过：%d 页（%d 个菜单页 + %d 篇生成的文章页）导航骨架一致、"
           "每页恰好一个 h1、aria-current 落点正确、零根绝对路径、零外部资源引用、"
-          "站外链接只在 %s 下且均带 rel/target、所有链接目标存在。"
-          % (total, menu_count, post_count, RSS_PREFIX))
+          "站外链接只在外部内容页 %s 下且均带 rel/target、所有链接目标存在。"
+          % (total, menu_count, post_count,
+             " 与 ".join("public/%s" % p for p in EXTERNAL_PREFIXES)))
     return 0
 
 
