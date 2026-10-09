@@ -181,6 +181,33 @@ Wiki 的规则本身也是文件：`content/wiki/README.md`，加页面之前先
 7. 提交前重复跑一次构建：第二次应当报告「未变化」，`git status` 保持干净——这是幂等的证据。
    Wiki 的任何修改（源文件、规则、生成页）先以 `git diff` 呈现给本人确认，再提交。
 
+## Wiki 检索怎么用（Step 9）
+
+Wiki 页面零 JavaScript，检索在命令行完成：`scripts/search_wiki.py` 是**离线、只读、确定性**的检索器，
+纯标准库，**不写任何文件**（跑完 `git status` 无变化），同一输入重复运行输出逐字节一致。
+
+```bash
+python scripts/search_wiki.py "协作"                  # 检索全部词条，默认显示 5 条
+python scripts/search_wiki.py "agent 协作" --top 3    # 指定显示条数
+python scripts/search_wiki.py "规则" --include-rules  # 把规则文件 README.md 也纳入检索（默认排除）
+python scripts/search_wiki.py "协作" --json           # 机器可读输出（json.loads 可直接解析）
+```
+
+- **中文检索不引入外部分词库**：查询先分词——ASCII 词按空白/标点切；CJK 连续段切成 2-gram，
+  同时把整段保留为一个高权重词（整段原文命中比零散 2-gram 更能说明问题）。
+- **计分**：标题命中 ×3、tags 命中 ×2、正文命中 ×1（命中次数参与累加）；同值排序稳定——
+  得分降序，同分按 slug 升序。
+- **输出**：序号、文件名、页面标题、得分、命中片段（原文摘录、含前后约 40 字上下文、压缩空白）；
+  无命中时输出「0 个结果」并正常退出（退出码 0）。
+
+**基于资料的问答（RAG）走 `.zcode/skills/wiki-search/` 技能**。问我「我以前如何理解与 Agent 协作」
+这类**关于你自己的笔记、概念理解、项目决策、以往记录**的问题时，Agent 按该技能的协议工作：
+先跑上面的检索脚本取得 SOURCES，**只依据 SOURCES 回答**，每个关键结论标注 `[SOURCE n]`
+（n 对应检索输出的序号）并写明文件名；SOURCES 为空或不足时直接回答
+「当前 Wiki 中没有足够依据」，**不用一般知识冒充你的记录**——「Wiki 里没有这条记录」与
+「以下是一般知识，不是你的记录」两种话分清。也可以直接点名「用 wiki-search 查 Wiki」。
+检索脚本与技能都不会为了一次演示往 `content/wiki/` 塞新词条。
+
 ## RSS 订阅源（feed.xml）
 
 - 生成物在 `public/feed.xml`，部署后订阅地址是 <https://ajsterling123.github.io/my-agent-site/feed.xml>；站内入口是博客列表页页尾那一行「订阅：feed.xml」，以及列表页 `<head>` 里的 `rel="alternate"`。
