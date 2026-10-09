@@ -29,6 +29,7 @@ jobs:
           PY="$(command -v python3 || command -v python)"
           "$PY" scripts/build_blog.py
           "$PY" scripts/build_feed.py
+          "$PY" scripts/build_wiki.py
 
       - name: Check site
         run: |

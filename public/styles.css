@@ -559,6 +559,20 @@ p.paper-source {
   line-height: 1.95;
 }
 
+/* ---- Wiki：词条页头部的标签行。沿用页名档下那行等宽小字的词汇（机读数据、次级色），
+       只补一条间距规则；[[双向链接]]、页面清单与反向链接全部复用既有类
+       （全局链接、.post-body 正文、.post-list 账本），零新色、零新字体、零新圆角、
+       零阴影、零动效；Wiki 页面零 JavaScript。 ---- */
+
+.post-head .wiki-meta {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--slate-ink);
+}
+
 /* ---- 页脚 ---- */
 
 .doc-foot {

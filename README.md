@@ -19,21 +19,28 @@ my-agent-site/
 │   ├── data/rss-items.json  # 聚合数据（生成物：6 个外部源规范化后的条目）
 │   ├── feed.xml             # 本站自己的 RSS 2.0 订阅源（生成物，Step 5）
 │   ├── subscriptions.opml   # 订阅清单 OPML（生成物：标题 + xmlUrl + htmlUrl）
-│   ├── wiki/index.html      # Wiki（诚实占位，Step 8 填充）
+│   ├── wiki/index.html      # Wiki 栏目页（生成物：定位正文 + 页面清单 + 反向链接）
+│   ├── wiki/<slug>.html     # Wiki 词条页（生成物，slug = content/wiki/ 里的文件名）
 │   └── styles.css           # 全站共用的样式（原生 CSS，无框架、无外部字体）
 ├── config/
 │   └── feeds.json           # 订阅清单：allowlist + 6 个源（含 default_tz / 日期正则 / OPML 标记）
 ├── content/
-│   └── posts/*.md           # 文章源文件（frontmatter：title / date / description）
+│   ├── posts/*.md           # 文章源文件（frontmatter：title / date / description）
+│   └── wiki/                # Wiki 源文件（一页一个知识点，规则见其 README.md）
+│       ├── README.md        # Wiki 的规则文件本身（构建脚本会跳过它，不生成页面）
+│       ├── index.md         # 索引页（frontmatter：title / updated / tags）
+│       └── agent-experiment.md  # 第一个词条（[[双向链接]] 连接 index）
 ├── scripts/
-│   ├── site_data.py         # slug / 文章页路径 / 站点绝对地址 / 排序的唯一来源（两个构建脚本共用）
+│   ├── site_data.py         # slug / 文章页路径 / 站点绝对地址 / 排序的唯一来源（构建脚本共用）
+│   ├── page_build.py        # 共用实现：Markdown 转换 + 骨架改写（build_blog.py 与 build_wiki.py 共用，不写第三份）
 │   ├── build_blog.py        # 构建脚本：Markdown → 博客列表页 + 文章页（幂等）
+│   ├── build_wiki.py        # 构建脚本：content/wiki/*.md → Wiki 栏目页 + 词条页（幂等；[[双向链接]] 解析 + 自动反向链接，死链即构建失败）
 │   ├── build_feed.py        # 构建脚本：Markdown frontmatter → public/feed.xml（幂等）
 │   ├── fetch_feeds.py       # 构建脚本：抓取外部源 → rss-items.json + subscriptions.opml（幂等）
 │   ├── collect_papers.py    # 构建脚本：arXiv 检索 → public/data/papers.json（幂等，≥3 秒礼貌间隔）
 │   └── probe_feed.py        # 只读探查工具：单个源的 HTTPS / 格式 / 字段 / 体积 / 耗时
 ├── tools/
-│   ├── check_site.py        # 机械校验：页面骨架一致性 / 导航 / aria-current / 两级外部引用规则
+│   ├── check_site.py        # 机械校验：页面骨架一致性 / 导航 / aria-current / 生成页标记 / 两级外部引用规则（含 wiki/）
 │   ├── check_feed.py        # 机械校验：feed.xml 的 schema / 绝对地址 / RFC 822 日期 / 排序 / 转义
 │   ├── check_feeds.py       # 机械校验：rss-items.json / subscriptions.opml / reader.js + 敌意样本
 │   └── check_papers.py      # 机械校验：papers.json / papers.js / 论文页骨架 + 坏数据负向测试
@@ -119,13 +126,15 @@ python -m http.server 8080 --directory public
    ```bash
    python scripts/build_blog.py
    python scripts/build_feed.py
+   python scripts/build_wiki.py
    python scripts/fetch_feeds.py
    python tools/check_site.py
    python tools/check_feed.py
    python tools/check_feeds.py
    ```
 
-   构建会把列表页、所有文章页与 `public/feed.xml` 写好，并清掉源文件已删除的文章页。它只碰
+   构建会把列表页、所有文章页与 `public/feed.xml` 写好，并清掉源文件已删除的文章页；`build_wiki.py`
+   会同时把 `public/wiki/` 的栏目页与词条页写好——它只依赖 `content/wiki/`，与博客互不影响。博客构建只碰
    `public/blog/index.html`、`public/posts/*.html` 与 `public/feed.xml`，不动 `content/`，也不动手写页面。
    新增一篇文章就是「列表页多一行 + feed 多一个 `<item>`」，不需要改脚本或手写任何页面。
 5. 提交前重复跑一次构建：第二次应当报告「未变化」，`git status` 保持干净——这是幂等的证据。
@@ -133,6 +142,44 @@ python -m http.server 8080 --directory public
 文章里不要写站外链接（`http://` / `https://`）：本站零外部资源，校验脚本会把外部引用判为失败。
 唯一的例外是外部内容页：RSS订阅 页的条目标题指向源站原文（由 `reader.js` 生成），
 Research Papers 页的论文标题指向 arXiv 原文（由 `papers.js` 生成），都带 `rel="noopener noreferrer"`。
+
+## 怎么加一个 Wiki 页面
+
+Wiki 的规则本身也是文件：`content/wiki/README.md`，加页面之前先读它。要点：
+
+1. **先搜同义页面**：`content/wiki/` 下已有同义内容就更新那一页，不另起炉灶。
+2. 文件名即 slug（同 URL），用 ASCII 小写字母、数字与 `-`（如 `my-topic.md`）；
+   中文标题写在 frontmatter 的 `title` 里，不用中文文件名。
+3. 文件开头写 frontmatter 三行，缺一不可：
+
+   ```markdown
+   ---
+   title: 词条标题
+   updated: 2026-10-09
+   tags: 标签一, 标签二
+   ---
+   ```
+
+   `updated` 必须是合法的 `YYYY-MM-DD`（`2026-10-9` 会被构建脚本拒绝）；`tags` 用逗号分隔。
+4. 正文用 Markdown 写（与博客同一套语法，见「如何新增一篇博客」第 3 步）。三类内容三种写法：
+   「我的原话」用 `> ` 引用块并在块内注明出处；「Agent 总结」不加标记；「外部来源」必须附链接
+   （外部条目先登记进 RSS订阅 / Research Papers 页，再引用站内地址——Wiki 页面文件里出现站外
+   `href` 会被 `tools/check_site.py` 判失败）。未经确认的推断一律不写入。
+5. 正文里至少写一个 `[[双向链接]]` 连接已有页面：`[[slug]]` 显示目标页标题，`[[slug|别名]]` 用别名。
+   链接写向不存在的页面会让构建直接失败（非零退出并指出是哪个文件里的哪个链接）——死链即构建失败。
+6. 在 `my-agent-site/` 下运行构建，再跑校验：
+
+   ```bash
+   python scripts/build_wiki.py
+   python tools/check_site.py
+   ```
+
+   构建会生成 `public/wiki/index.html`（栏目页，正文后自动附「页面清单」——标题、updated、tags
+   由脚本从 frontmatter 生成，不手维护）与 `public/wiki/<slug>.html`（词条页），并给被引用的页面
+   补上「链接到此页的页面」（未被引用的页面不显示该节）。它只碰 `public/wiki/`，不动 `content/`，
+   也不动手写页面。Wiki 页面零 JavaScript，不要往源文件或生成页里加脚本。
+7. 提交前重复跑一次构建：第二次应当报告「未变化」，`git status` 保持干净——这是幂等的证据。
+   Wiki 的任何修改（源文件、规则、生成页）先以 `git diff` 呈现给本人确认，再提交。
 
 ## RSS 订阅源（feed.xml）
 
@@ -203,9 +250,10 @@ python tools/check_feeds.py
 python tools/check_papers.py
 ```
 
-`check_site.py` 扫描 `public/` 下的**全部**页面（六个菜单页 + 生成的文章页），检查：报头带的元信息行与
+`check_site.py` 扫描 `public/` 下的**全部**页面（六个菜单页 + 生成的文章页 + 生成的 Wiki 页），检查：报头带的元信息行与
 页脚步数是否全站逐字节一致、导航块除链接前缀与 `aria-current` 外是否与 `public/index.html` 一致、每页是否
-恰好一个 `h1`、`aria-current` 是否恰好落在该页（文章页应当一次都没有）、外部引用是否守两级规则
+恰好一个 `h1`、生成页是否带各自的生成标记、`aria-current` 是否恰好落在该页（文章页与 Wiki 词条页
+应当一次都没有，Wiki 栏目页恰好一次落在「Wiki」项）、外部引用是否守两级规则
 （外部资源一律禁止；站外导航只许外部内容页——`public/rss/` 与 `public/papers/` 下的页面、且必须
 https + `rel="noopener noreferrer"` + `target="_blank"`）、有无根绝对路径、每个链接目标文件是否真实存在、
 `<script>` 是否只有阅读器页与论文页各那一个（同域、defer、无内联代码）。链接前缀按页面相对 `public/` 的
@@ -249,7 +297,9 @@ authors 是非空字符串列表；source 恒为 `arXiv`；整表按 published �
 
 ## 部署方式
 
-推送到 `main` 分支即自动触发 GitHub Actions（`.github/workflows/deploy.yml`），
-把 `public/` 发布到 GitHub Pages；也可在 Actions 页面手动触发（workflow_dispatch）。
+推送到 `main` 分支即自动触发 GitHub Actions（`.github/workflows/deploy.yml`）：
+Build 步跑 `build_blog.py` / `build_feed.py` / `build_wiki.py`（Wiki 栏目页与词条页离线确定性生成，
+可进 CI），校验步跑上面四个 check 脚本，然后把 `public/` 发布到 GitHub Pages；
+也可在 Actions 页面手动触发（workflow_dispatch）。
 
 首次使用需在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。

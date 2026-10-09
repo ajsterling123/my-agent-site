@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!-- 由 scripts/build_wiki.py 生成：改内容请改 content/wiki/*.md，规则见 content/wiki/README.md -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="张易孝实验档案 Wiki 词条：《第一次 Agent 实验：讲清目标、约束与验收》。">
+  <title>第一次 Agent 实验：讲清目标、约束与验收 · 张易孝实验档案</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231C2B3A'/%3E%3Ctext x='16' y='23' font-size='17' text-anchor='middle' fill='%23F5F6F4' font-family='SimSun,serif'%3E%E6%A1%A3%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page">
+
+    <header class="doc-head">
+      <p class="doc-meta">
+        <span class="doc-label">个人实验档案</span>
+        <time class="doc-date" datetime="2026-10-09">最后更新：2026-10-09</time>
+      </p>
+      <nav class="site-nav" aria-label="主导航">
+        <ul>
+          <li><a href="../index.html">首页</a></li>
+          <li><a href="../about/index.html">关于我</a></li>
+          <li><a href="../blog/index.html">博客</a></li>
+          <li><a href="../rss/index.html">RSS订阅</a></li>
+          <li><a href="../papers/index.html">Research Papers</a></li>
+          <li><a href="../wiki/index.html">Wiki</a></li>
+        </ul>
+      </nav>
+      <div class="post-head">
+        <h1>第一次 Agent 实验：讲清目标、约束与验收</h1>
+        <time class="post-date" datetime="2026-10-09">更新于 2026-10-09</time>
+        <span class="wiki-meta">标签：agent、协作、验收</span>
+      </div>
+    </header>
+
+    <main>
+      <article class="post-body">
+        <p>知识点来自博客《我的第一次 Agent 实验》（登记于 2026-09-02），本页只提炼概念与决策，不复述全文。索引见 <a href="index.html">Wiki</a>。</p>
+        <h2>核心认识</h2>
+        <blockquote>
+          <p>我发现，和 Agent 协作的关键不是把句子写得很长，而是给出清晰的目标、约束和验收标准。</p>
+          <p>—— 张易孝原话，出处：本档案博客文章<a href="../posts/hello-agent.html">《我的第一次 Agent 实验》</a></p>
+        </blockquote>
+        <h2>交代任务的三问</h2>
+        <p>给 Agent 交代任务时依次说明三件事：</p>
+        <ol>
+          <li>用户是谁；</li>
+          <li>页面应该包含什么；</li>
+          <li>如何判断完成。</li>
+        </ol>
+        <h2>验收必须实际执行</h2>
+        <p>给 Agent 的验收标准要落成可执行的检查，本条目的做法：</p>
+        <ul>
+          <li>连续运行两次构建脚本，第二次之后 <code>git status</code> 干净（幂等的证据）；</li>
+          <li>跑机械校验脚本（如 <code>python tools/check_site.py</code>）；</li>
+          <li>起本地 http 服务（<code>python -m http.server 8080 --directory public</code>），在浏览器里打开生成页，确认样式加载、导航可跳转；</li>
+          <li>390px 与 320px 宽度下无横向滚动。</li>
+        </ul>
+      </article>
+
+      <section class="sec" aria-labelledby="t-back">
+        <h2 id="t-back">链接到此页的页面</h2>
+        <ul class="post-list">
+          <li class="post-row">
+            <time class="post-date" datetime="2026-10-09">2026-10-09</time>
+            <div class="post-item">
+              <h3><a href="index.html">Wiki</a></h3>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="doc-foot">
+      <p>本页是课程实验档案 Wiki 的一个词条，源文件在 content/wiki/agent-experiment.md。</p>
+      <p class="foot-step">STEP 8/12</p>
+    </footer>
+
+  </div>
+</body>
+</html>

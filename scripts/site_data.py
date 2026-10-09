@@ -8,6 +8,9 @@ build_feed.py（生成 public/feed.xml）都 import 本模块，因此下面这�
   slug 命名规则、frontmatter 解析与校验、文章页在 public/ 下的相对路径、
   文章页的绝对 URL、文章排序（日期倒序 + 同日按 slug 稳定）。
 
+Wiki 的目录位置（WIKI_CONTENT / WIKI_OUT / 规则文件名）也在这里声明，
+build_wiki.py 只写 Wiki 特有的 frontmatter 与 [[双向链接]] 规则。
+
 站点基址（GitHub Pages 的项目子路径）只在 SITE_BASE_URL 出现一次，其余地址由它拼出；
 改目录结构、改 slug 规则、改排序，都只改这一个文件。
 """
@@ -23,6 +26,12 @@ POSTS_OUT = PUBLIC / "posts"
 BLOG_OUT = PUBLIC / "blog" / "index.html"
 FEED_OUT = PUBLIC / "feed.xml"
 SKELETON = PUBLIC / "index.html"
+
+# Wiki（Step 8 起）：内容源 content/wiki/，生成页 public/wiki/。
+# README.md 是规则文件（规则本身也是文件），不是词条，构建脚本按名跳过它。
+WIKI_CONTENT = ROOT / "content" / "wiki"
+WIKI_OUT = PUBLIC / "wiki"
+WIKI_RULES = "README.md"
 
 SITE_NAME = "张易孝实验档案"
 SITE_BASE_URL = "https://ajsterling123.github.io/my-agent-site/"

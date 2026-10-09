@@ -7,9 +7,14 @@
 
 深度感知：每个页面的链接前缀由它相对 public/ 的深度算出——public/index.html 深度 0 用空串、
 public/about/index.html 与 public/posts/x.html 深度 1 用 ../、更深再叠一层。手写页与
-scripts/build_blog.py 生成的文章页因此用同一套判据：除链接前缀与 aria-current 落在哪一项
-之外，导航块必须与 public/index.html 的导航块逐字节一致；报头带的元信息行与页脚步数
-在所有页面逐字节一致。
+scripts/build_blog.py 生成的文章页、scripts/build_wiki.py 生成的 Wiki 页因此用同一套判据：
+除链接前缀与 aria-current 落在哪一项之外，导航块必须与 public/index.html 的导航块逐字节
+一致；报头带的元信息行与页脚步数在所有页面逐字节一致。
+
+生成页：public/posts/ 下的页面由 build_blog.py 生成，public/wiki/ 下的页面由
+build_wiki.py 生成（Step 8 起，含栏目页 wiki/index.html），各自必须带生成标记；
+栏目页是菜单页（恰好 1 个 aria-current 指向自身），词条页与文章页同为 1 层深、
+前缀 ../、不设 aria-current。Wiki 页面零 <script>（与所有非外部内容页同判）。
 
 外部引用分两级（Step 6 起，Step 7 扩展，口径同时写在 AGENTS.md「站点与目录」与 DESIGN.md）：
 - 外部「资源」——script/img/iframe/video/audio/source/track 的 src、srcset、form 的 action、
@@ -35,6 +40,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
 CANONICAL = PUBLIC / "index.html"          # 骨架与导航的参照页
 MARKER = "<!-- 由 scripts/build_blog.py 生成"   # 生成页的标记，见 scripts/build_blog.py
+WIKI_MARKER = "<!-- 由 scripts/build_wiki.py 生成"   # Wiki 页的标记，见 scripts/build_wiki.py
 
 NAV_RE = re.compile(r'<nav class="site-nav".*?</nav>', re.S)
 LI_RE = re.compile(r"<li>.*?</li>", re.S)
@@ -302,9 +308,14 @@ def audit_page(page, html, canonical_nav, canonical_nav_raw, menu_targets):
             fail("public/%s 缺少生成标记：public/posts/ 下的页面应由 scripts/build_blog.py 生成" % page)
         if '<article class="post-body">' not in clean:
             fail('public/%s 缺少 <article class="post-body">' % page)
+    elif page.startswith("wiki/"):
+        if WIKI_MARKER not in html:
+            fail("public/%s 缺少生成标记：public/wiki/ 下的页面应由 scripts/build_wiki.py 生成" % page)
+        if '<article class="post-body">' not in clean:
+            fail('public/%s 缺少 <article class="post-body">' % page)
 
 
-def report(total, menu_count, post_count):
+def report(total, menu_count, post_count, wiki_count):
     for n in sorted(set(notes)):
         print("  提示 %s" % n)
     if failures:
@@ -312,10 +323,11 @@ def report(total, menu_count, post_count):
         for f in failures:
             print("  ✗ %s" % f)
         return 1
-    print("\n全部通过：%d 页（%d 个菜单页 + %d 篇生成的文章页）导航骨架一致、"
-          "每页恰好一个 h1、aria-current 落点正确、零根绝对路径、零外部资源引用、"
-          "站外链接只在外部内容页 %s 下且均带 rel/target、所有链接目标存在。"
-          % (total, menu_count, post_count,
+    print("\n全部通过：%d 页（%d 个菜单页 + %d 篇生成的文章页 + %d 个生成的 Wiki 页）"
+          "导航骨架一致、每页恰好一个 h1、aria-current 落点正确、零根绝对路径、"
+          "零外部资源引用、站外链接只在外部内容页 %s 下且均带 rel/target、"
+          "所有链接目标存在。"
+          % (total, menu_count, post_count, wiki_count,
              " 与 ".join("public/%s" % p for p in EXTERNAL_PREFIXES)))
     return 0
 
@@ -324,15 +336,15 @@ def main():
     all_pages = pages()
     if not CANONICAL.is_file():
         fail("缺少骨架参照页 public/index.html")
-        return report(0, 0, 0)
+        return report(0, 0, 0, 0)
     if not all_pages:
         fail("public/ 下一个 .html 都没有")
-        return report(0, 0, 0)
+        return report(0, 0, 0, 0)
 
     canonical_html = load(CANONICAL)
     canonical_nav = one(NAV_RE, canonical_html, 'class="site-nav" 的导航块', "index.html")
     if canonical_nav is None:
-        return report(0, 0, 0)
+        return report(0, 0, 0, 0)
     canonical_nav_norm = normalize_nav(canonical_nav, "")
 
     # 菜单指向的页面（相对 public/ 的路径）：由参照页导航解析
@@ -375,7 +387,8 @@ def main():
     audit_styles()
 
     post_count = len([p for p in all_pages if rel(p).startswith("posts/")])
-    return report(len(all_pages), len(menu_targets), post_count)
+    wiki_count = len([p for p in all_pages if rel(p).startswith("wiki/")])
+    return report(len(all_pages), len(menu_targets), post_count, wiki_count)
 
 
 if __name__ == "__main__":
