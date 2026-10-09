@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "site": {
+    "pages": 9,
+    "last_build": "2026-10-09T17:35:51+08:00",
+    "last_update": "2026-10-09"
+  },
+  "content": {
+    "posts": 1,
+    "wiki_entries": 1,
+    "papers": 10,
+    "rss_sources": 6,
+    "rss_items": 75
+  },
+  "checks": [
+    {
+      "name": "论文数据",
+      "ok": true,
+      "detail": "可解析，10 条，七字段与 arXiv 链接齐全"
+    },
+    {
+      "name": "订阅聚合",
+      "ok": true,
+      "detail": "可解析，6 源 75 条，字段齐全"
+    },
+    {
+      "name": "订阅源 feed",
+      "ok": true,
+      "detail": "RSS 2.0 可解析，1 个 item 与文章数一致"
+    },
+    {
+      "name": "Wiki 生成页",
+      "ok": true,
+      "detail": "2 个词条（含索引）的生成页齐全且带标记"
+    }
+  ]
+}

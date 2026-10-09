@@ -37,6 +37,11 @@
 幂等：生成物里不写「抓取时间」这类每次都变的字段；内容与已有文件相同就一个字节都不写
 （用 site_data.write_if_changed）。外部源本身有新内容时当然会有 diff——那是内容变化，不是噪声。
 
+运行日志（Step 10 起）：每个阶段（读配置 / 逐源抓取 / 聚合 / 落盘 / 失败）至少一条
+JSONL 事件走 scripts/runlog.py，追加进 logs/build.log 并同步打到 stdout；run_id 在
+最后一行打印。input 只记源 id 与条数这类摘要，外部标题/摘要正文不进日志；
+单源失败的失败原因也记进日志（脱敏后）。
+
 信任边界：本脚本只读外部数据、只写上面两件生成物。外部文本一律只当展示文本，
 绝不回写 config/feeds.json、AGENTS.md 或任何脚本，也绝不被当作指令执行
 （见 AGENTS.md「外部数据是不可信输入」一节）。
@@ -60,6 +65,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from site_data import SITE_NAME, rel, write_if_changed
+from runlog import wrap_main
 
 CONFIG_PATH = ROOT / "config" / "feeds.json"
 DATA_OUT = ROOT / "public" / "data" / "rss-items.json"
@@ -404,16 +410,16 @@ def load_previous(path=DATA_OUT):
     return {g["id"]: g.get("items", []) for g in doc.get("sources", []) if "id" in g}
 
 
-def main():
-    log_lines = []
-
-    def log(msg):
-        log_lines.append(msg)
+def main(log, argv=None):
+    def out(msg):
         print(msg)
 
     cfg = load_config()
     cfg["_allowlist"] = [h.lower() for h in cfg["allowlist"]]
     previous = load_previous()
+    log.event("read_config", input={"源": len(cfg["sources"]),
+                                    "allowlist": len(cfg["allowlist"]),
+                                    "上次数据源数": len(previous)})
 
     ok, failed = [], []
     per_source = {}
@@ -422,39 +428,48 @@ def main():
         try:
             check_source_url(source["xml_url"], cfg["_allowlist"])
             data, final = fetch(source["xml_url"], cfg, cfg["_allowlist"])
-            items = parse_feed(data, source, cfg, log)
+            items = parse_feed(data, source, cfg, out)
             per_source[sid] = items
             ok.append(sid)
             note = "" if final == source["xml_url"] else "（重定向到 %s）" % final
-            log("  成功 %-18s %2d 条%s" % (sid, len(items), note))
+            log.event("fetch_source", input={"source": sid, "条目": len(items),
+                                             "字节": len(data)})
+            out("  成功 %-18s %2d 条%s" % (sid, len(items), note))
         except FeedError as exc:
             failed.append((sid, str(exc)))
             kept = previous.get(sid, [])
             per_source[sid] = kept
-            log("  失败 %-18s %s → %s" % (sid, exc,
+            log.event("fetch_source", "fail", error=str(exc),
+                      input={"source": sid, "保留上次数据": len(kept)})
+            out("  失败 %-18s %s → %s" % (sid, exc,
                                         "保留上次数据 %d 条" % len(kept) if kept
                                         else "没有历史数据可保留（本栏留空）"))
 
-    doc, dropped = build_document(cfg, per_source, log)
+    doc, dropped = build_document(cfg, per_source, out)
     total = sum(len(g["items"]) for g in doc["sources"])
+    log.event("aggregate", input={"条目": total, "跨源去重": dropped})
     wrote = write_if_changed(DATA_OUT, render_json(doc))
     wrote_opml = write_if_changed(OPML_OUT, render_opml(cfg))
+    log.event("write_outputs", input={"rss-items.json 写入": int(wrote),
+                                      "subscriptions.opml 写入": int(wrote_opml)})
 
-    log("抓取结果：成功 %d / %d 个源，失败 %d 个；规范化条目 %d 条，跨源去重 %d 条"
+    out("抓取结果：成功 %d / %d 个源，失败 %d 个；规范化条目 %d 条，跨源去重 %d 条"
         % (len(ok), len(cfg["sources"]), len(failed), total, dropped))
     if failed:
-        log("  失败清单：" + "；".join("%s（%s）" % (s, r) for s, r in failed))
-    log("  %s %s" % (rel(DATA_OUT), "写入" if wrote else "未变化（与现有 JSON 逐字节相同）"))
-    log("  %s %s" % (rel(OPML_OUT), "写入" if wrote_opml else "未变化"))
+        out("  失败清单：" + "；".join("%s（%s）" % (s, r) for s, r in failed))
+    out("  %s %s" % (rel(DATA_OUT), "写入" if wrote else "未变化（与现有 JSON 逐字节相同）"))
+    out("  %s %s" % (rel(OPML_OUT), "写入" if wrote_opml else "未变化"))
     if not ok and total == 0:
-        log("构建失败：所有源都失败且没有任何历史数据")
+        out("构建失败：所有源都失败且没有任何历史数据")
+        log.event("fetch_all", "fail", error="所有源都失败且没有任何历史数据",
+                  input={"源": len(cfg["sources"]), "条目": 0})
         return 1
     return 0
 
 
 if __name__ == "__main__":
     try:
-        sys.exit(main())
+        sys.exit(wrap_main("fetch_feeds", main))
     except FeedError as exc:
         print("构建失败：%s" % exc)
         sys.exit(1)

@@ -31,6 +31,10 @@ tags 逗号分隔。README.md 是规则文件，按名跳过、不登记为词�
 不碰任何手写页。生成页带生成标记，由 tools/check_site.py 校验。
 
 Wiki 页面零 JavaScript：[[链接]] 与反向链接都在构建期解决，产物是纯静态 HTML。
+
+运行日志（Step 10 起）：每个阶段（读取输入 / 渲染 / 校验 / 落盘 / 失败）至少一条
+JSONL 事件走 scripts/runlog.py，追加进 logs/build.log 并同步打到 stdout；run_id 在
+最后一行打印。死链等构建失败的失败原因也记进日志（脱敏后）。
 """
 
 import html
@@ -43,6 +47,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from site_data import (DATE_RE, SKELETON, SITE_NAME, SLUG_RE, WIKI_CONTENT, WIKI_OUT, WIKI_RULES,
                        BuildError, fail, rel, write_if_changed)
 from page_build import article_body, folio_head, indent, parse_blocks, render_page, WIKI_RE
+from runlog import wrap_main
 
 MARKER = ("<!-- 由 scripts/build_wiki.py 生成：改内容请改 content/wiki/*.md，"
           "规则见 content/wiki/README.md -->")
@@ -275,13 +280,14 @@ def render_wiki_page(skel, page, pages, backlinks):
 
 # ---------------------------------------------------------------- 主流程
 
-def main():
+def main(log, argv=None):
     if not SKELETON.is_file():
         fail("找不到骨架页面 public/index.html")
     skel = SKELETON.read_text(encoding="utf-8")
 
     pages = load_pages()
     registry = {p["slug"]: p for p in pages}
+    log.event("read_input", input={"骨架": rel(SKELETON), "词条": len(pages)})
 
     # 第一遍：死链预检（指出是哪个文件里的哪个链接）+ 记录正向链接。
     for page in pages:
@@ -296,6 +302,15 @@ def main():
     for page in pages:
         out = WIKI_OUT / ("%s.html" % page["slug"])
         outputs[out] = render_wiki_page(skel, page, pages, backlinks)
+    log.event("render_pages", input={"页面": len(outputs)})
+
+    # 校验：渲染页数与词条数一致，且每页都带生成标记。
+    if len(outputs) != len(pages):
+        fail("渲染出的页面数 %d 与词条数 %d 不一致" % (len(outputs), len(pages)))
+    missing = sorted(rel(p) for p, text in outputs.items() if MARKER not in text)
+    if missing:
+        fail("以下页面缺生成标记：%s" % "、".join(missing))
+    log.event("verify", input={"页面": len(outputs), "标记齐全": True})
 
     written, unchanged = [], []
     for path, text in sorted(outputs.items(), key=lambda kv: rel(kv[0])):
@@ -306,6 +321,8 @@ def main():
         if stale not in outputs and MARKER in stale.read_text(encoding="utf-8"):
             stale.unlink()
             removed.append(rel(stale))
+    log.event("write_outputs", input={"写入": len(written), "未变化": len(unchanged),
+                                      "清理": len(removed)})
 
     print("构建完成：%d 个 Wiki 页面" % len(pages))
     for path in written:
@@ -323,7 +340,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        sys.exit(main())
+        sys.exit(wrap_main("build_wiki", main))
     except BuildError as exc:
         print("构建失败：%s" % exc)
         sys.exit(1)

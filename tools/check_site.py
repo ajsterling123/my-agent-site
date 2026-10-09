@@ -12,7 +12,9 @@ scripts/build_blog.py 生成的文章页、scripts/build_wiki.py 生成的 Wiki 
 一致；报头带的元信息行与页脚步数在所有页面逐字节一致。
 
 生成页：public/posts/ 下的页面由 build_blog.py 生成，public/wiki/ 下的页面由
-build_wiki.py 生成（Step 8 起，含栏目页 wiki/index.html），各自必须带生成标记；
+build_wiki.py 生成（Step 8 起，含栏目页 wiki/index.html），public/status/ 下的页面由
+build_status.py 生成（Step 10 起，是菜单页、数据在构建期烤进页面、零 <script>），
+各自必须带生成标记；
 栏目页是菜单页（恰好 1 个 aria-current 指向自身），词条页与文章页同为 1 层深、
 前缀 ../、不设 aria-current。Wiki 页面零 <script>（与所有非外部内容页同判）。
 
@@ -41,6 +43,7 @@ PUBLIC = ROOT / "public"
 CANONICAL = PUBLIC / "index.html"          # 骨架与导航的参照页
 MARKER = "<!-- 由 scripts/build_blog.py 生成"   # 生成页的标记，见 scripts/build_blog.py
 WIKI_MARKER = "<!-- 由 scripts/build_wiki.py 生成"   # Wiki 页的标记，见 scripts/build_wiki.py
+STATUS_MARKER = "<!-- 由 scripts/build_status.py 生成"   # 状态页的标记，见 scripts/build_status.py
 
 NAV_RE = re.compile(r'<nav class="site-nav".*?</nav>', re.S)
 LI_RE = re.compile(r"<li>.*?</li>", re.S)
@@ -313,6 +316,9 @@ def audit_page(page, html, canonical_nav, canonical_nav_raw, menu_targets):
             fail("public/%s 缺少生成标记：public/wiki/ 下的页面应由 scripts/build_wiki.py 生成" % page)
         if '<article class="post-body">' not in clean:
             fail('public/%s 缺少 <article class="post-body">' % page)
+    elif page.startswith("status/"):
+        if STATUS_MARKER not in html:
+            fail("public/%s 缺少生成标记：public/status/ 下的页面应由 scripts/build_status.py 生成" % page)
 
 
 def report(total, menu_count, post_count, wiki_count):

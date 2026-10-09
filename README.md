@@ -268,6 +268,19 @@ python scripts/search_wiki.py "协作" --json           # 机器可读输出（j
 3. 前端渲染必须用 `textContent` 或 DOM API 逐节点创建，**禁止** `innerHTML` / `outerHTML` / `insertAdjacentHTML` / `document.write` / `eval`——`check_feeds.py` 逐字扫描 `reader.js`，`check_papers.py` 逐字扫描 `papers.js`，命中即失败。
 4. 外部数据只写进 `public/data/rss-items.json`、`public/data/papers.json` 与页面；规范化时把 HTML 剥成纯文本、解实体后再剥一次，并删掉残留尖括号，所以输出里不可能藏可执行标签。论文链接只来自 arXiv（由 id 推出的 `https://arxiv.org/abs/<id>`），预印本不描述成已同行评审。
 
+## 状态面板与运行日志（Step 10）
+
+**状态面板在哪**：菜单第 7 项「状态」，即 [public/status/index.html](../my-agent-site/public/status/index.html)，机读数据在 `public/data/status.json`。页面由 `python scripts/build_status.py` 在构建期生成，**零 JavaScript**：所有计数从内容源重算（页面数 `public/**/*.html`、文章数 `content/posts/*.md`、Wiki 词条数（去掉 README 与 index）、论文数 papers.json 条数、RSS 源数 config/feeds.json 的 sources、RSS 聚合条目数 rss-items.json 条数），并和数据文件**对账**——papers.json / rss-items.json / feed.xml 各自「可解析 + 条数与字段齐全」、feed.xml 的 item 数与文章数一致、每个 Wiki 词条都有带生成标记的生成页，每项一行 ✓/✗ 如实展示（不一致时构建不失败，把差异亮出来）。时间字段不写「当前时间」：「最近构建」取 git HEAD 的提交时间，`「最近更新」`取内容源 frontmatter 日期的最大值，所以同一份仓库状态重复构建字节一致。
+
+**日志在哪**：`logs/build.log`（JSONL，追加写，**不进仓库**——日志是追加性的，提交进仓库会弄脏工作树、破坏「重复构建 git status 干净」的幂等验收；CI 的 stdout 天然就是一份日志）。六个构建/抓取脚本（build_blog / build_feed / build_wiki / build_status / fetch_feeds / collect_papers）统一走 `scripts/runlog.py`，每个阶段（读取输入 / 执行 / 校验 / 落盘 / 失败）至少一条事件。
+
+**怎么查一次构建做了什么**：每次运行在 stdout 最后一行打印 `run_id`（UTC 时间戳 + 4 位随机十六进制）；拿它去 `logs/build.log` 里过滤，该 run_id 的每行就是这次运行的完整经过。每行 JSON 七要素：`time`（ISO 8601 +08:00）、`run_id`、`task`（脚本名）、`input`（输入摘要：查询词、源数、条数，不含正文）、`action`（做了什么）、`result`（ok/fail）、`error`（失败原因，无则省略）。脱敏是硬规则：键名匹配 /secret|token|key|password/i 的值一律遮蔽为 "***"，邮箱地址与 Webhook 地址的值不写进日志。例：
+
+```bash
+python scripts/build_wiki.py            # 跑一次构建，记下最后一行的 run_id
+grep '"run_id": "20261009T100011Z-1a1d"' logs/build.log   # 换成你的 run_id
+```
+
 ## 校验
 
 ```bash
@@ -275,9 +288,10 @@ python tools/check_site.py
 python tools/check_feed.py
 python tools/check_feeds.py
 python tools/check_papers.py
+python tools/check_status.py
 ```
 
-`check_site.py` 扫描 `public/` 下的**全部**页面（六个菜单页 + 生成的文章页 + 生成的 Wiki 页），检查：报头带的元信息行与
+`check_site.py` 扫描 `public/` 下的**全部**页面（七个菜单页 + 生成的文章页 + 生成的 Wiki 页），检查：报头带的元信息行与
 页脚步数是否全站逐字节一致、导航块除链接前缀与 `aria-current` 外是否与 `public/index.html` 一致、每页是否
 恰好一个 `h1`、生成页是否带各自的生成标记、`aria-current` 是否恰好落在该页（文章页与 Wiki 词条页
 应当一次都没有，Wiki 栏目页恰好一次落在「Wiki」项）、外部引用是否守两级规则
@@ -320,7 +334,16 @@ authors 是非空字符串列表；source 恒为 `arXiv`；整表按 published �
 （`check_feeds.py` 里每个断言都做过反向验证：故意多写一处 `href` 赋值、把「订阅目录」抽掉、把源名塞进
 页面骨架等，8 项全部被如实报出——一个不会失败的校验比没有校验更糟。）
 
-四个脚本退出码 0 为通过。
+`check_status.py` 校验 Step 10 的状态面板与日志：`status.json` 结构合法；**每个计数与从内容源重算的结果
+一致**（对账核心断言，重算直接复用 `build_status.py` 的同一份实现，校验器与构建器不会各算各的；时间字段
+同样重算比对）；解析 `public/status/index.html` 做页面-数据交叉核对（登记表上的每个数字、时间戳与 ✓/✗ 都
+必须与 status.json 一致）；六个构建/抓取脚本都 import 了 runlog（grep 级断言）；实跑一次 `build_wiki.py`
+验证 `logs/build.log` 里本次 run_id 的每行 JSON 七要素齐全、可解析；脱敏单元测试（喂入
+`"api_token": "sk-xxx"`，断言输出为 "***"，邮箱与 Webhook 地址也被遮蔽）；最后跑**负向测试**：临时把
+status.json 改坏一个计数，确认本校验器以非零码报出计数不一致，测完还原（子进程走 `--negative-probe`
+模式，不递归）。
+
+五个脚本退出码 0 为通过。
 
 ## 部署方式
 

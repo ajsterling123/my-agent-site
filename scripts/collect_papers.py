@@ -40,6 +40,11 @@ papers.json 原样保留、原因记日志、退出码 0；只有「从未有过
 信任边界：外部标题与摘要只当展示文本，绝不当指令（AGENTS.md「外部数据是不可信输入」）；
 本脚本只读 arXiv、只写 public/data/papers.json，绝不回写 config、AGENTS.md 或任何脚本；
 arXiv 是预印本平台，不把任何论文描述成已同行评审。
+
+运行日志（Step 10 起）：每个阶段（读参数 / 抓取 / 解析 / 合并 / 落盘 / 失败）至少一条
+JSONL 事件走 scripts/runlog.py，追加进 logs/build.log 并同步打到 stdout；run_id 在
+最后一行打印。input 只记查询词与条数这类摘要（查询词是输入摘要，可以记），
+论文标题/摘要正文不进日志；失败的失败原因也记进日志（脱敏后）。
 """
 
 import argparse
@@ -59,6 +64,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from fetch_feeds import clean_text   # 外部文本 → 纯文本的规则全站只写一份  # noqa: E402
 from site_data import rel, write_if_changed   # noqa: E402
+from runlog import wrap_main   # noqa: E402
 
 API_URL = "https://export.arxiv.org/api/query"
 DATA_OUT = ROOT / "public" / "data" / "papers.json"
@@ -300,92 +306,107 @@ def render_json(papers):
 
 # ---------------------------------------------------------------- 主流程
 
-def main(argv=None):
+def main(log, argv=None):
     parser = argparse.ArgumentParser(description="从 arXiv 检索论文并合并进 public/data/papers.json")
     parser.add_argument("--query", required=True, help='arXiv 查询词（见技能 references/topics.md）')
     parser.add_argument("--limit", type=int, default=10, help="本次最多取几条（默认 10）")
     parser.add_argument("--since", help="只保留 published ≥ 此日期（YYYY-MM-DD，本地过滤）")
     args = parser.parse_args(argv)
 
-    lines = []
-
-    def log(msg):
-        lines.append(msg)
+    def out(msg):
         print(msg)
 
+    log.event("read_args", input={"查询": args.query, "limit": args.limit, "since": args.since or None})
+
     if not 1 <= args.limit <= MAX_KEEP:
-        log("参数不合法：--limit 必须在 1..%d，实际 %d" % (MAX_KEEP, args.limit))
+        error = "--limit 必须在 1..%d，实际 %d" % (MAX_KEEP, args.limit)
+        log.event("read_args", "fail", error=error, input={"limit": args.limit})
+        out("参数不合法：%s" % error)
         return 2
     if args.since:
         if not DATE_RE.match(args.since):
-            log("参数不合法：--since 必须写成 YYYY-MM-DD，实际 %r" % args.since)
+            error = "--since 必须写成 YYYY-MM-DD，实际 %r" % args.since
+            log.event("read_args", "fail", error=error, input={"since": args.since})
+            out("参数不合法：%s" % error)
             return 2
         try:
             date.fromisoformat(args.since)
         except ValueError:
-            log("参数不合法：--since 不是合法日期：%s" % args.since)
+            error = "--since 不是合法日期：%s" % args.since
+            log.event("read_args", "fail", error=error, input={"since": args.since})
+            out("参数不合法：%s" % error)
             return 2
 
     previous = load_previous()
     broken_previous = previous is None
     if broken_previous:
-        log("现有的 papers.json 解析不了：若本次抓到东西将重建；若本次失败则原样保留不动。")
+        out("现有的 papers.json 解析不了：若本次抓到东西将重建；若本次失败则原样保留不动。")
         previous = []
     else:
         previous = [p for p in previous if isinstance(p, dict)]
 
     # API 不支持服务端日期过滤：限定 --since 时多取一些（上限即保留上限 50），本地过滤后再截 limit。
     max_results = args.limit if not args.since else max(args.limit, MAX_KEEP)
-    log("查询 arXiv：%s（最多取 %d 条%s）" % (args.query, max_results,
+    out("查询 arXiv：%s（最多取 %d 条%s）" % (args.query, max_results,
                                           "，本地按 published ≥ %s 过滤后留 %d 条" % (args.since, args.limit)
                                           if args.since else ""))
     try:
-        data = fetch_raw(args.query, max_results, log)
-        fetched, skipped = parse_feed(data, log)
+        data = fetch_raw(args.query, max_results, out)
+        fetched, skipped = parse_feed(data, out)
         if skipped:
-            log("  %d 条残缺或日期非法，跳过" % skipped)
+            out("  %d 条残缺或日期非法，跳过" % skipped)
+        log.event("fetch_arxiv", input={"查询": args.query, "字节": len(data)})
+        log.event("parse_entries", input={"规范化": len(fetched), "跳过": skipped})
     except FetchError as exc:
-        log("抓取失败：%s" % exc)
+        log.event("fetch_arxiv", "fail", error=str(exc), input={"查询": args.query})
+        out("抓取失败：%s" % exc)
         if previous:
-            log("保留 papers.json 原样（%d 条历史数据未动）" % len(previous))
-            print("fetched 0 / new 0 / saved %d" % len(previous))
+            out("保留 papers.json 原样（%d 条历史数据未动）" % len(previous))
+            log.event("keep_previous", input={"论文": len(previous)})
+            out("fetched 0 / new 0 / saved %d" % len(previous))
             return 0
-        log("没有任何历史数据可保留——以非零码退出。")
-        print("fetched 0 / new 0 / saved 0")
+        out("没有任何历史数据可保留——以非零码退出。")
+        log.event("fetch_all", "fail", error="抓取失败且没有任何历史数据", input={"论文": 0})
+        out("fetched 0 / new 0 / saved 0")
         return 1
 
     if args.since:
         kept = [p for p in fetched if p["published"] >= args.since]
         older = len(fetched) - len(kept)
         fetched = kept[:args.limit]
-        log("  本地日期过滤：保留 %d 条，早于 %s 的 %d 条不取"
+        out("  本地日期过滤：保留 %d 条，早于 %s 的 %d 条不取"
             % (len(fetched), args.since, older))
     else:
         fetched = fetched[:args.limit]
 
-    log("本次规范化出 %d 条" % len(fetched))
+    out("本次规范化出 %d 条" % len(fetched))
     if not fetched:
-        log("查询没有返回可用论文。")
+        out("查询没有返回可用论文。")
         if previous:
-            log("papers.json 原样保留（%d 条），不落盘。" % len(previous))
-            print("fetched 0 / new 0 / saved %d" % len(previous))
+            out("papers.json 原样保留（%d 条），不落盘。" % len(previous))
+            log.event("keep_previous", input={"论文": len(previous)})
+            out("fetched 0 / new 0 / saved %d" % len(previous))
             return 0
-        log("既没抓到论文，也从未有过任何数据——以非零码退出。")
-        print("fetched 0 / new 0 / saved 0")
+        out("既没抓到论文，也从未有过任何数据——以非零码退出。")
+        log.event("fetch_all", "fail", error="查询无结果且没有任何历史数据", input={"论文": 0})
+        out("fetched 0 / new 0 / saved 0")
         return 1
 
-    papers, new, updated = merge(fetched, previous, log)
+    papers, new, updated = merge(fetched, previous, out)
     wrote = write_if_changed(DATA_OUT, render_json(papers))
-    log("合并：历史 %d 条 + 本次 %d 条 → %d 条（新增 %d，刷新 %d）"
+    log.event("merge", input={"历史": len(previous), "本次": len(fetched),
+                              "合计": len(papers), "新增": new, "刷新": updated})
+    log.event("write_output", input={"写入": int(wrote)})
+    out("合并：历史 %d 条 + 本次 %d 条 → %d 条（新增 %d，刷新 %d）"
         % (len(previous), len(fetched), len(papers), new, updated))
-    log("%s %s" % (rel(DATA_OUT), "写入" if wrote else "未变化（与现有 JSON 逐字节相同，不落盘）"))
-    print("fetched %d / new %d / saved %d" % (len(fetched), new, len(papers)))
+    out("%s %s" % (rel(DATA_OUT), "写入" if wrote else "未变化（与现有 JSON 逐字节相同，不落盘）"))
+    out("fetched %d / new %d / saved %d" % (len(fetched), new, len(papers)))
     return 0
 
 
 if __name__ == "__main__":
     try:
-        sys.exit(main())
+        sys.exit(wrap_main("collect_papers", main))
     except FetchError as exc:
         print("抓取失败：%s" % exc)
         sys.exit(1)

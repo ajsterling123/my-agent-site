@@ -14,3 +14,8 @@ __pycache__/
 
 # arXiv 礼貌间隔时间戳（scripts/collect_papers.py 每次请求后写入，不提交）
 .arxiv-last-request
+
+# 构建运行日志（scripts/runlog.py 追加写入）：日志是追加性的，每次构建都会变，
+# 提交进仓库会弄脏工作树、破坏「重复构建 git status 干净」这条验收；CI 的 stdout
+# 天然就是一份日志。查一次构建做了什么：看 logs/build.log 里对应 run_id 的行。
+logs/

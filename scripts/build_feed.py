@@ -16,10 +16,15 @@
   时区固定 +0800；文章只有日期没有时刻，时刻统一取当天 00:00:00。
 - 幂等：lastBuildDate 取最新一篇文章的日期，不用当前时间——否则每次构建都产生 diff。
 - 文本节点用 html.escape 转义 & < >（不用 CDATA）；UTF-8 写出、不带 BOM。
+
+运行日志（Step 10 起）：每个阶段（读取输入 / 渲染 / 校验 / 落盘 / 失败）至少一条
+JSONL 事件走 scripts/runlog.py，追加进 logs/build.log 并同步打到 stdout；run_id 在
+最后一行打印。校验 = 把渲染出的 XML 解析回来，item 数与文章数对账。
 """
 
 import html
 import sys
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
@@ -27,6 +32,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from site_data import (FEED_OUT, SITE_NAME, BuildError, feed_url, home_url, load_posts, post_url,
                        rel, write_if_changed)
+from runlog import wrap_main
 
 CHANNEL_TITLE = "%s · 博客" % SITE_NAME
 CHANNEL_DESCRIPTION = ("张易孝（江苏警官学院 · 数据警务技术）的课程实验档案：博客栏文章登记，"
@@ -84,10 +90,20 @@ def render_feed(posts):
     return "\n".join(lines)
 
 
-def main():
+def main(log, argv=None):
     posts = load_posts()
+    log.event("read_input", input={"文章": len(posts)})
     xml = render_feed(posts)
+
+    # 校验：渲染出的 XML 必须能解析回来，且 item 数与文章数对账——坏 feed 不落盘。
+    root = ET.fromstring(xml)
+    items = root.findall("./channel/item")
+    if len(items) != len(posts):
+        fail("feed 里解析出 %d 个 item，与文章数 %d 不一致" % (len(items), len(posts)))
+    log.event("verify", input={"item": len(items)})
+
     wrote = write_if_changed(FEED_OUT, xml)
+    log.event("write_outputs", input={"写入": int(wrote)})
     print("构建完成：%d 篇文章 → %s" % (len(posts), rel(FEED_OUT)))
     print("  %s" % ("写入" if wrote else "未变化"))
     print("  lastBuildDate %s（取自最新一篇的日期，不取当前时间）" % rfc822(posts[0]["date"] if posts else EMPTY_FEED_DATE))
@@ -97,7 +113,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        sys.exit(main())
+        sys.exit(wrap_main("build_feed", main))
     except BuildError as exc:
         print("构建失败：%s" % exc)
         sys.exit(1)

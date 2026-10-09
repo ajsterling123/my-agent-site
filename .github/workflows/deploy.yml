@@ -30,6 +30,7 @@ jobs:
           "$PY" scripts/build_blog.py
           "$PY" scripts/build_feed.py
           "$PY" scripts/build_wiki.py
+          "$PY" scripts/build_status.py
 
       - name: Check site
         run: |
@@ -38,6 +39,7 @@ jobs:
           "$PY" tools/check_feed.py
           "$PY" tools/check_feeds.py
           "$PY" tools/check_papers.py
+          "$PY" tools/check_status.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

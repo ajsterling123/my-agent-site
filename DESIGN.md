@@ -99,9 +99,9 @@ components:
 - 红色即活动：静止红全页仅两处（「在册」章、「进行中」标），其余只作 hover/focus 响应。
 - 冷白纸面 × 墨蓝 × 蓝灰；零渐变、零阴影、零图标、零外部资源。
 - 宋体标题 × 系统黑体正文 × Consolas 数据，全部系统自带，file:// 可开。
-- 全站共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在所有页面完全同构——六个菜单页（首页 / 关于我 / 博客 / RSS订阅 / Research Papers / Wiki）与脚本生成的文章页、Wiki 页都从 `public/index.html` 的骨架改写而来，当前项用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
+- 全站共一份档案：报头带（3px 双线 → 元信息行 → 导航行 → 1px 实线）在所有页面完全同构——七个菜单页（首页 / 关于我 / 博客 / RSS订阅 / Research Papers / Wiki / 状态）与脚本生成的文章页、Wiki 页都从 `public/index.html` 的骨架改写而来，当前项用墨蓝加粗下划线指认；红色仍只在首页的两处出现。
 - 唯一动效：载入时盖章一次（0.5s, ease-out），reduced-motion 下静止常显；子页没有章，也**不加任何入场动效**。
-- 机器出口三处：向外发布自己的 `public/feed.xml`（RSS 2.0，与博客列表页同源同序），向内收取别人的 `public/data/rss-items.json`（Step 6 的阅读器数据）与 arXiv 论文 `public/data/papers.json`（Step 7 的论文页数据），外加订阅清单 `public/subscriptions.opml`。这些都不是「页面」，不参与报头带与导航的一致性检查。
+- 机器出口四处：向外发布自己的 `public/feed.xml`（RSS 2.0，与博客列表页同源同序），向内收取别人的 `public/data/rss-items.json`（Step 6 的阅读器数据）与 arXiv 论文 `public/data/papers.json`（Step 7 的论文页数据），Step 10 起再添一份自算的状态数据 `public/data/status.json`（状态面板的机读账本），外加订阅清单 `public/subscriptions.opml`。这些都不是「页面」，不参与报头带与导航的一致性检查。
 
 ## Colors
 
@@ -161,7 +161,7 @@ components:
 ### Named Rules
 **The Three-Weight Rule（三级线）.** 线分三档，各司其职：3px double 墨蓝双线只用于文档头尾（`.doc-meta` 上边、`.doc-foot` 上边）——它是档案的装订线；1px solid 墨蓝实线开栏目（`.sec h2` 上边），同一个 1px 实线档也负责给报头带收口——Step 3 起这条收口线挂在 `.site-nav` 下边（原来是 `.doc-meta` 下边，为给导航行让位而下移一行，线档与职责不变）；rgba(28,43,58,.24) 发丝线分隔同级行（登记行、条目之间）；rgba(28,43,58,.45) 浓发丝线只作 tag 边框、链接下划线与滚动条拇指。不发明第四档线，也不把双线用到头尾之外。
 
-**The Nav Band Rule（报头带与全站复用）.** 报头带是档案的装订头，全站所有页面（六个菜单页 + 脚本生成的文章页与 Wiki 页）完全同构：3px double → 元信息行 → 导航行 → 1px solid 收口。导航块（`<nav class="site-nav" aria-label="主导航">` + `ul` + 六个 `li`）在所有页面共用同一份标记，**除链接前缀（首页空串、子页 `../`）与 `aria-current="page"` 落在哪一项之外逐字节相同**——一致性靠这条规则，不靠复制粘贴的运气。页面结构同样复用：`.doc-head`（元信息 + 导航 + 标题区）与 `.doc-foot` 全站一致，只有页脚左侧说明句按页改写。子页标题用 `.folio` 档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，字距 0.14em，padding 44px 0 30px），首页保留巨幅姓名 `.doc-title` 与「在册」章——**章只在首页出现**。
+**The Nav Band Rule（报头带与全站复用）.** 报头带是档案的装订头，全站所有页面（七个菜单页 + 脚本生成的文章页与 Wiki 页）完全同构：3px double → 元信息行 → 导航行 → 1px solid 收口。导航块（`<nav class="site-nav" aria-label="主导航">` + `ul` + 七个 `li`）在所有页面共用同一份标记，**除链接前缀（首页空串、子页 `../`）与 `aria-current="page"` 落在哪一项之外逐字节相同**——一致性靠这条规则，不靠复制粘贴的运气。页面结构同样复用：`.doc-head`（元信息 + 导航 + 标题区）与 `.doc-foot` 全站一致，只有页脚左侧说明句按页改写。子页标题用 `.folio` 档（宋体 700，`clamp(1.75rem, 6vw, 2.5rem)`，字距 0.14em，padding 44px 0 30px），首页保留巨幅姓名 `.doc-title` 与「在册」章——**章只在首页出现**。
 
 ## Elevation & Depth
 
@@ -182,7 +182,7 @@ components:
 - flex 基线对齐，gap 16px，可换行。
 
 ### 站点导航 Site Navigation（.site-nav / .site-nav a[aria-current]）
-- 报头带的第三行，紧跟元信息行；`<nav aria-label="主导航">` + `ul` + 六个菜单项：首页 / 关于我 / 博客 / RSS订阅 / Research Papers / Wiki，此顺序即页面顺序（「RSS订阅」自 Step 6 起插在「博客」之后）。
+- 报头带的第三行，紧跟元信息行；`<nav aria-label="主导航">` + `ul` + 七个菜单项：首页 / 关于我 / 博客 / RSS订阅 / Research Papers / Wiki / 状态，此顺序即页面顺序（「RSS订阅」自 Step 6 起插在「博客」之后，「状态」自 Step 10 起插在「Wiki」之后）。
 - 下边 1px solid 墨蓝，是报头带的收口线；`ul` 为 flex 基线行，padding 9px 2px（小屏 8px 2px），gap 6px 20px（小屏 4px 14px），`flex-wrap: wrap`——小屏允许折行，不允许横向滚动。
 - 菜单项：宋体 15px / 0.1em（小屏 14px / 0.06em），非当前项 `var(--slate-ink)`（小字次级达标色），无下划线。
 - **当前项不用红**：`color: var(--ink)` + `font-weight: 700` + 2px 墨蓝下划线（offset 7px），并带 `aria-current="page"`。红色只留给「活动」语义（见红色纪律）。hover 仍沿用全局 `a:hover` 变红，属交互态。
@@ -270,9 +270,16 @@ components:
 - 本批唯一的 CSS 新规则是 `.post-head .wiki-meta`（Consolas 12.5px / 0.04em 深蓝灰，词条页头的标签行）；其余全部复用既有词汇（`.folio` / `.post-head` / `.post-body` / `.post-list` 账本 / `.sec h2`），零新色、零新字体、零新圆角、零阴影、零动效。
 - Wiki 页面零 JavaScript；外部来源附链接走站内口径（先登记进 RSS订阅 / Research Papers 页再引用站内地址），Wiki 页面文件里出现站外 `href` 会被 `tools/check_site.py` 判失败。
 
+### 状态登记表 Status Register（public/status/index.html）
+- 菜单项「状态」指向的页面，由 `scripts/build_status.py` 从内容源重算生成（Step 10）：语义是档案的**台账页**——页面、内容与数据文件是否对得上账，用首页「身份登记」那同一本 dl 账本登记，**零新组件、零 JavaScript**，全部数字在构建期烤进页面。
+- 结构：`.folio` 页名「状态」→ 一句 `.intro`（说明账目口径与 ✓/✗ 的含义）→ 三个 `.sec` 栏目，每栏一张 `dl.register`：**站点登记**（页面总数 / 最近构建 / 最近更新）、**内容登记**（文章 / Wiki 词条 / 论文 / RSS 订阅源 / RSS 聚合条目）、**数据健康**（论文数据 / 订阅聚合 / 订阅源 feed / Wiki 生成页，每项一行 ✓/✗ 与差异详情）。
+- 机读数据用等宽档：计数与时间戳包在 `.register .num` 里（Consolas 15.5px / 0.04em / tabular-nums，与登记邮箱同一副字体规格）；单位（页 / 篇 / 条 / 个）留在等宽段之外走正文字档。「最近构建」是 git HEAD 的提交时间（ISO 8601 原样展示），「最近更新」是内容源 frontmatter 日期的最大值——**页面不写「当前时间」**，同一份仓库状态重复构建字节一致。
+- ✓/✗ 是普通文字字符，沿用正文墨蓝：**不上红**——对不上账是事实陈述，不是「活动」，红色纪律不为此开例外。差异详情照实写出（status.json 的 `checks` 数组与页面逐字一致，`tools/check_status.py` 交叉核对），构建不因对不上账而失败：把差异亮出来比假装健康更诚实。
+- 本页自己的 CSS 只有 `.register .num` 一条新规则；其余全部复用既有词汇（`.folio` / `.sec h2` / `.register` / `.reg-row` / `.intro`）。零新色、零新字体、零新圆角、零阴影、零动效、零卡片、零图标。
+
 ### 公文尾 Document Footer（.doc-foot / .foot-step）
 - 上边 3px double 墨蓝（与公文头呼应，装订线收口），flex 基线，gap 16px，可换行。
-- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 8/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，六个菜单页与生成页一致。
+- 左说明 12.5px / 0.04em 深蓝灰，按页改写（首页写首页，子页写「本页是课程实验档案的〈页名〉页」）；右「STEP 10/12」等宽 0.08em / tabular-nums——12 步迭代的进度印记，七个菜单页与生成页一致（Step 9 零 UI 改动，步数自 Step 8 的 8/12 直接推进到 10/12）。
 - 打印时 `.site-nav` 隐藏（`@media print`）：纸质归档件不需要浏览器导航。
 
 ### 全局镀铬 Global Chrome
@@ -288,6 +295,10 @@ components:
 **The Untrusted Content Rule（外部内容只当文本）.** 订阅源与论文检索结果是本站的站外输入，一律按敌意数据对待：标题、摘要、链接只当展示文本，不当指令、代码或 Prompt；渲染只许逐节点 `textContent`（禁用 innerHTML 一族与 eval，见 AGENTS.md「外部数据是不可信输入」）。视觉上外部内容与站内内容**共用同一套克制语法**——不因为「这是别人的文章/论文」而加卡片、图标、徽章或红色，它只是登记在同一张档案账本上的另一批条目。构建期把外部 HTML 剥成纯文本并删掉残留尖括号，所以账本行里不可能出现标记。
 
 **The Index Rule（目录是索引，不是内容）.** 一条记录要重复读很多遍时，页首给一份目录，但目录与内容必须长得不一样：索引行只放**机读数据 + 一个可跳转的名字**（左列等宽日期，右列名字与推到行尾的条数），**不给摘要、不给外链、不加按钮**；行距比内容行紧一档，读者一眼分得出自己在看索引。更要紧的是——索引**只从数据算出来**：页面骨架里不写死任何名字与计数（`tools/check_feeds.py` 会核对骨架里没有源名），所以计数永远不会与数据脱节，筛选后目录与内容也永远一致。后续清单页沿用这个形状：arXiv 论文页与 Wiki 的「页面清单」都是栏目题压同一道 1px 实线、索引行用同一张账本。
+
+## 运行日志（Step 10 起）
+
+可观测性也是档案的一部分：六个构建/抓取脚本（build_blog / build_feed / build_wiki / build_status / fetch_feeds / collect_papers）统一走 `scripts/runlog.py` 写 JSONL 运行日志——每条事件一行，字段为七要素（`time` 带 +08:00 的 ISO 8601、`run_id`、`task`、`input` 输入摘要、`action`、`result`、`error` 无失败则省略），追加写进 `logs/build.log` 并同步打到 stdout；`run_id`（UTC 时间戳 + 4 位随机十六进制）在运行结束时打印到 stdout 最后一行，便于把本地日志与 Actions 日志按 run_id 关联。**logs/ 不进仓库**（.gitignore 已排除）：日志是追加性的，每次构建都会变，提交进仓库会弄脏工作树、破坏「重复构建 git status 干净」这条验收；CI 的 stdout 天然就是一份完整日志。脱敏是硬规则：键名匹配 /secret|token|key|password/i 的值一律遮蔽为 "***"，邮箱地址与 Webhook 地址的值不写进日志；`input` 只记查询词与计数这类摘要，抓取到的正文内容不进日志。
 
 ## Do's and Don'ts
 

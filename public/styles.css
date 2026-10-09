@@ -573,6 +573,16 @@ p.paper-source {
   color: var(--slate-ink);
 }
 
+/* ---- 状态：登记表里的机读数据（计数、时间戳）用等宽档，与登记邮箱同一副字体规格；
+     ✓/✗ 是普通文字、沿用正文墨蓝——对账差异是事实陈述，不是「活动」，不上红 ---- */
+
+.register .num {
+  font-family: var(--mono);
+  font-size: 15.5px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ---- 页脚 ---- */
 
 .doc-foot {
@@ -616,7 +626,7 @@ p.paper-source {
   .reg-row { grid-template-columns: 5.5em 1fr; }
   .reg-row dt { letter-spacing: 0.2em; }
 
-  /* 五个菜单项在 390px 内单行放得下；320px 折行，靠 flex-wrap 与 row-gap 兜底 */
+  /* 七个菜单项在 390px 内折行放得下；320px 折得更多，靠 flex-wrap 与 row-gap 兜底 */
   .site-nav ul { padding: 8px 2px; gap: 4px 14px; }
   .site-nav a { font-size: 14px; letter-spacing: 0.06em; }
 

@@ -16,6 +16,10 @@
 幂等：同一批 md 重复运行产出字节一致的输出，且只在内容变化时落盘；
 只清理自己生成的 public/posts/*.html，不碰 content/，也不碰任何手写页。
 
+运行日志（Step 10 起）：每个阶段（读取输入 / 渲染 / 校验 / 落盘 / 失败）至少一条
+JSONL 事件走 scripts/runlog.py，追加进 logs/build.log 并同步打到 stdout；run_id 在
+最后一行打印。构建失败的失败原因也记进日志（脱敏后）。
+
 slug 命名、frontmatter 解析、文章页路径与排序来自 scripts/site_data.py（与
 scripts/build_feed.py 共用一份实现，RSS 的链接因此与列表页的链接必然一致）。
 public/feed.xml 由 scripts/build_feed.py 生成，本脚本不碰它。
@@ -33,6 +37,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from site_data import (BLOG_OUT, POSTS_OUT, SKELETON, SITE_NAME, BuildError, fail, load_posts,
                        post_rel, rel, write_if_changed)
 from page_build import article_body, folio_head, indent, parse_blocks, render_page
+from runlog import wrap_main
 
 MARKER = "<!-- 由 scripts/build_blog.py 生成：改内容请改 content/posts/*.md -->"
 
@@ -97,12 +102,13 @@ def post_main(post):
     return article_body(post["blocks"])
 
 
-def main():
+def main(log, argv=None):
     if not SKELETON.is_file():
         fail("找不到骨架页面 public/index.html")
     skel = SKELETON.read_text(encoding="utf-8")
 
     posts = load_post_pages()
+    log.event("read_input", input={"骨架": rel(SKELETON), "文章": len(posts)})
 
     outputs = {BLOG_OUT: render_page(skel, BLOG_TITLE, BLOG_DESCRIPTION, "../",
                                      folio_head("博客"), blog_main(posts, "../"),
@@ -112,6 +118,15 @@ def main():
         outputs[POSTS_OUT / ("%s.html" % p["slug"])] = render_page(
             skel, "%s · %s" % (p["title"], SITE_NAME), p["description"], "../",
             post_head(p), post_main(p), POST_FOOT, None, MARKER)
+    log.event("render_pages", input={"页面": len(outputs)})
+
+    # 校验：输出 = 列表页 + 每篇文章一页，且每页都带生成标记；不满足即构建失败。
+    if len(outputs) != 1 + len(posts):
+        fail("渲染出的页面数 %d 与预期 %d（列表页 + 文章页）不一致" % (len(outputs), 1 + len(posts)))
+    missing = sorted(rel(p) for p, text in outputs.items() if MARKER not in text)
+    if missing:
+        fail("以下页面缺生成标记：%s" % "、".join(missing))
+    log.event("verify", input={"页面": len(outputs), "标记齐全": True})
 
     written, unchanged = [], []
     for path, text in sorted(outputs.items(), key=lambda kv: rel(kv[0])):
@@ -122,6 +137,8 @@ def main():
         if stale not in outputs and MARKER in stale.read_text(encoding="utf-8"):
             stale.unlink()
             removed.append(rel(stale))
+    log.event("write_outputs", input={"写入": len(written), "未变化": len(unchanged),
+                                      "清理": len(removed)})
 
     print("构建完成：%d 篇文章" % len(posts))
     for path in written:
@@ -135,7 +152,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        sys.exit(main())
+        sys.exit(wrap_main("build_blog", main))
     except BuildError as exc:
         print("构建失败：%s" % exc)
         sys.exit(1)
