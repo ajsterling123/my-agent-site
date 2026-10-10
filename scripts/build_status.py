@@ -11,7 +11,7 @@
 实现）：把 public/index.html 当骨架，只改 <title>、description、样式前缀、标题区、
 导航块（aria-current 落「状态」）、<main>、页脚说明句，其余逐字节保留；生成页带
 生成标记，由 tools/check_site.py 校验。视觉上复用首页「身份登记」的 .register
-登记行语法做「状态登记表」，分三段：站点（页面数/最近构建/最近更新）、内容
+登记行语法做「状态登记表」，分三段：站点（页面数/最近更新）、内容
 （文章/Wiki/论文/RSS）、数据健康（对账的 ✓/✗ 列表）——零新色、零卡片、零图标、
 不用红（对不上账是事实陈述，不是「活动」）。
 
@@ -30,11 +30,17 @@
   订阅源 feed   feed.xml 可解析 + item 数与文章数一致；
   Wiki 生成页   每个 content/wiki/*.md（除 README.md）都有带生成标记的词条页。
 
-时间字段（不写「当前时间」，否则每次构建都有 diff、破坏幂等验收）：
-  最近构建  git HEAD 的提交时间（git log -1 --format=%cI；无 git 环境记「未知」）；
-  最近更新  内容源 frontmatter 日期（posts 的 date 与 wiki 的 updated）的最大值。
+时间字段（不写「当前时间」，也不写「git HEAD 提交时间」，否则每次构建都有 diff、破坏幂等验收）：
+  最近更新  内容源 frontmatter 日期（posts 的 date 与 wiki 的 updated）的最大值——
+            内容派生、跨提交稳定，可对账。
+  最近构建  **不登记**。构建时刻的归宿是每次运行的日志：run_id 前半就是 UTC 时间戳，
+            logs/build.log 与 CI 输出里按 run_id 可查到每一次构建发生在何时。
+            一个文件写不下「包含它自己的那次提交」的时刻——取 HEAD 提交时间是自指的，
+            跨提交边界不存在固定点：干净 clone 上对账必失败、提交之后任何重建必脏
+            （页面与数据文件写的是上一次提交的时间，必然与新 HEAD 对不上）。
+            页面只展示内容真相，机器时刻交给日志。
 
-幂等：同一份仓库状态重复构建字节一致（时间字段只取自 git 与内容源，生成物里
+幂等：同一份仓库状态重复构建字节一致（时间字段只取自内容源，生成物里
 没有「生成时间」这类每次都变的字段；数字与文本全部由重算得出）。
 
 运行日志：各阶段（重算 / 对账 / 落盘）走 scripts/runlog.py 写 JSONL 事件。
@@ -43,7 +49,6 @@
 import html
 import json
 import re
-import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -79,19 +84,6 @@ UNKNOWN = "未知"
 
 
 # ---------------------------------------------------------------- 时间字段
-
-def git_head_time():
-    """最近构建 = git HEAD 的提交时间；没有 git 环境就如实记「未知」。"""
-    try:
-        proc = subprocess.run(["git", "log", "-1", "--format=%cI"], cwd=str(ROOT),
-                              capture_output=True, text=True, timeout=10)
-    except (OSError, subprocess.SubprocessError):
-        return UNKNOWN
-    stamp = (proc.stdout or "").strip()
-    if proc.returncode != 0 or not stamp:
-        return UNKNOWN
-    return stamp
-
 
 def content_last_update():
     """最近更新 = 内容源 frontmatter 日期的最大值（posts 的 date、wiki 的 updated）。"""
@@ -264,13 +256,13 @@ def status_main(doc):
     site, content, checks = doc["site"], doc["content"], doc["checks"]
     lines = ['<p class="intro">本页由构建脚本在每次构建时从内容源重算并登记：'
              '页面、内容与数据文件是否对得上账，一眼可查。✓ 表示账目相符，'
-             '✗ 表示有差异，差异详情照实写出。</p>']
+             '✗ 表示有差异，差异详情照实写出。本页不登记构建时刻——'
+             '构建时刻见各次运行的 run_id 日志（logs/build.log 与 CI 输出）。</p>']
 
     lines.append('<section class="sec" aria-labelledby="t-status-site">')
     lines.append('  <h2 id="t-status-site">站点登记</h2>')
     lines.append('  <dl class="register">')
     lines += indent(reg_row("页面总数", "%s 页" % num(site["pages"])), 4)
-    lines += indent(reg_row("最近构建", num(site["last_build"])), 4)
     lines += indent(reg_row("最近更新", num(site["last_update"])), 4)
     lines.append('  </dl>')
     lines.append('</section>')
@@ -331,7 +323,6 @@ def main(log, argv=None):
     doc = {
         "schema": 1,
         "site": {"pages": counts["pages"],
-                 "last_build": git_head_time(),
                  "last_update": content_last_update()},
         "content": {k: counts[k] for k in ("posts", "wiki_entries", "papers",
                                            "rss_sources", "rss_items")},
@@ -352,8 +343,8 @@ def main(log, argv=None):
     print("  页面 %d 页 · 文章 %d 篇 · Wiki %d 篇 · 论文 %d 条 · RSS %d 源 %d 条"
           % (doc["site"]["pages"], doc["content"]["posts"], doc["content"]["wiki_entries"],
              doc["content"]["papers"], doc["content"]["rss_sources"], doc["content"]["rss_items"]))
-    print("  最近构建 %s（git HEAD 提交时间）· 最近更新 %s（内容源 frontmatter 最大值）"
-          % (doc["site"]["last_build"], doc["site"]["last_update"]))
+    print("  最近更新 %s（内容源 frontmatter 最大值）；构建时刻不登记，见 run_id 日志"
+          % doc["site"]["last_update"])
     for path, wrote in ((rel(STATUS_JSON), wrote_json), (rel(STATUS_PAGE), wrote_page)):
         print("  %s %s" % (path, "写入" if wrote else "未变化"))
     return 0

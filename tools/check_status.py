@@ -9,7 +9,10 @@
 1. status.json 结构合法（schema / site / content / checks 的字段与类型）；
 2. **对账（核心断言）**：status.json 里每个计数与从内容源重算的结果一致——重算
    直接复用 scripts/build_status.py 的 recompute() 与各 check_* 函数，校验器与
-   构建器永远用同一套规则，不会各算各的；时间字段（最近构建 / 最近更新）同样重算比对；
+   构建器永远用同一套规则，不会各算各的；「最近更新」（内容源 frontmatter 日期的
+   最大值，内容派生、跨提交稳定）同样重算比对。**不校验也不存在「最近构建」**——
+   构建时刻的归宿是每次运行的 run_id 日志，一个文件写不下包含它自己的那次提交的时刻
+   （取 HEAD 提交时间是自指的：干净 clone 上对账必失败、提交后重建必脏）；
 3. 页面-数据交叉核对：解析 public/status/index.html，页面登记表上的每个数字、
    时间戳与 ✓/✗ 都必须与 status.json 一致；
 4. 六个构建/抓取脚本（build_blog / build_feed / build_wiki / build_status /
@@ -42,8 +45,8 @@ STATUS_JSON = build_status.STATUS_JSON
 STATUS_PAGE = build_status.STATUS_PAGE
 LOG_PATH = runlog.LOG_PATH
 
-# 结构断言的字段清单
-SITE_FIELDS = {"pages": int, "last_build": str, "last_update": str}
+# 结构断言的字段清单（site 没有「最近构建」：构建时刻的归宿是 run_id 日志，不是文件）
+SITE_FIELDS = {"pages": int, "last_update": str}
 CONTENT_FIELDS = {"posts": int, "wiki_entries": int, "papers": int,
                   "rss_sources": int, "rss_items": int}
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -112,8 +115,8 @@ def check_counts(doc):
                  % (what, stored, recomputed))
 
     if isinstance(doc.get("site"), dict):
-        for key, recomputed in (("last_build", build_status.git_head_time()),
-                                ("last_update", build_status.content_last_update())):
+        # 「最近更新」内容派生、跨提交稳定，可对账；「最近构建」不存在也不校验（见 docstring）。
+        for key, recomputed in (("last_update", build_status.content_last_update()),):
             stored = doc["site"].get(key)
             if stored != recomputed:
                 fail("对账失败：status.json 的 site.%s = %r，与重算的 %r 不一致"
@@ -148,12 +151,6 @@ def stored_ok(doc):
 def check_time_format(doc):
     if not stored_ok(doc):
         return
-    last_build = doc["site"]["last_build"]
-    if last_build != "未知":
-        try:
-            datetime.fromisoformat(last_build)
-        except ValueError:
-            fail("status.json 的 site.last_build 不是合法 ISO 8601：%r" % last_build)
     last_update = doc["site"]["last_update"]
     if last_update != "未知" and not DATE_RE.match(last_update):
         fail("status.json 的 site.last_update 不是 YYYY-MM-DD：%r" % last_update)
@@ -187,7 +184,6 @@ def check_page(doc):
     rows = page_rows(html)
 
     expect = [("页面总数", str(doc["site"]["pages"])),
-              ("最近构建", doc["site"]["last_build"]),
               ("最近更新", doc["site"]["last_update"])]
     expect += [("文章", str(doc["content"]["posts"])),
                ("Wiki 词条", str(doc["content"]["wiki_entries"])),

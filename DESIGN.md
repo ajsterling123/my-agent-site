@@ -272,8 +272,8 @@ components:
 
 ### 状态登记表 Status Register（public/status/index.html）
 - 菜单项「状态」指向的页面，由 `scripts/build_status.py` 从内容源重算生成（Step 10）：语义是档案的**台账页**——页面、内容与数据文件是否对得上账，用首页「身份登记」那同一本 dl 账本登记，**零新组件、零 JavaScript**，全部数字在构建期烤进页面。
-- 结构：`.folio` 页名「状态」→ 一句 `.intro`（说明账目口径与 ✓/✗ 的含义）→ 三个 `.sec` 栏目，每栏一张 `dl.register`：**站点登记**（页面总数 / 最近构建 / 最近更新）、**内容登记**（文章 / Wiki 词条 / 论文 / RSS 订阅源 / RSS 聚合条目）、**数据健康**（论文数据 / 订阅聚合 / 订阅源 feed / Wiki 生成页，每项一行 ✓/✗ 与差异详情）。
-- 机读数据用等宽档：计数与时间戳包在 `.register .num` 里（Consolas 15.5px / 0.04em / tabular-nums，与登记邮箱同一副字体规格）；单位（页 / 篇 / 条 / 个）留在等宽段之外走正文字档。「最近构建」是 git HEAD 的提交时间（ISO 8601 原样展示），「最近更新」是内容源 frontmatter 日期的最大值——**页面不写「当前时间」**，同一份仓库状态重复构建字节一致。
+- 结构：`.folio` 页名「状态」→ 一句 `.intro`（说明账目口径与 ✓/✗ 的含义，并指明构建时刻见各次运行的 run_id 日志）→ 三个 `.sec` 栏目，每栏一张 `dl.register`：**站点登记**（页面总数 / 最近更新）、**内容登记**（文章 / Wiki 词条 / 论文 / RSS 订阅源 / RSS 聚合条目）、**数据健康**（论文数据 / 订阅聚合 / 订阅源 feed / Wiki 生成页，每项一行 ✓/✗ 与差异详情）。
+- 机读数据用等宽档：计数与时间戳包在 `.register .num` 里（Consolas 15.5px / 0.04em / tabular-nums，与登记邮箱同一副字体规格）；单位（页 / 篇 / 条 / 个）留在等宽段之外走正文字档。「最近更新」是内容源 frontmatter 日期的最大值——内容派生、跨提交稳定，可对账。**页面不写「当前时间」，也不登记「最近构建」**：构建时刻的归宿是每次运行的 run_id 日志（run_id 前半即 UTC 时间戳，logs/build.log 与 CI 输出可查），页面只展示内容真相——一个文件写不下「包含它自己的那次提交」的时刻，取 HEAD 提交时间是自指的（干净 clone 上对账必失败、提交后重建必脏）。
 - ✓/✗ 是普通文字字符，沿用正文墨蓝：**不上红**——对不上账是事实陈述，不是「活动」，红色纪律不为此开例外。差异详情照实写出（status.json 的 `checks` 数组与页面逐字一致，`tools/check_status.py` 交叉核对），构建不因对不上账而失败：把差异亮出来比假装健康更诚实。
 - 本页自己的 CSS 只有 `.register .num` 一条新规则；其余全部复用既有词汇（`.folio` / `.sec h2` / `.register` / `.reg-row` / `.intro`）。零新色、零新字体、零新圆角、零阴影、零动效、零卡片、零图标。
 
@@ -298,7 +298,7 @@ components:
 
 ## 运行日志（Step 10 起）
 
-可观测性也是档案的一部分：六个构建/抓取脚本（build_blog / build_feed / build_wiki / build_status / fetch_feeds / collect_papers）统一走 `scripts/runlog.py` 写 JSONL 运行日志——每条事件一行，字段为七要素（`time` 带 +08:00 的 ISO 8601、`run_id`、`task`、`input` 输入摘要、`action`、`result`、`error` 无失败则省略），追加写进 `logs/build.log` 并同步打到 stdout；`run_id`（UTC 时间戳 + 4 位随机十六进制）在运行结束时打印到 stdout 最后一行，便于把本地日志与 Actions 日志按 run_id 关联。**logs/ 不进仓库**（.gitignore 已排除）：日志是追加性的，每次构建都会变，提交进仓库会弄脏工作树、破坏「重复构建 git status 干净」这条验收；CI 的 stdout 天然就是一份完整日志。脱敏是硬规则：键名匹配 /secret|token|key|password/i 的值一律遮蔽为 "***"，邮箱地址与 Webhook 地址的值不写进日志；`input` 只记查询词与计数这类摘要，抓取到的正文内容不进日志。
+可观测性也是档案的一部分：六个构建/抓取脚本（build_blog / build_feed / build_wiki / build_status / fetch_feeds / collect_papers）统一走 `scripts/runlog.py` 写 JSONL 运行日志——每条事件一行，字段为七要素（`time` 带 +08:00 的 ISO 8601、`run_id`、`task`、`input` 输入摘要、`action`、`result`、`error` 无失败则省略），追加写进 `logs/build.log` 并同步打到 stdout；`run_id`（UTC 时间戳 + 4 位随机十六进制，**前半即本次构建发生的时刻**）在运行结束时打印到 stdout 最后一行，便于把本地日志与 Actions 日志按 run_id 关联——构建时刻就登记在这里，不进任何生成物（状态页因此没有也不需要「最近构建」字段）。**logs/ 不进仓库**（.gitignore 已排除）：日志是追加性的，每次构建都会变，提交进仓库会弄脏工作树、破坏「重复构建 git status 干净」这条验收；CI 的 stdout 天然就是一份完整日志。脱敏是硬规则：键名匹配 /secret|token|key|password/i 的值一律遮蔽为 "***"，邮箱地址与 Webhook 地址的值不写进日志；`input` 只记查询词与计数这类摘要，抓取到的正文内容不进日志。
 
 ## Do's and Don'ts
 

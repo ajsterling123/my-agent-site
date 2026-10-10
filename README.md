@@ -270,7 +270,7 @@ python scripts/search_wiki.py "协作" --json           # 机器可读输出（j
 
 ## 状态面板与运行日志（Step 10）
 
-**状态面板在哪**：菜单第 7 项「状态」，即 [public/status/index.html](../my-agent-site/public/status/index.html)，机读数据在 `public/data/status.json`。页面由 `python scripts/build_status.py` 在构建期生成，**零 JavaScript**：所有计数从内容源重算（页面数 `public/**/*.html`、文章数 `content/posts/*.md`、Wiki 词条数（去掉 README 与 index）、论文数 papers.json 条数、RSS 源数 config/feeds.json 的 sources、RSS 聚合条目数 rss-items.json 条数），并和数据文件**对账**——papers.json / rss-items.json / feed.xml 各自「可解析 + 条数与字段齐全」、feed.xml 的 item 数与文章数一致、每个 Wiki 词条都有带生成标记的生成页，每项一行 ✓/✗ 如实展示（不一致时构建不失败，把差异亮出来）。时间字段不写「当前时间」：「最近构建」取 git HEAD 的提交时间，`「最近更新」`取内容源 frontmatter 日期的最大值，所以同一份仓库状态重复构建字节一致。
+**状态面板在哪**：菜单第 7 项「状态」，即 [public/status/index.html](../my-agent-site/public/status/index.html)，机读数据在 `public/data/status.json`。页面由 `python scripts/build_status.py` 在构建期生成，**零 JavaScript**：所有计数从内容源重算（页面数 `public/**/*.html`、文章数 `content/posts/*.md`、Wiki 词条数（去掉 README 与 index）、论文数 papers.json 条数、RSS 源数 config/feeds.json 的 sources、RSS 聚合条目数 rss-items.json 条数），并和数据文件**对账**——papers.json / rss-items.json / feed.xml 各自「可解析 + 条数与字段齐全」、feed.xml 的 item 数与文章数一致、每个 Wiki 词条都有带生成标记的生成页，每项一行 ✓/✗ 如实展示（不一致时构建不失败，把差异亮出来）。时间字段只登记内容派生的「最近更新」（内容源 frontmatter 日期的最大值）；**不登记「最近构建」**——构建时刻的归宿是每次运行的 run_id 日志（run_id 前半即 UTC 时间戳，`logs/build.log` 与 CI 输出可查），页面只展示内容真相：一个文件写不下「包含它自己的那次提交」的时刻（取 HEAD 提交时间是自指的，干净 clone 上对账必失败、提交后重建必脏）。同一份仓库状态重复构建字节一致。
 
 **日志在哪**：`logs/build.log`（JSONL，追加写，**不进仓库**——日志是追加性的，提交进仓库会弄脏工作树、破坏「重复构建 git status 干净」的幂等验收；CI 的 stdout 天然就是一份日志）。六个构建/抓取脚本（build_blog / build_feed / build_wiki / build_status / fetch_feeds / collect_papers）统一走 `scripts/runlog.py`，每个阶段（读取输入 / 执行 / 校验 / 落盘 / 失败）至少一条事件。
 
